@@ -300,3 +300,12 @@
 14-jtl-shop-m-d-e4cd7550.docker.jtl-software.de
 14-jtl-shop-m-p-40af4b5e.docker.jtl-software.de
 14-jtl-shop-o-s-5fe175f8.docker.jtl-software.de
+
+## PASSIVE RECON 2026-09-02 (read-only, non-intrusive)
+
+> Recon observations only. These are NOT confirmed vulnerabilities; ownership/in-scope of each host must be confirmed against the program scope before any active testing. Hosts resolve + serve HTTP — investigation requires scoped authorization.
+
+**Probed:** 300 hosts | **Live HTTP:** 0
+
+| Host | Status | Server/Tech |
+|---|---|---|
