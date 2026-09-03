@@ -14,3 +14,11 @@
     "ref": "err_00a2e04b"
   }
 }
+===== ANALYST longcat 2026-09-03 21:52:56 UTC =====
+[91m[1mError: [0m{
+  "name": "UnknownError",
+  "data": {
+    "message": "Unexpected server error. Check server logs for details.",
+    "ref": "err_7035d8e2"
+  }
+}

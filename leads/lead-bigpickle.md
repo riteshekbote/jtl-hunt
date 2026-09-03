@@ -36,3 +36,31 @@ evidence_needed: whether Sentry project/DSN allows unauthenticated event queries
 verify_steps: passive — check if Sentry DSN projects are publicly queryable (usually require auth); not directly curlable. Route to HUMAN review of Sentry config.
 impact: PII/stack-trace exposure from client-side error telemetry. Severity: low/medium.
 testability: HUMAN_ONLY
+## 2026-09-03 21:46:16 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via client-supplied `x-tenant-id` on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: Live probe confirms POST /erp/v2/graphql returns 401 without token ("JWT not present" gate). Multi-tenant cloud separates OAuth2 token from tenant via client-supplied x-tenant-id header (per prior SDL). If tenant isolation relies on that header rather than JWT tenant claims, a token from tenant A with x-tenant-id of victim returns victim data.
+evidence_needed: 401 vs 200/403 with a mismatched/unknown x-tenant-id using a valid scoped token; a test account on one tenant queried from another.
+verify_steps: requires valid scoped token (AUTH_HELPED). Passive next: GET graphql playground/index to check for unauth introspection. Route to HUMAN for sanctioned trial on test tenant.
+impact: cross-tenant PII dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Power scope over-grant via client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: Live OIDC advertises client_credentials + jwt-bearer grants. GraphQL authorizes mutations with `system.all` OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute on behalf of another user") as third-party scopes. If a registered app's client_credentials can assert these, full ERP read/write or runas impersonation.
+evidence_needed: obtaining a client grant asserting these scopes; reaching a data endpoint.
+verify_steps: passive — inspect appregistration docs/GraphQL SDL for scope description; cannot mint scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+impact: full ERP read/write, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP env-config secrets abuse → Sentry/PII exposure
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Live probe CONFIRMED erp.jtl-cloud.com serves jtl-cloud-env-variables JSON with active Sentry DSN, PostHog token, Zitadel client ID, ORY URL, and internal service URLs (account/hub). Public client IDs normal, but the same DSN/config block in `-qa` variant and a public Sentry project may expose client-side stack traces/PII or allow event query if misconfigured.
+evidence_needed: whether Sentry project/DSN is publicly queryable or exposes PII-laden error events.
+verify_steps: Sentry DSN projects normally require auth; not directly curlable. Route to HUMAN review of Sentry/PostHog config.
+impact: PII/stack-trace exposure from client telemetry. Severity: low/medium.
+testability: HUMAN_ONLY

@@ -330,3 +330,7 @@
 - NEW Knowledge base adds 3 LEARN entries (ACCEPTED MISCONFIG a-b-4db87dad, ACCEPTED AUTH p-g-443d1d50, REJECTED OTHER f-b-e5fa382e) not in prior leads
 - NEW Inventory provides full 300-host enumeration (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified) for targeting
 - CHANGED Phase advanced to SURFACE with target=api — requires live HTTP validation of top hypotheses
+
+## 2026-09-03 21:52:56 UTC
+- NEW All 300 hosts resolve to single IP 31.172.91.250 (wildcard DNS) but TCP 80/443 connection timeout — no live HTTP reachability from internet
+- CHANGED Phase SURFACE target=api blocked: top-priority assets (1-jtl-shop-a-b-4db87dad, 1-jtl-shop-p-g-443d1d50, 116-jtl-shop-l-w-ab0f5ac0) unreachable; cannot validate API/OAuth/GraphQL hypotheses passively
