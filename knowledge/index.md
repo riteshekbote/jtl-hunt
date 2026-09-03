@@ -4,3 +4,6 @@
 - 2026-09-03 REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
 - 2026-09-03 ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
 - 2026-09-03 REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+- 2026-09-03 ACCEPTED TARGET @ bountyshop.jtl-software.com: Official bug bounty test shop confirmed live (HTTP 200), JTL-Shop v5.x NOVA template, admin panel at /admin/
+- 2026-09-03 ACCEPTED TARGET @ api.jtl-cloud.com/erp/v2/graphql: Production GraphQL ERP API live, requires JWT, x-tenant-id header for multi-tenancy
+- 2026-09-03 ACCEPTED TARGET @ jtl-software.github.io/devdocs-graphql-playground/: GraphiQL playground live, embedded in developer portal, targets production API

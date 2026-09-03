@@ -334,3 +334,29 @@
 ## 2026-09-03 21:52:56 UTC
 - NEW All 300 hosts resolve to single IP 31.172.91.250 (wildcard DNS) but TCP 80/443 connection timeout — no live HTTP reachability from internet
 - CHANGED Phase SURFACE target=api blocked: top-priority assets (1-jtl-shop-a-b-4db87dad, 1-jtl-shop-p-g-443d1d50, 116-jtl-shop-l-w-ab0f5ac0) unreachable; cannot validate API/OAuth/GraphQL hypotheses passively
+
+## 2026-09-03 23:53:50 UTC
+- NEW 300 containerized test hosts under `docker.jtl-software.de` discovered via passive DNS/CT (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified)
+- NEW 23 shared test configuration profiles (suffixes like `a-b-4db87dad`, `p-g-443d1d50`, `f-b-e5fa382e`, `l-w-ab0f5ac0`, `t-p-817daf04`) deployed across multiple platforms and environment instances (prefi
+- NEW 0 live HTTP probes performed — all hosts unvalidated for reachability, tech stack, or attack surface
+- CHANGED Dedicated deep recon confirms wildcard-dominated DNS (159 resolving, 0 genuinely dedicated after shared-IP filtering)
+- NEW Knowledge base adds 3 LEARN entries (ACCEPTED MISCONFIG a-b-4db87dad, ACCEPTED AUTH p-g-443d1d50, REJECTED OTHER f-b-e5fa382e) not in prior leads
+- NEW Inventory provides full 300-host enumeration (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified) for targeting
+- CHANGED Phase advanced to SURFACE with target=api — requires live HTTP validation of top hypotheses
+- NEW All 300 hosts resolve to single IP 31.172.91.250 (wildcard DNS) but TCP 80/443 connection timeout — no live HTTP reachability from internet
+- CHANGED Phase SURFACE target=api blocked: top-priority assets (1-jtl-shop-a-b-4db87dad, 1-jtl-shop-p-g-443d1d50, 116-jtl-shop-l-w-ab0f5ac0) unreachable; cannot validate API/OAuth/GraphQL hypotheses passively
+- NEW 300 containerized test hosts under `docker.jtl-software.de` discovered via passive DNS/CT (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified)
+- NEW 23 shared test configuration profiles (suffixes like `a-b-4db87dad`, `p-g-443d1d50`, `f-b-e5fa382e`, `l-w-ab0f5ac0`, `t-p-817daf04`) deployed across multiple platforms and environment instances (prefi
+- NEW 0 live HTTP probes performed — all hosts unvalidated for reachability, tech stack, or attack surface
+- CHANGED Dedicated deep recon confirms wildcard-dominated DNS (159 resolving, 0 genuinely dedicated after shared-IP filtering)
+- NEW Knowledge base adds 3 LEARN entries (ACCEPTED MISCONFIG a-b-4db87dad, ACCEPTED AUTH p-g-443d1d50, REJECTED OTHER f-b-e5fa382e) not in prior leads
+- NEW Inventory provides full 300-host enumeration (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified) for targeting
+- CHANGED Phase advanced to SURFACE with target=api — requires live HTTP validation of top hypotheses
+- NEW All 300 hosts resolve to single IP 31.172.91.250 (wildcard DNS) but TCP 80/443 connection timeout — no live HTTP reachability from internet
+- CHANGED Phase SURFACE target=api blocked: top-priority assets (1-jtl-shop-a-b-4db87dad, 1-jtl-shop-p-g-443d1d50, 116-jtl-shop-l-w-ab0f5ac0) unreachable; cannot validate API/OAuth/GraphQL hypotheses passively
+- NEW bountyshop.jtl-software.com confirmed live (HTTP 200) — official bug bounty test shop running JTL-Shop v5.x (NOVA template), admin panel at /admin/ accessible
+- NEW api.jtl-cloud.com/erp/v2/graphql confirmed live (HTTP 401) — production GraphQL ERP API requires JWT, returns "JWT not present" for introspection
+- NEW jtl-software.github.io/devdocs-graphql-playground/ confirmed live (HTTP 200) — GraphiQL playground embedded in developer portal, targets production API
+- NEW developer.jtl-software.com/cloud/api-reference/graphql-playground embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
+- CHANGED docker.jtl-software.de 300 containers unreachable from internet (TCP 80/443 timeout on 31.172.91.250) — all prior hypotheses on test containers untestable passively
+- CHANGED Phase shifted from docker test envs to live production/bug-bounty assets (bountyshop, api.jtl-cloud.com, developer portal)

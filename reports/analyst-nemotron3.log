@@ -490,3 +490,733 @@ testability: PASSIVE
 [LEARN] REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
 
 [RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation possible — containers not internet-accessible; risk confirmation requires internal network access
+===== ANALYST nemotron3 2026-09-03 23:53:50 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m◈ [0mExa Web Search "JTL-Software AG official website domain jtl-software.de jtl-shop.de"
+[0m◈ [0mExa Web Search "JTL-Shop API documentation GraphQL REST endpoint"
+[0m◈ [0mExa Web Search "JTL-Software AG bug bounty program scope domains"
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://api.jtl-cloud.com/erp/v2/graphql --max-time 10 -X POST -H "Content-Type: application/json" -d '{"query":"{__schema{types{name}}}"}'
+401
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://bountyshop.jtl-software.com/ --max-time 10
+200
+[0m
+[0m$ [0mcurl -s -I https://bountyshop.jtl-software.com/ --max-time 10
+HTTP/1.1 200 OK
+Date: Thu, 03 Sep 2026 23:48:46 GMT
+Server: Apache/2.4.68 (Debian)
+Strict-Transport-Security: max-age=31536000
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: JTLSHOP=nkb7liuatuei8lehv6cunbpbne; path=/; secure; HttpOnly; SameSite=Lax
+X-UA-Compatible: IE=edge
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Content-Type: text/html; charset=utf-8
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/ --max-time 10 | head -200
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_069accc7e001A6Ks7jsTMubmQx
+
+                    
+                    
+                                                                            @media (min-width: 992px) {
+                                header .navbar-brand img {
+                                    height: 49px;
+                                }
+                                                                    nav.navbar {
+                                        height: calc(49px + 1.2rem);
+                                    }
+                                                            }
+                                            
+                </style>
+            
+                                                            <link rel="preload" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/clear.css?v=5.0.0" as="style"
+                          onload="this.onload=null;this.rel='stylesheet'">
+                                    <link rel="preload" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/custom.css?v=5.0.0" as="style"
+                          onload="this.onload=null;this.rel='stylesheet'">
+                                                                    
+                <noscript>
+                                            <link rel="stylesheet" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/clear.css?v=5.0.0">
+                                            <link rel="stylesheet" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/custom.css?v=5.0.0">
+                                                                                                    </noscript>
+            
+                                        <link rel="preload" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Container/Container.css" as="style" data-opc-portlet-css-link="true"
+                      onload="this.onload=null;this.rel='stylesheet'">
+                <noscript>
+                    <link rel="stylesheet" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Container/Container.css">
+                </noscript>
+                            <link rel="preload" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/common/hidden-size.css" as="style" data-opc-portlet-css-link="true"
+                      onload="this.onload=null;this.rel='stylesheet'">
+                <noscript>
+                    <link rel="stylesheet" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/common/hidden-size.css">
+                </noscript>
+                            <link rel="preload" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Divider/Divider.css" as="style" data-opc-portlet-css-link="true"
+                      onload="this.onload=null;this.rel='stylesheet'">
+                <noscript>
+                    <link rel="stylesheet" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Divider/Divider.css">
+                </noscript>
+                        <script>
+                window.jtlShopBaseUrl = 'https://bountyshop.jtl-software.com';
+                /*! loadCSS rel=preload polyfill. [c]2017 Filament Group, Inc. MIT License */
+                (function (w) {
+                    "use strict";
+                    if (!w.loadCSS) {
+                        w.loadCSS = function (){};
+                    }
+                    var rp = loadCSS.relpreload = {};
+                    rp.support                  = (function () {
+                        var ret;
+                        try {
+                            ret = w.document.createElement("link").relList.supports("preload");
+                        } catch (e) {
+                            ret = false;
+                        }
+                        return function () {
+                            return ret;
+                        };
+                    })();
+                    rp.bindMediaToggle          = function (link) {
+                        var finalMedia = link.media || "all";
+
+                        function enableStylesheet() {
+                            if (link.addEventListener) {
+                                link.removeEventListener("load", enableStylesheet);
+                            } else if (link.attachEvent) {
+                                link.detachEvent("onload", enableStylesheet);
+                            }
+                            link.setAttribute("onload", null);
+                            link.media = finalMedia;
+                        }
+
+                        if (link.addEventListener) {
+                            link.addEventListener("load", enableStylesheet);
+                        } else if (link.attachEvent) {
+                            link.attachEvent("onload", enableStylesheet);
+                        }
+                        setTimeout(function () {
+                            link.rel   = "stylesheet";
+                            link.media = "only x";
+                        });
+                        setTimeout(enableStylesheet, 3000);
+                    };
+
+                    rp.poly = function () {
+                        if (rp.support()) {
+                            return;
+                        }
+                        var links = w.document.getElementsByTagName("link");
+                        for (var i = 0; i < links.length; i++) {
+                            var link = links[i];
+                            if (link.rel === "preload" && link.getAttribute("as") === "style" && !link.getAttribute("data-loadcss")) {
+                                link.setAttribute("data-loadcss", true);
+                                rp.bindMediaToggle(link);
+                            }
+                        }
+                    };
+
+                    if (!rp.support()) {
+                        rp.poly();
+
+                        var run = w.setInterval(rp.poly, 500);
+                        if (w.addEventListener) {
+                            w.addEventListener("load", function () {
+                                rp.poly();
+                                w.clearInterval(run);
+                            });
+                        } else if (w.attachEvent) {
+                            w.attachEvent("onload", function () {
+                                rp.poly();
+                                w.clearInterval(run);
+                            });
+                        }
+                    }
+
+                    if (typeof exports !== "undefined") {
+                        exports.loadCSS = loadCSS;
+                    }
+                    else {
+                        w.loadCSS = loadCSS;
+                    }
+                }(typeof global !== "undefined" ? global : this));
+            </script>
+                                        <link rel="alternate" type="application/rss+xml" title="Newsfeed Bug Bounty Testshop"
+                      href="https://bountyshop.jtl-software.com/rss.xml">
+                                                                                    <link rel="alternate"
+                          hreflang="de"
+                          href="https://bountyshop.jtl-software.com/">
+                                        <link rel="alternate"
+                          hreflang="x-default"
+                          href="https://bountyshop.jtl-software.com/">
+                                                        <link rel="alternate"
+                          hreflang="en"
+                          href="https://bountyshop.jtl-software.com/?lang=eng">
+                                                        
+
+                
+
+        <script src="https://bountyshop.jtl-software.com/templates/NOVA/js/jquery-3.7.1.min.js"></script>
+
+                                                                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/bootstrap-toolkit.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/bootstrap.bundle.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/slick.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/eModal.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/splide.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/bootstrap-select.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/jtl.evo.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/typeahead.bundle.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/colcade.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/global.js?v=5.0.0"></script>
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://bountyshop.jtl-software.com/api/v1/ --max-time 10
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://bountyshop.jtl-software.com/api/ --max-time 10
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://bountyshop.jtl-software.com/graphql --max-time 10
+404
+[0m
+[0m$ [0mcurl -s https://developer.jtl-software.com/cloud/api-reference/graphql-playground --max-time 10 | head -300
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_069ad2242001ySOUL5t3HnVzjq
+
+  try {
+    if (window.__mintlifyInitialSidebarScrollDone) return;
+    window.__mintlifyInitialSidebarScrollDone = true;
+
+    var path = (window.location.pathname || '/').split('#')[0].split('?')[0];
+    if (path.endsWith('/index')) path = path.slice(0, -6);
+    else if (path === 'index') path = '';
+
+    var candidates = [];
+    if (path) candidates.push(path);
+    if (path.startsWith('/')) candidates.push(path.slice(1));
+    else candidates.push('/' + path);
+
+    var item = null;
+    for (var i = 0; i < candidates.length && !item; i++) {
+      var matches = document.querySelectorAll('[id="' + candidates[i].replace(/"/g, '\\"') + '"]');
+      for (var j = 0; j < matches.length; j++) {
+        if (matches[j].closest('#sidebar, #sidebar-content')) {
+          item = matches[j];
+          break;
+        }
+      }
+    }
+    if (!item) return;
+
+    var parent = item.closest('[data-component-part="scroll-area-viewport"]');
+    if (!parent) {
+      parent = item.parentElement;
+      while (parent) {
+        var style = getComputedStyle(parent);
+        if (style.overflowY === 'auto' || style.overflowY === 'scroll') break;
+        parent = parent.parentElement;
+      }
+    }
+    if (!parent) return;
+
+    var parentRect = parent.getBoundingClientRect();
+    var itemRect = item.getBoundingClientRect();
+    if (itemRect.top >= parentRect.top && itemRect.bottom <= parentRect.bottom) return;
+
+    var itemTopRelative = itemRect.top - parentRect.top + parent.scrollTop;
+    parent.scrollTop = itemTopRelative - parentRect.height / 2 + itemRect.height / 2;
+  } catch (e) {}
+})();</script></div></div></div></div></div></nav><main id="content-container" class="lg:flex-1 lg:min-w-0"><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://developer.jtl-software.com/#organization","name":"JTL Developer Documentation","url":"https://developer.jtl-software.com","logo":{"@type":"ImageObject","url":"https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/logo/light.svg?fit=max&auto=format&n=LxR2E3coYlRTAge4&q=85&s=c46673ae73e5f96d56d2fb051d463594"}},{"@type":"WebSite","@id":"https://developer.jtl-software.com#website","name":"JTL Developer Documentation","url":"https://developer.jtl-software.com","publisher":{"@id":"https://developer.jtl-software.com/#organization"}},{"@type":"WebPage","@id":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground#webpage","url":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground","name":"GraphQL playground","description":"Interactive GraphQL IDE to explore and test the JTL Platform API","dateModified":"2026-08-06T09:47:50.460Z","isPartOf":{"@id":"https://developer.jtl-software.com#website"},"breadcrumb":{"@id":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"JTL Developer Documentation","item":"https://developer.jtl-software.com"},{"@type":"ListItem","position":2,"name":"GraphQL playground","item":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground"}]},{"@type":["Article","TechArticle"],"@id":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground#article","headline":"GraphQL playground","name":"GraphQL playground","description":"Interactive GraphQL IDE to explore and test the JTL Platform API","url":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground","mainEntityOfPage":{"@id":"https://developer.jtl-software.com/cloud/api-reference/graphql-playground#webpage"},"dateModified":"2026-08-06T09:47:50.460Z","publisher":{"@id":"https://developer.jtl-software.com/#organization"},"isPartOf":{"@id":"https://developer.jtl-software.com#website"}}]}</script><script>document.documentElement.setAttribute('data-page-mode', "custom");</script><span class="fixed inset-0 bg-background-light dark:bg-background-dark -z-10 pointer-events-none" id="background-color"></span><span class="block absolute dark:hidden inset-0 overflow-hidden pointer-events-none"></span><span class="hidden absolute dark:block inset-0 overflow-hidden pointer-events-none"></span><style data-custom-css-index="0" data-custom-css-path="style.css">/* JTL Brand Colors */
+:root {
+  --jtl-orange: #fb581f;
+  --jtl-tech-blue: #2722f8;
+  --jtl-light-blue: #89d2ff;
+  --jtl-dark-blue: #0b1b45;
+  --jtl-sand: #eeeee7;
+  --jtl-white: #ffffff;
+  --jtl-black: #000000;
+}
+
+/* Override Tailwind's bg-white to use sand in light mode,
+   so all surfaces blend with the sand page background */
+:root:not(.dark)
+  .bg-white:not(.code-block .bg-white):not(.code-block-background) {
+  background-color: var(--jtl-sand) !important;
+}
+
+/* Shift grays darker for sand background so borders/separators stay visible */
+:root:not(.dark) {
+  --gray-50: 228 223 218;
+  --gray-100: 218 213 208;
+  --gray-200: 200 195 190;
+  --gray-300: 180 175 170;
+  --gray-400: 140 135 130;
+  --gray-500: 102 97 95;
+}
+
+/* Hide default title + description on homepage (we render our own hero) */
+#header:has(~ .mdx-content .hero-gradient),
+#header:has(+ .mdx-content .hero-gradient) {
+  display: none !important;
+}
+
+/* Hero section on homepage — centered layout */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 88, 31, 0.06) 0%,
+    rgba(137, 210, 255, 0.06) 100%
+  );
+  border-radius: 20px;
+  padding: 5rem 2.5rem 4.5rem;
+  margin-bottom: 3rem;
+}
+
+.dark .hero-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 88, 31, 0.1) 0%,
+    rgba(137, 210, 255, 0.1) 100%
+  );
+}
+
+.hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 3rem;
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 560px;
+  opacity: 0.7;
+  margin: 0 auto;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.hero-cta-primary {
+  background: var(--jtl-orange);
+  color: white;
+}
+
+.hero-cta-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.hero-cta-secondary {
+  border: 1.5px solid currentColor;
+  opacity: 0.7;
+}
+
+.hero-cta-secondary:hover {
+  opacity: 1;
+}
+
+/* Hero search input — triggers Mintlify search modal */
+.hero-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding: 0.75rem 1.25rem;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.dark .hero-search {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hero-search-icon,
+.hero-search-text {
+  opacity: 0.5;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+
+.hero-search:hover {
+  border-color: var(--jtl-orange);
+  box-shadow:
+    0 0 0 1px var(--jtl-orange),
+    0 2px 8px rgba(251, 88, 31, 0.15);
+}
+
+.dark .hero-search:hover {
+  border-color: var(--jtl-orange);
+  box-shadow:
+    0 0 0 1px var(--jtl-orange),
+    0 2px 8px rgba(251, 88, 31, 0.25);
+}
+
+.hero-search span {
+  font-size: 0.9rem;
+  opacity: 0.4;
+  user-select: none;
+}
+
+/* Homepage max-width container */
+.mdx-content:has(.hero-gradient),
+.mdx-content:has(.graphql-sandbox-layout) {
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://developer.jtl-software.com/cloud/api-reference/graphql-playground --max-time 10
+200
+[0m
+[0m$ [0mcurl -s -X POST https://api.jtl-cloud.com/erp/v2/graphql -H "Content-Type: application/json" -d '{"query":"{__schema{types{name}}}"}' --max-time 10
+{ "statusCode": 401, "message": "JWT not present." }
+[0m
+[0m$ [0mcurl -s -X POST https://api.jtl-cloud.com/erp/v2/graphql -H "Content-Type: application/json" -d '{"query":"{__typename}"}' --max-time 10
+{ "statusCode": 401, "message": "JWT not present." }
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/admin/ --max-time 10 -o /dev/null -w "%{http_code}"
+200
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/dbeS/ --max-time 10 -o /dev/null -w "%{http_code}"
+403
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/robots.txt --max-time 10
+User-agent: *
+Disallow:
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/admin/ --max-time 10 | head -500
+<!DOCTYPE html>
+<html lang="de" class="theme-auto">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Administration von JTL-Shop</title>
+        <link type="image/x-icon" href="https://bountyshop.jtl-software.com/admin/favicon.ico" rel="icon">
+    <link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/dependencies.bundle.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/font-awesome.min.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/typeaheadjs.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/fontawesome-pro/css/all.min.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/tempusdominus-bootstrap-4.min.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/app/preload.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/app/app.min.css?v=1.1.0" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/custom.css?v=1.1.0" media="screen" />
+
+    <script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/dependencies.bundle.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/global.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/versandart_bruttonetto.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/fileinput/themes/fas/theme.min.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/jquery.highlight.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/jquery.top_scrollbar.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/searchpicker.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/moment-with-locales.js?v=1.1.0"></script>
+<script type="text/javascript" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/tempusdominus-bootstrap-4.min.js?v=1.1.0"></script>
+
+    <link type="text/css" rel="stylesheet" href="https://bountyshop.jtl-software.com/admin/templates/bootstrap/css/codemirror.bundle.css?v=1.1.0">
+    <script src="https://bountyshop.jtl-software.com/includes/libs/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/codemirror.bundle.js?v=1.1.0"></script>
+    <script src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/codemirror_init.js?v=1.1.0"></script>
+    <script>
+        var bootstrapButton = $.fn.button.noConflict();
+        $.fn.bootstrapBtn = bootstrapButton;
+        setJtlToken('aa37e8c805fa3112c807decd6ca44973073489594558366bab1645182a462691');
+        setBackendURL('https://bountyshop.jtl-software.com/admin/');
+
+        function switchAdminLang(tag)
+        {
+            event.target.href = `https://bountyshop.jtl-software.com/admin/users?token=aa37e8c805fa3112c807decd6ca44973073489594558366bab1645182a462691&action=quick_change_language&language=` + tag + `&referer=` +  encodeURIComponent(window.location.href);
+        }
+    </script>
+
+    <script type="text/javascript"
+            src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/fileinput/locales/de.js"></script>
+    <script type="module" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/js/app/app.js"></script>
+    <script type="module">
+    
+        $('.selectpicker').selectpicker({
+            noneSelectedText: 'Nichts ausgewählt',
+            noneResultsText: '{0} ergab keine Treffer',
+            countSelectedText: '{0} ausgewählt',
+            maxOptionsText: () => [
+                'Limit erreicht (max. {n})',
+                'Gruppenlimit erreicht (max. {n})',
+            ],
+            selectAllText: 'Alle aktivieren',
+            deselectAllText: 'Alle deaktivieren',
+            doneButtonText: 'Schließen',
+            style: ''
+        });
+    
+</script>
+</head>
+<body>
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        $("input.field:first").focus();
+    });
+    
+</script>
+<div class="vertical-center">
+    <div class="container">
+        <div id="login_wrapper">
+            <div id="login_outer" class="card">
+                <div class="card-body">
+                    <p class="text-center mb-4">
+                        <a href="https://bountyshop.jtl-software.com/admin/">
+                            <img class="brand-logo" width="120" height="38" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/gfx/JTL-Shop-Logo-rgb.png" alt="JTL-Shop">
+                            <img class="brand-logo brand-logo-white" width="120" height="38" src="https://bountyshop.jtl-software.com/admin/templates/bootstrap/gfx/JTL-Shop-Logo-rgb-white.png" alt="JTL-Shop">
+                        </a>
+                    </p>
+                    
+                    <form
+    class="form-horizontal"
+    target="_self"
+            action="https://bountyshop.jtl-software.com/admin/"    method="post"
+                            role="form"                >
+    <input type="hidden" class="jtl_token" name="jtl_token" value="aa37e8c805fa3112c807decd6ca44973073489594558366bab1645182a462691"/>
+                                <input id="benutzer" type="hidden" name="adminlogin" value="1" />
+                                                                            <div class="input-group">
+                                <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-user"></i></span></div>
+                                <input class="form-control" type="text" placeholder="Benutzername" name="benutzer" id="user_login" value="" size="20" tabindex="10" autocomplete="username" />
+                            </div>
+                            <div class="input-group mt-2">
+                                <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-lock"></i></span></div>
+                                <input class="form-control" type="password" placeholder="Passwort" name="passwort" id="user_pass" value="" size="20" tabindex="20" />
+                            </div>
+                                                                            <div id="collapseExtended" class="collapse input-group mt-2 form-group form-row align-items-center" aria-labelledby="headingExtended">
+                            <input id="safemode" class="col col-sm-auto ml-2" type="checkbox" name="safemode" value="on">
+                            <label for="safemode" class="col col-sm-auto col-form-label text-sm-right" title="Abgesicherter Modus aktiv. Gewisse Funktionalitäten stehen nicht zur Verfügung." data-toggle="tooltip">Abgesicherter Modus</label>
+                        </div>
+                        <button type="submit" value="Anmelden" tabindex="100" class="btn btn-primary btn-block mt-3">Anmelden</button>
+                                                                            <div id="headingExtended" class="mt-3 text-right small">
+                                <a href="#" data-toggle="collapse" data-target="#collapseExtended" aria-expanded="false" aria-controls="collapseExtended">Erweitert</a>
+                            </div>
+                                            
+</form>
+                </div>
+            </div>
+            <p class="forgot-pw-wrap text-center">
+                <small><a href="https://bountyshop.jtl-software.com/admin/pass" title="Passwort vergessen?"><i class="fa fa-lock"></i> Passwort vergessen?</a></small>
+            </p>
+        </div>
+    </div>
+</div>
+</body></html>
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/api/v1/system/info --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/api/_debug --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/api/v1/products --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/ --max-time 10 | grep -i "version\|jtl-shop\|5\." | head -20
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_069ae4406001MjXTGhDc9Ck0A4
+
+                                                            <link rel="preload" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/clear.css?v=5.0.0" as="style"
+                                    <link rel="preload" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/custom.css?v=5.0.0" as="style"
+                                            <link rel="stylesheet" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/clear.css?v=5.0.0">
+                                            <link rel="stylesheet" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/custom.css?v=5.0.0">
+                                                                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/bootstrap-toolkit.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/bootstrap.bundle.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/slick.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/eModal.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/splide.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/bootstrap-select.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/jtl.evo.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/typeahead.bundle.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/colcade.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/global.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/slick-lightbox.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/jquery.serialize-object.min.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/jtl.io.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/jtl.article.js?v=5.0.0"></script>
+                            <script defer src="https://bountyshop.jtl-software.com/templates/NOVA/js/jtl.basket.js?v=5.0.0"></script>
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/sitemap.xml --max-time 10 | head -100
+(no output)
+[0m
+[0m$ [0mcurl -s -X POST https://bountyshop.jtl-software.com/graphql -H "Content-Type: application/json" -d '{"query":"{__schema{types{name}}}"}' --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s -X POST https://bountyshop.jtl-software.com/api/graphql -H "Content-Type: application/json" -d '{"query":"{__schema{types{name}}}"}' --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/api.php --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/oauth/authorize --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s "https://bountyshop.jtl-software.com/oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x" --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://developer.jtl-software.com/cloud/api-reference/graphql-playground --max-time 10 | grep -i "playground\|endpoint\|graphql" | head -30
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_069aefd0f001hp10IfTTWaaO47
+
+static/chunks/b664fc8bb1e7ab0d.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde316292f7266ae.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a5edc6734daa1561.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b21970438ab9ed9e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a919d558158c76f7.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/3c94b65e4dbefe6e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8778b596bb8e1fac.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/1dae6b06a929522a.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ac99e94360bfbfe1.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/28bb5e6550ef2148.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde9521bba917b79.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cc5fb492c7259b04.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/87b74cecd5105777.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cfd727ba62f1c54c.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c7c9dfd26f25e785.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/81ef5aa033c70775.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ab7b78938d8af3e8.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/0eb894a8519f24ea.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/fb156bebf42da1e9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/2dd53f5a4cfe6dd5.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/e95beff806b7ab98.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8a30b6291cd9465f.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/893b80a74cde24cd.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c0e7a98cd764702e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\"],\"Background\"]\n"])</script><script>self.__next_f.push([1,"56:I[36098,[\"/mintlify-assets/_next/static/chunks/19ae1768f166fab9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b664fc8bb1e7ab0d.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde316292f7266ae.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a5edc6734daa1561.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b21970438ab9ed9e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a919d558158c76f7.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/3c94b65e4dbefe6e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8778b596bb8e1fac.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/1dae6b06a929522a.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ac99e94360bfbfe1.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/28bb5e6550ef2148.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde9521bba917b79.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cc5fb492c7259b04.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/87b74cecd5105777.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cfd727ba62f1c54c.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c7c9dfd26f25e785.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/81ef5aa033c70775.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ab7b78938d8af3e8.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/0eb894a8519f24ea.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/fb156bebf42da1e9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/2dd53f5a4cfe6dd5.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/e95beff806b7ab98.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8a30b6291cd9465f.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/893b80a74cde24cd.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c0e7a98cd764702e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\"],\"CustomJsFiles\"]\n"])</script><script>self.__next_f.push([1,"58:I[530359,[\"/mintlify-assets/_next/static/chunks/19ae1768f166fab9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b664fc8bb1e7ab0d.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde316292f7266ae.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a5edc6734daa1561.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b21970438ab9ed9e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a919d558158c76f7.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/3c94b65e4dbefe6e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8778b596bb8e1fac.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/1dae6b06a929522a.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ac99e94360bfbfe1.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/28bb5e6550ef2148.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde9521bba917b79.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cc5fb492c7259b04.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/87b74cecd5105777.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cfd727ba62f1c54c.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c7c9dfd26f25e785.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/81ef5aa033c70775.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ab7b78938d8af3e8.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/0eb894a8519f24ea.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/fb156bebf42da1e9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/2dd53f5a4cfe6dd5.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/e95beff806b7ab98.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8a30b6291cd9465f.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/893b80a74cde24cd.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c0e7a98cd764702e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\"],\"MDXContentController\"]\n"])</script><script>self.__next_f.push([1,"59:I[448287,[\"/mintlify-assets/_next/static/chunks/19ae1768f166fab9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b664fc8bb1e7ab0d.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde316292f7266ae.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a5edc6734daa1561.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/b21970438ab9ed9e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/a919d558158c76f7.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/3c94b65e4dbefe6e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8778b596bb8e1fac.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/1dae6b06a929522a.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ac99e94360bfbfe1.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/28bb5e6550ef2148.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cde9521bba917b79.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cc5fb492c7259b04.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/87b74cecd5105777.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/cfd727ba62f1c54c.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c7c9dfd26f25e785.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/81ef5aa033c70775.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/ab7b78938d8af3e8.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/0eb894a8519f24ea.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/fb156bebf42da1e9.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/2dd53f5a4cfe6dd5.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/e95beff806b7ab98.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/8a30b6291cd9465f.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/893b80a74cde24cd.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\",\"/mintlify-assets/_next/static/chunks/c0e7a98cd764702e.js?dpl=dpl_6R59ozTcM1rr5cnWyvW44ngfvPL3\"],\"default\"]\n"])</script><script>self.__next_f.push([1,"4d:[[\"$\",\"script\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"document.documentElement.setAttribute('data-page-mode', \\\"custom\\\");\"}}],[\"$\",\"$L52\",null,{\"pageMetadata\":\"$46:props:pageMetadata\"}]]\n4e:[\"$\",\"$L53\",null,{\"pageMetadata\":\"$46:props:pageMetadata\"}]\n54:T3d69,"])</script><script>self.__next_f.push([1,"/* JTL Brand Colors */\n:root {\n  --jtl-orange: #fb581f;\n  --jtl-tech-blue: #2722f8;\n  --jtl-light-blue: #89d2ff;\n  --jtl-dark-blue: #0b1b45;\n  --jtl-sand: #eeeee7;\n  --jtl-white: #ffffff;\n  --jtl-black: #000000;\n}\n\n/* Override Tailwind's bg-white to use sand in light mode,\n   so all surfaces blend with the sand page background */\n:root:not(.dark)\n  .bg-white:not(.code-block .bg-white):not(.code-block-background) {\n  background-color: var(--jtl-sand) !important;\n}\n\n/* Shift grays darker for sand background so borders/separators stay visible */\n:root:not(.dark) {\n  --gray-50: 228 223 218;\n  --gray-100: 218 213 208;\n  --gray-200: 200 195 190;\n  --gray-300: 180 175 170;\n  --gray-400: 140 135 130;\n  --gray-500: 102 97 95;\n}\n\n/* Hide default title + description on homepage (we render our own hero) */\n#header:has(~ .mdx-content .hero-gradient),\n#header:has(+ .mdx-content .hero-gradient) {\n  display: none !important;\n}\n\n/* Hero section on homepage — centered layout */\n.hero-gradient {\n  background: linear-gradient(\n    135deg,\n    rgba(251, 88, 31, 0.06) 0%,\n    rgba(137, 210, 255, 0.06) 100%\n  );\n  border-radius: 20px;\n  padding: 5rem 2.5rem 4.5rem;\n  margin-bottom: 3rem;\n}\n\n.dark .hero-gradient {\n  background: linear-gradient(\n    135deg,\n    rgba(251, 88, 31, 0.1) 0%,\n    rgba(137, 210, 255, 0.1) 100%\n  );\n}\n\n.hero-center {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  text-align: center;\n}\n\n.hero-title {\n  font-size: 3rem;\n  line-height: 1.15;\n  font-weight: 800;\n  letter-spacing: -0.02em;\n  margin-bottom: 1rem;\n}\n\n.hero-subtitle {\n  font-size: 1.1rem;\n  line-height: 1.7;\n  max-width: 560px;\n  opacity: 0.7;\n  margin: 0 auto;\n}\n\n.hero-actions {\n  display: flex;\n  gap: 0.75rem;\n  margin-top: 2rem;\n  flex-wrap: wrap;\n  justify-content: center;\n}\n\n.hero-cta {\n  display: inline-flex;\n  align-items: center;\n  gap: 0.5rem;\n  padding: 0.75rem 1.75rem;\n  border-radius: 10px;\n  font-weight: 600;\n  font-size: 0.95rem;\n  text-decoration: none;\n  transition: all 0.15s ease;\n}\n\n.hero-cta-primary {\n  background: var(--jtl-orange);\n  color: white;\n}\n\n.hero-cta-primary:hover {\n  opacity: 0.9;\n  transform: translateY(-1px);\n}\n\n.hero-cta-secondary {\n  border: 1.5px solid currentColor;\n  opacity: 0.7;\n}\n\n.hero-cta-secondary:hover {\n  opacity: 1;\n}\n\n/* Hero search input — triggers Mintlify search modal */\n.hero-search {\n  display: flex;\n  align-items: center;\n  gap: 0.75rem;\n  margin-top: 2rem;\n  padding: 0.75rem 1.25rem;\n  width: 100%;\n  max-width: 380px;\n  border-radius: 12px;\n  border: 1px solid rgba(0, 0, 0, 0.12);\n  background: rgba(255, 255, 255, 0.7);\n  cursor: pointer;\n  transition:\n    border-color 0.15s ease,\n    box-shadow 0.15s ease;\n}\n\n.dark .hero-search {\n  border-color: rgba(255, 255, 255, 0.12);\n  background: rgba(255, 255, 255, 0.05);\n}\n\n.hero-search-icon,\n.hero-search-text {\n  opacity: 0.5;\n  transition:\n    opacity 0.2s ease,\n    color 0.2s ease;\n}\n\n.hero-search:hover {\n  border-color: var(--jtl-orange);\n  box-shadow:\n    0 0 0 1px var(--jtl-orange),\n    0 2px 8px rgba(251, 88, 31, 0.15);\n}\n\n.dark .hero-search:hover {\n  border-color: var(--jtl-orange);\n  box-shadow:\n    0 0 0 1px var(--jtl-orange),\n    0 2px 8px rgba(251, 88, 31, 0.25);\n}\n\n.hero-search span {\n  font-size: 0.9rem;\n  opacity: 0.4;\n  user-select: none;\n}\n\n/* Homepage max-width container */\n.mdx-content:has(.hero-gradient),\n.mdx-content:has(.graphql-sandbox-layout) {\n  padding-top: 24px;\n  max-width: 1376px;\n  margin-left: auto;\n  margin-right: auto;\n  padding-left: 1.5rem;\n  padding-right: 1.5rem;\n}\n\n.mdx-content:has(.graphql-sandbox-layout) {\n  padding-left: 0 !important;\n  padding-right: 0 !important;\n}\n\n/* Ensure Mintlify's parent container allows the wider content on the homepage */\nmain:has(.hero-gradient),\nmain:has(.graphql-sandbox-layout),\n#content-area:has(.hero-gradient),\n#content-area:has(.graphql-sandbox-layout),\n.max-w-7xl:has(.hero-gradient) {\n  max-width: 100% !important;\n}\n\n.max-w-7xl:has(.graphql-sandbox-layout) {\n  max-width: 100% !important;\n}\n\n/* GraphQL playground: GraphiQL is a desktop-only IDE (cross-origin iframe we\n   can't restyle). On phones, keep it as a blurred preview behind a frosted\n   \"best on desktop\" overlay card. Markup lives in graphql-playground.mdx. */\n.graphql-mobile-overlay {\n  display: none;\n}\n\n@media (max-width: 768px) {\n  .graphql-desktop-only {\n    display: none !important;\n  }\n\n  .graphql-sandbox-layout iframe {\n    filter: blur(5px);\n    pointer-events: none;\n    transform: scale(1.03); /* hide the soft transparent edge the blur leaves */\n  }\n\n  .graphql-mobile-overlay {\n    display: flex;\n    position: absolute;\n    inset: 0;\n    z-index: 2;\n    align-items: center;\n    justify-content: center;\n    padding: 1.5rem;\n  }\n\n  .graphql-mobile-overlay__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 0.65rem;\n    max-width: 320px;\n    padding: 1.85rem 1.6rem;\n    text-align: center;\n    border-radius: 18px;\n    border: 1px solid rgba(255, 255, 255, 0.45);\n    background: rgba(255, 255, 255, 0.62);\n    backdrop-filter: blur(14px) saturate(160%);\n    -webkit-backdrop-filter: blur(14px) saturate(160%);\n    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.18);\n  }\n\n  .dark .graphql-mobile-overlay__card {\n    border-color: rgba(255, 255, 255, 0.12);\n    background: rgba(22, 22, 22, 0.6);\n  }\n\n  .graphql-mobile-overlay__icon {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 48px;\n    height: 48px;\n    border-radius: 13px;\n    color: #fff;\n    background: var(--jtl-orange, #fb581f);\n    box-shadow: 0 6px 18px rgba(251, 88, 31, 0.35);\n  }\n\n  .graphql-mobile-overlay h2 {\n    font-size: 1.1rem;\n    font-weight: 700;\n    margin: 0;\n  }\n\n  .graphql-mobile-overlay p {\n    font-size: 0.9rem;\n    line-height: 1.55;\n    opacity: 0.72;\n    margin: 0;\n  }\n}\n\n/* Homepage section headers */\n.mdx-content:has(.hero-gradient) h2 {\n  margin-top: 3.5rem !important;\n  margin-bottom: 1rem !important;\n  font-size: 1.75rem !important;\n  font-weight: 700 !important;\n}\n\n.mdx-content:has(.hero-gradient) h3 {\n  margin-top: 2rem !important;\n  margin-bottom: 0.75rem !important;\n  font-size: 0.85rem !important;\n  font-weight: 600 !important;\n  text-transform: uppercase;\n  letter-spacing: 0.06em;\n  opacity: 0.5;\n}\n\n.mdx-content:has(.hero-gradient) hr {\n  margin-top: 3rem !important;\n  margin-bottom: 0 !important;\n  border-color: transparent;\n}\n\n/* Responsive adjustments for mobile */\n@media (max-width: 768px) {\n  .hero-gradient {\n    padding: 3rem 1.5rem 2.5rem;\n  }\n  .hero-title {\n    font-size: 2.25rem;\n  }\n  .hero-subtitle {\n    font-size: 1rem;\n    line-height: 1.5;\n  }\n  .hero-actions {\n    flex-direction: column;\n    width: 100%;\n  }\n  .hero-cta {\n    width: 100%;\n    justify-content: center;\n  }\n  .hero-search {\n    max-width: 100%;\n  }\n\n  /* Force Mintlify CardGroups to stack on mobile */\n  .mdx-content:has(.hero-gradient) .grid {\n    grid-template-columns: 1fr !important;\n  }\n}\n\n/**\n * Portal-Sidebar: nur unter #sidebar-group (ul#sidebar-group.sidebar-group).\n *\n * Trifft NUR \u003ca href=\"…\" class=\"group …\"\u003e mit .method-nav-pill — nicht die\n * Sektions-\u003cbutton class=\"group\"\u003e (Chevron), die sonst mit „group“ kollidieren könnten.\n *\n * Varianten:\n * A) [data-nav-tag] irgendwo im \u003ca\u003e → Grid: Titel | Cloud + deprecated gestapelt\n * B) ohne [data-nav-tag] → Flex: Titel | optional deprecated (euer HTML)\n *\n * Hinweise:\n * - Kein erzwungenes background:transparent — aktuelle Route darf bg-primary/10 o. ä. behalten.\n * - Optional: data-badge-layout=\"cloud-only\" | \"depr-only\" (nur Variante A)\n */\n\n/* ========== Basis: Endpoint-Links (nur \u003ca\u003e, nur in #sidebar-group) ========== */\n#sidebar-group a[href].group:has(.method-nav-pill) {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) auto;\n  align-items: center !important;\n  font-size: 13px;\n  /* Portal setzt oft padding-left per inline-Style (z. B. 1.75rem) → nur !important überschreibt */\n  padding-inline-start: 1rem !important;\n  column-gap: 0.5rem !important;\n  transition-property: background-color;\n  transition-duration: 0.12s;\n  transition-timing-function: ease-out;\n  -webkit-tap-highlight-color: transparent;\n}\n\n#sidebar-group a[href].group:has(.method-nav-pill) \u003e div:nth-child(1) {\n  grid-column: 2;\n  grid-row: 1;\n  align-self: center;\n  justify-self: end;\n  margin: 0 !important;\n}\n\n#sidebar-group a[href].group:has(.method-nav-pill) \u003e div:nth-child(2) {\n  grid-column: 1;\n  grid-row: 1;\n  min-width: 0;\n}\n\n/* Method-Spalte: feste Breite → alle Titel beginnen auf einer Linie (PATCH) */\n#sidebar-group a[href].group:has(.method-nav-pill) .method-nav-pill {\n  display: flex !important;\n  flex: 0 0 2.625rem !important;\n  min-width: 2.625rem !important;\n  width: 2.625rem !important;\n  max-width: 2.625rem !important;\n  justify-content: flex-end !important;\n}\n\n/* ========== B: ohne Cloud ========== */\n#sidebar-group\n  a[href].group:has(.method-nav-pill):not(:has([data-nav-tag]))\n  \u003e div:nth-child(2) {\n  display: flex !important;\n  align-items: center !important;\n  flex-wrap: nowrap;\n  min-width: 0;\n  column-gap: 0.5rem;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):not(:has([data-nav-tag]))\n  \u003e div:nth-child(2)\n  \u003e * {\n  margin-inline-start: 0 !important;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):not(:has([data-nav-tag]))\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(1) {\n  min-width: 0 !important;\n  flex: 1 1 auto !important;\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: clip !important;\n  overflow-wrap: anywhere;\n  word-break: break-word;\n  line-height: 1.25;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):not(:has([data-nav-tag]))\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(2) {\n  flex-shrink: 0 !important;\n  height: auto !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: flex-end !important;\n}\n\n/* ========== A: mit [data-nav-tag] ========== */\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  \u003e div:nth-child(2) {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) auto;\n  grid-template-rows: auto auto;\n  column-gap: 0.2rem;\n  row-gap: 0;\n  align-content: start;\n  align-items: start;\n  overflow: hidden;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  \u003e div:nth-child(2)\n  \u003e * {\n  margin-inline-start: 0 !important;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(1) {\n  grid-column: 1;\n  grid-row: 1 / span 2;\n  align-self: center;\n  min-width: 0;\n  flex: unset !important;\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: clip !important;\n  overflow-wrap: anywhere;\n  word-break: break-word;\n  line-height: 1.25;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(2) {\n  grid-column: 2;\n  grid-row: 1;\n  height: auto !important;\n  width: max-content;\n  max-width: 100%;\n  justify-self: end;\n  align-self: start;\n  justify-content: flex-end !important;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(3) {\n  grid-column: 2;\n  grid-row: 2;\n  height: auto !important;\n  width: max-content;\n  max-width: 100%;\n  justify-self: end;\n  align-self: start;\n  justify-content: flex-end !important;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has(\n    [data-nav-tag]\n  )[data-badge-layout=\"cloud-only\"]\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(2) {\n  grid-row: 1 / span 2;\n  align-self: center;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has(\n    [data-nav-tag]\n  )[data-badge-layout=\"cloud-only\"]\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(3) {\n  display: none !important;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has(\n    [data-nav-tag]\n  )[data-badge-layout=\"depr-only\"]\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(2) {\n  display: none !important;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has(\n    [data-nav-tag]\n  )[data-badge-layout=\"depr-only\"]\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(3) {\n  grid-row: 1 / span 2;\n  align-self: center;\n}\n\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  .nav-tag-pill-text {\n  display: inline-flex !important;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  width: auto;\n  min-width: 0;\n  height: auto;\n  min-height: 14px;\n  padding: 0 4px !important;\n  font-size: 10px !important;\n  font-weight: 700;\n  line-height: 1.1;\n  letter-spacing: 0.01em;\n  white-space: nowrap;\n  border-radius: 9999px !important;\n}\n\n/* Deprecated-Micro-Pille */\n#sidebar-group\n  a[href].group:has(.method-nav-pill):has([data-nav-tag])\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(3)\n  \u003e div,\n#sidebar-group\n  a[href].group:has(.method-nav-pill):not(:has([data-nav-tag]))\n  \u003e div:nth-child(2)\n  \u003e div:nth-child(2)\n  \u003e div {\n  display: inline-flex !important;\n  align-items: center;\n  justify-content: center;\n  width: auto !important;\n  min-width: unset !important;\n  height: auto !important;\n  max-height: 14px;\n  padding: 0 4px !important;\n  font-size: 10px !important;\n  font-weight: 600;\n  line-height: 1.1;\n  letter-spacing: 0.02em;\n  text-transform: none;\n  border-radius: 9999px !important;\n}\n\n/* Force portal status badges (e.g. deprecated) to 10px even when text-xs is present */\n#sidebar-group a[href].group:has(.method-nav-pill) div.text-xs.rounded-md {\n  font-size: 10px !important;\n  line-height: 1.1 !important;\n  padding: 2px 4px !important;\n  width: auto !important;\n  height: auto !important;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  #sidebar-group a[href].group:has(.method-nav-pill) {\n    transition: none;\n  }\n}\n\n/* Sidebar submenu guide: show a left line when a section is expanded */\n#sidebar-group button.group[aria-expanded=\"true\"] + ul,\n#sidebar-group button.group[aria-expanded=\"true\"] + div,\n#sidebar-group [role=\"button\"][aria-expanded=\"true\"] + ul,\n#sidebar-group [role=\"button\"][aria-expanded=\"true\"] + div {\n  border-inline-start: 1px solid\n    light-dark(rgb(var(--gray-100) / 0.7), rgb(var(--gray-700) / 0.7));\n  margin-left: 1rem;\n  padding-left: 0.5rem;\n}\n\n/* Tighten right padding in the sidebar scroll container */\n.absolute.inset-0.z-10.stable-scrollbar-gutter.overflow-auto.pr-8.pb-10 {\n  padding-right: 0.5rem !important;\n}\n\n/* Section headers injected into the API Reference dropdown menu by nav-headers.js */\n.jtl-nav-section-header {\n  font-size: 0.7rem;\n  font-weight: 600;\n  text-transform: uppercase;\n  letter-spacing: 0.05em;\n  color: rgb(107 114 128);\n  padding: 12px 8px 4px;\n  margin-bottom: 4px;\n}\n\n.dark .jtl-nav-section-header {\n  color: rgb(156 163 175);\n}\n\n.nav-dropdown-content .jtl-nav-section-header + .nav-dropdown-item {\n  margin-top: 0;\n}\n\n/* The landing page (/) lives in the blank home tab, but Mintlify falls back to\n   marking the next tab (\"Get Started\") active on this route. Scope to the home\n   page only and neutralize the highlight so no tab looks selected: drop the\n   faux-bold text-shadow and hide the bottom underline bar (the child div). */\nhtml[data-current-path=\"/\"] .nav-tabs-item[data-active] {\n  text-shadow: none !important;\n  color: light-dark(rgb(var(--gray-600)), rgb(var(--gray-400))) !important;\n}\n\nhtml[data-current-path=\"/\"] .nav-tabs-item[data-active] \u003e div {\n  display: none !important;\n}\n\n/* On hover, bring the underline back but in grey, so the tab still has a\n   hover affordance without looking selected. */\nhtml[data-current-path=\"/\"] .nav-tabs-item[data-active]:hover \u003e div {\n  display: block !important;\n  background: light-dark(rgb(var(--gray-300)), rgb(var(--gray-500))) !important;\n}\n"])</script><script>self.__next_f.push([1,"4f:[[\"$\",\"style\",\"0\",{\"data-custom-css-index\":0,\"data-custom-css-path\":\"style.css\",\"dangerouslySetInnerHTML\":{\"__html\":\"$54\"}}],\"$L55\"]\n57:T624,"])</script><script>self.__next_f.push([1,"// Injects section headers into the API Reference dropdown menu.\n// Mintlify auto-loads any .js file at the content root on every page.\n(function () {\n  const SECTIONS = [\n    { before: \"ERP (JTL-Wawi)\", label: \"ERP\" },\n    { before: \"SCX Channel API\", label: \"SCX\" },\n  ];\n\n  function injectHeaders(menu) {\n    if (!menu || menu.dataset.jtlHeadersInjected === \"true\") return;\n    let injected = false;\n    for (const { before, label } of SECTIONS) {\n      const target = menu.querySelector(\n        `[data-dropdown-item=\"${CSS.escape(before)}\"]`\n      );\n      if (!target) continue;\n      const header = document.createElement(\"div\");\n      header.className = \"jtl-nav-section-header\";\n      header.textContent = label;\n      target.parentNode.insertBefore(header, target);\n      injected = true;\n    }\n    if (injected) menu.dataset.jtlHeadersInjected = \"true\";\n  }\n\n  function scan(root) {\n    if (!(root instanceof HTMLElement)) return;\n    if (root.matches?.(\".nav-dropdown-content\")) {\n      injectHeaders(root);\n      return;\n    }\n    root.querySelectorAll?.(\".nav-dropdown-content\").forEach(injectHeaders);\n  }\n\n  const observer = new MutationObserver((mutations) =\u003e {\n    for (const m of mutations) {\n      m.addedNodes.forEach(scan);\n    }\n  });\n\n  function start() {\n    observer.observe(document.body, { childList: true, subtree: true });\n    document.querySelectorAll(\".nav-dropdown-content\").forEach(injectHeaders);\n  }\n\n  if (document.readyState === \"loading\") {\n    document.addEventListener(\"DOMContentLoaded\", start);\n  } else {\n    start();\n  }\n})();\n"])</script><script>self.__next_f.push([1,"50:[\"$\",\"$L56\",null,{\"customJsDisabled\":false,\"jsFiles\":[{\"_id\":\"6a2aa44415aa7c011cbd7de0\",\"filePath\":\"nav-headers.js\",\"subdomain\":\"jtlsoftwaregmbh\",\"__v\":0,\"content\":\"$57\"}]}]\n5a:Tc44,"])</script><script>self.__next_f.push([1,"\"use strict\";const{Fragment:_Fragment,jsx:_jsx,jsxs:_jsxs}=arguments[0];const{useMDXComponents:_provideComponents}=arguments[0];const Playground=({token,tenantId})=\u003e{const _components={iframe:`iframe`,..._provideComponents()};const iframeRef=React.useRef(null);const tokenRef=React.useRef(token);const tenantIdRef=React.useRef(tenantId);React.useEffect(()=\u003e{function onMessage(event){if(event.data?.type!==`graphql-playground-ready`)return;const iframe=iframeRef.current;if(!iframe?.contentWindow)return;const config={type:`graphql-config`,url:`https://api.jtl-cloud.com/erp/v2/graphql`};const authHeader=tokenRef.current;if(authHeader){config.token=authHeader.replace(/^Bearer\\s+/i,``);if(tenantIdRef.current){config.headers={\"x-tenant-id\":tenantIdRef.current}}}iframe.contentWindow.postMessage(config,`https://jtl-software.github.io`)}window.addEventListener(`message`,onMessage);return()=\u003ewindow.removeEventListener(`message`,onMessage)},[]);return _jsx(_components.iframe,{ref:iframeRef,src:`https://jtl-software.github.io/devdocs-graphql-playground/?url=https://api.jtl-cloud.com/erp/v2/graphql`,title:`GraphQL playground`,className:`mint-block mint-border-0`,style:{width:`100%`,height:`calc(100dvh - 160px)`,display:`block`}})};function _createMdxContent(props){const _components={p:`p`,..._provideComponents(),...props.components},{_MdxComponentBoundary}=_components;if(!_MdxComponentBoundary)_missingMdxReference(`_MdxComponentBoundary`,true);return _jsxs(_Fragment,{children:[_jsx(`p`,{className:`graphql-desktop-only`,children:_jsx(_components.p,{children:`Explore the JTL ERP API using GraphQL. Use the schema explorer on the left to\nbrowse available queries and mutations, or type directly in the editor. Log in\nto run queries against your own ERP instance.`})}),`\n`,_jsxs(`div`,{className:`graphql-sandbox-layout mint-w-full mint-mt-8`,style:{maxWidth:`100%`,overflow:`hidden`,position:`relative`},children:[_jsx(_MdxComponentBoundary,{name:`Playground`,children:_jsx(Playground,{token:user?.token,tenantId:user?.tenantId})}),_jsx(`div`,{className:`graphql-mobile-overlay`,children:_jsxs(`div`,{className:`graphql-mobile-overlay__card`,children:[_jsx(`div`,{className:`graphql-mobile-overlay__icon`,children:_jsx(`svg`,{width:`24`,height:`24`,viewBox:`0 0 24 24`,fill:`none`,stroke:`currentColor`,strokeWidth:`2`,strokeLinecap:`round`,strokeLinejoin:`round`,children:_jsx(`rect`,{x:`2`,y:`3`,width:`20`,height:`14`,rx:`2`})})}),_jsx(`h2`,{children:`Best Viewed on Desktop`}),_jsx(`p`,{children:_jsx(_components.p,{children:`The GraphQL playground is a full interactive IDE built for larger screens.\nOpen this page on a desktop or tablet to browse the schema and run queries.`})})]})})]})]})}function MDXContent(props={}){const{wrapper:MDXLayout}={..._provideComponents(),...props.components};return MDXLayout?_jsx(MDXLayout,{...props,children:_jsx(_createMdxContent,{...props})}):_createMdxContent(props)}return{Playground,default:MDXContent};function _missingMdxReference(id,component){throw new Error(`Expected `+(component?`component`:`object`)+\" `\"+id+\"` to be defined: you likely forgot to import, pass, or provide it.\")}"])</script><script>self.__next_f.push([1,"5b:T7e2,"])</script><script>self.__next_f.push([1,"\"use strict\";const{Fragment:_Fragment,jsx:_jsx,jsxs:_jsxs}=arguments[0];const{useMDXComponents:_provideComponents}=arguments[0];const Playground=()=\u003enull;function _createMdxContent(props){const _components={p:`p`,..._provideComponents(),...props.components},{_MdxComponentBoundary}=_components;if(!_MdxComponentBoundary)_missingMdxReference(`_MdxComponentBoundary`,true);return _jsxs(_Fragment,{children:[_jsx(`p`,{className:`graphql-desktop-only`,children:_jsx(_components.p,{children:`Explore the JTL ERP API using GraphQL. Use the schema explorer on the left to\nbrowse available queries and mutations, or type directly in the editor. Log in\nto run queries against your own ERP instance.`})}),`\n`,_jsxs(`div`,{className:`graphql-sandbox-layout mint-w-full mint-mt-8`,style:{maxWidth:`100%`,overflow:`hidden`,position:`relative`},children:[_jsx(_MdxComponentBoundary,{name:`Playground`,children:_jsx(Playground,{})}),_jsx(`div`,{className:`graphql-mobile-overlay`,children:_jsxs(`div`,{className:`graphql-mobile-overlay__card`,children:[_jsx(`div`,{className:`graphql-mobile-overlay__icon`,children:_jsx(`svg`,{width:`24`,height:`24`,viewBox:`0 0 24 24`,fill:`none`,stroke:`currentColor`,strokeWidth:`2`,strokeLinecap:`round`,strokeLinejoin:`round`,children:_jsx(`rect`,{x:`2`,y:`3`,width:`20`,height:`14`,rx:`2`})})}),_jsx(`h2`,{children:`Best Viewed on Desktop`}),_jsx(`p`,{children:_jsx(_components.p,{children:`The GraphQL playground is a full interactive IDE built for larger screens.\nOpen this page on a desktop or tablet to browse the schema and run queries.`})})]})})]})]})}function MDXContent(props={}){const{wrapper:MDXLayout}={..._provideComponents(),...props.components};return MDXLayout?_jsx(MDXLayout,{...props,children:_jsx(_createMdxContent,{...props})}):_createMdxContent(props)}return{Playground,default:MDXContent};function _missingMdxReference(id,component){throw new Error(`Expected `+(component?`component`:`object`)+\" `\"+id+\"` to be defined: you likely forgot to import, pass, or provide it.\")}"])</script><script>self.__next_f.push([1,"51:[\"$\",\"$L58\",null,{\"slug\":\"cloud/api-reference/graphql-playground\",\"pageMetadata\":\"$46:props:pageMetadata\",\"theme\":\"mint\",\"children\":[\"$\",\"$L59\",null,{\"mdxSource\":{\"compiledSource\":\"$5a\",\"frontmatter\":{},\"scope\":{\"config\":{},\"pageMetadata\":{\"title\":\"GraphQL playground\",\"description\":\"Interactive GraphQL IDE to explore and test the JTL Platform API\",\"icon\":\"share-2\",\"mode\":\"custom\",\"href\":\"/cloud/api-reference/graphql-playground\"}}},\"mdxSourceWithNoJs\":{\"compiledSource\":\"$5b\",\"frontmatter\":{},\"scope\":{\"config\":{},\"pageMetadata\":{\"title\":\"GraphQL playground\",\"description\":\"Interactive GraphQL IDE to explore and test the JTL Platform API\",\"icon\":\"share-2\",\"mode\":\"custom\",\"href\":\"/cloud/api-reference/graphql-playground\"}}},\"displayDomain\":\"developer.jtl-software.com\"}]}]\n"])</script><script>self.__next_f.push([1,"55:[\"$\",\"style\",\"1\",{\"data-custom-css-index\":1,\"data-custom-css-path\":\"dynamic-tailwind.css\",\"dangerouslySetInnerHTML\":{\"__html\":\".mint-mt-8 {\\n    margin-top: 2rem\\n}\\n.mint-block {\\n    display: block\\n}\\n.mint-w-full {\\n    width: 100%\\n}\\n.mint-border-0 {\\n    border-width: 0px\\n}\"}}]\n"])</script></body></html>
+[0m
+[0m$ [0mcurl -s https://api.jtl-cloud.com/ --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/ --max-time 10 -o /dev/null -w "%{http_code}"
+200
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/api/v2/ --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/ --max-time 10 | head -300
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JTL GraphQL Playground</title>
+    <script type="module" crossorigin src="./assets/index-Bb8fKDp_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/chunk-BEqpzyXh.js">
+    <link rel="modulepreload" crossorigin href="./assets/types-B5CZrGHj.js">
+    <link rel="modulepreload" crossorigin href="./assets/preload-helper-CSAG75Zj.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-Cs_y8A6M.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/admin/login.php --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/includes/libs/ --max-time 10 -o /dev/null -w "%{http_code}"
+403
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/api/v1/_info --max-time 10 -o /dev/null -w "%{http_code}"
+404
+[0m
+Now I have a clear picture of the live attack surface. Let me execute the 8-step analysis.
+
+---
+
+### STEP 1 — DELTA
+[NEW] bountyshop.jtl-software.com confirmed live (HTTP 200) — official bug bounty test shop running JTL-Shop v5.x (NOVA template), admin panel at /admin/ accessible
+[NEW] api.jtl-cloud.com/erp/v2/graphql confirmed live (HTTP 401) — production GraphQL ERP API requires JWT, returns "JWT not present" for introspection
+[NEW] jtl-software.github.io/devdocs-graphql-playground/ confirmed live (HTTP 200) — GraphiQL playground embedded in developer portal, targets production API
+[NEW] developer.jtl-software.com/cloud/api-reference/graphql-playground embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
+[CHANGED] docker.jtl-software.de 300 containers unreachable from internet (TCP 80/443 timeout on 31.172.91.250) — all prior hypotheses on test containers untestable passively
+[CHANGED] Phase shifted from docker test envs to live production/bug-bounty assets (bountyshop, api.jtl-cloud.com, developer portal)
+
+---
+
+### STEP 2 — PRIORITIZE
+[PRIO] bountyshop.jtl-software.com,8.55,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=6,freshness=9
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,8.25,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+[PRIO] jtl-software.github.io/devdocs-graphql-playground/,7.35,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+[PRIO] developer.jtl-software.com,5.95,attack_surface=5,business_value=6,tech_exposure=4,gate_ease=10,cloud_surface=4,freshness=7
+
+---
+
+### STEP 3 — HYPOTHESES
+
+[HYP] JTL-Shop v5.x unauthenticated SSTI/RCE via email template (CVE-2026-54390) on bountyshop
+class: OTHER
+asset: bountyshop.jtl-software.com
+confidence: 60
+reasoning: bountyshop runs JTL-Shop v5.x (NOVA template v=5.0.0). CVE-2026-54390 affects 5.2.0–5.7.1 via unsanitized input to Smarty renderer in email subject. Sansec research shows unauthenticated RCE via Smarty modifiers (unserialize, file_get_contents) on 5.4.0+. Test shop version unconfirmed; bug bounty programs often run vulnerable versions for testing.
+evidence_needed: POST to contact/email endpoint with Smarty payload {${system('id')}} returns code execution indicators (Blowfish key, DB creds, webshell); or version fingerprint confirms 5.2.0–5.7.1
+verify_steps: GET https://bountyshop.jtl-software.com/robots.txt; GET /contact; POST /contact with Smarty payload in subject/body — read-only probe first to fingerprint version via headers/meta; then minimal SSTI test {7*7} in contact form subject
+impact: Unauthenticated RCE on official bug bounty test shop → full server compromise, DB creds, Blowfish key, lateral movement to internal network — CRITICAL
+testability: PASSIVE (version fingerprint), AUTH_HELPED (SSTI test requires form submit)
+
+[HYP] JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header
+class: IDOR
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Developer docs show GraphQL requires Authorization Bearer + x-tenant-id header. Multi-tenant ERP API; if x-tenant-id not validated against token's tenant, attacker can query/mutate other tenants' data (orders, customers, items, stock). Knowledge base prior lead: "Cross-tenant BOLA via client-supplied x-tenant-id on ERP GraphQL" (confidence 60).
+evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B data (items, customers, orders) in GraphQL response; or introspection reveals tenant-scoped types with no ownership checks
+verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
+impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL (multi-tenant SaaS)
+testability: AUTH_HELPED
+
+[HYP] JTL Cloud OAuth/OIDC device flow client-secret bypass & permissive response_types
+class: AUTH
+asset: api.jtl-cloud.com (OAuth endpoints)
+confidence: 65
+reasoning: Knowledge base prior lead: "Ory OAuth client-secret/auth bypass via device flow and permissive response_types". JTL Cloud uses Ory (OAuth2/OIDC provider). Device flow may allow token acquisition without client_secret; response_type=id_token token may expose access tokens in fragment to redirect_uri. Test/staging configs historically loose.
+evidence_needed: POST /oauth/token with device_code grant without client_secret returns access_token; GET /oauth/authorize?response_type=id_token+token&client_id=...&redirect_uri=https://evil.com returns token in fragment; redirect_uri validation allows arbitrary domains/subdomains
+verify_steps: GET https://api.jtl-cloud.com/.well-known/openid-configuration; POST /oauth/token device_code grant w/o client_secret; GET /oauth/authorize with response_type=id_token token & redirect_uri=https://attacker.com — read-only discovery first
+impact: OAuth token theft → ERP API access as arbitrary client → cross-tenant data via GraphQL — CRITICAL
+testability: PASSIVE (discovery), AUTH_HELPED (token acquisition)
+
+---
+
+### STEP 4 — SELF-CRITIQUE
+[PARKED] JTL-Shop v5.x unauthenticated SSTI/RCE via email template (CVE-2026-54390) on bountyshop: version unconfirmed (NOVA v=5.0.0 may be template version not shop version); CVE is known/public — program may have patched test shop; requires mutating form submit for confirmation (not purely passive)
+[FINAL] 1. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 70)
+[FINAL] 2. JTL Cloud OAuth/OIDC device flow client-secret bypass & permissive response_types (confidence 65)
+[FINAL] 3. JTL-Shop v5.x unauthenticated SSTI/RCE via email template on bountyshop (confidence 60) — kept due to HIGH impact + official test target
+
+---
+
+### STEP 5 — NEXT ACTION
+[NEXT] PROBE: GET https://api.jtl-cloud.com/.well-known/openid-configuration — read-only OAuth/OIDC discovery to enumerate endpoints, grants, device_flow support, and redirect_uri policy
+
+---
+
+### STEP 6 — LEARNING
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+[LEARN] ACCEPTED TARGET @ bountyshop.jtl-software.com: Official bug bounty test shop confirmed live (HTTP 200), JTL-Shop v5.x NOVA template, admin panel at /admin/
+[LEARN] ACCEPTED TARGET @ api.jtl-cloud.com/erp/v2/graphql: Production GraphQL ERP API live, requires JWT, x-tenant-id header for multi-tenancy
+[LEARN] ACCEPTED TARGET @ jtl-software.github.io/devdocs-graphql-playground/: GraphiQL playground live, embedded in developer portal, targets production API
+
+---
+
+### STEP 7 — RISK
+[RISK] jtl: 82 — High-value core products (JTL-Shop, JTL-Wawi ERP, JTL-Cloud) with live internet-accessible attack surface: official bug bounty test shop (bountyshop.jtl-software.com) running JTL-Shop v5.x with admin panel exposed; production GraphQL ERP API (api.jtl-cloud.com) with multi-tenant architecture and OAuth/OIDC via Ory; GraphQL playground on GitHub Pages. Critical classes in play: cross-tenant BOLA (x-tenant-id), OAuth device flow bypass, potential SSTI/RCE on test shop (CVE-2026-54390). Risk elevated by confirmed live endpoints and prior knowledge of OAuth/GraphQL misconfig patterns in test profiles.

@@ -1288,3 +1288,1006 @@ testability: HUMAN_ONLY
 
 **STEP 7 — RISK**
 - [RISK] JTL-Software AG: 25/100 — Live probes now confirm reachable cloud surface (erp/api/auth/account/hub) and a real env-config exposure. Risk from active testing is contained (read-only, 401/404 responses only), but top-value findings (BOLA, scope over-grant) remain gated behind valid scoped tokens → AUTH_HELPED / HUMAN.
+===== ANALYST bigpickle 2026-09-03 23:53:50 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/ 2>/dev/null && echo "---" && ls -la /home/runner/work/jtl-hunt/jtl-hunt/art/ 2>/dev/null
+total 148
+drwxr-xr-x 12 runner runner  4096 Sep  3 23:47 .
+drwxr-xr-x  3 runner runner  4096 Sep  3 23:47 ..
+drwxr-xr-x  7 runner runner  4096 Sep  3 23:47 .git
+drwxr-xr-x  3 runner runner  4096 Sep  3 23:47 .github
+-rw-r--r--  1 runner runner  1787 Sep  3 23:47 README.md
+-rw-r--r--  1 runner runner    32 Sep  3 23:47 analyst-out.txt
+-rw-r--r--  1 runner runner 32229 Sep  3 23:47 analyst-prompt.txt
+-rw-r--r--  1 runner runner 28380 Sep  3 23:47 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 leads
+-rw-r--r--  1 runner runner  1013 Sep  3 23:47 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 reports
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 reposcan-raw
+-rw-r--r--  1 runner runner  3262 Sep  3 23:47 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 scripts
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 triage
+---
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/leads/ /home/runner/work/jtl-hunt/jtl-hunt/knowledge/ /home/runner/work/jtl-hunt/jtl-hunt/inventory/ /home/runner/work/jtl-hunt/jtl-hunt/recon-notes/ 2>/dev/null
+/home/runner/work/jtl-hunt/jtl-hunt/inventory/:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner  4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner 16938 Sep  3 23:47 jtl.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/knowledge/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner 4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner  947 Sep  3 23:47 index.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/leads/:
+total 56
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner  4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner  6924 Sep  3 23:47 lead-bigpickle.md
+-rw-r--r--  1 runner runner   153 Sep  3 23:47 lead-laguna.md
+-rw-r--r--  1 runner runner   150 Sep  3 23:47 lead-ling3.md
+-rw-r--r--  1 runner runner   156 Sep  3 23:47 lead-longcat.md
+-rw-r--r--  1 runner runner    18 Sep  3 23:47 lead-mimo.md
+-rw-r--r--  1 runner runner 19064 Sep  3 23:47 lead-nemotron3.md
+-rw-r--r--  1 runner runner   408 Sep  3 23:47 reposcan-jtl.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/recon-notes/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner 4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner  819 Sep  3 23:47 DEDICATED-DEEP.md
+[0m
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-bigpickle.md
+## 2026-09-03 15:49:40 UTC [target] (model bigpickle)
+[NEXT] RAG: Search for JTL-Software AG's main website, API endpoints, and documentation to identify live targets with HTTP responses.  
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.  
+[RISK] JTL-Software AG: 5/10 — No active testing performed. Limited reconnaissance depth.
+## 2026-09-03 19:09:46 UTC [target] (model bigpickle)
+[PRIO] api.jtl-cloud.com,7.7,data_exposure(bank-accounts/customers/orders via client_credentials)
+[PRIO] auth.jtl-cloud.com,7.4,oauth(public Ory,OAuth code/device/token endpoints)
+[PRIO] erp.jtl-cloud.com,6.9,config_leak(Sentry/PostHog/hidden auth URLs in public HTML)
+[HYP] Ory OAuth client-secret/auth bypass via device flow and permissive response_types
+[HYP] ERP REST `application.runas` / `all.read` scope over-grant in client_credentials tenant context
+[HYP] ERP Cloud env-config leak enables Sentry/PostHog data exfil or internal service discovery
+[HYP] Cross-tenant BOLA via x-tenant-id header on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: GraphQL SDL mandates `x-tenant-id` header for target ERP instance; multi-tenant cloud; REST authentication model separates token (OAuth2) from tenant scope. If tenant isolation relies solely on the client-supplied `x-tenant-id` header rather than validating it against the JWT's granted tenant, a token from tenant A with `x-tenant-id: <victim>` may return victim tenant data.
+evidence_needed: 401 vs 200/403 difference when sending a token with a mismatched/unknown x-tenant-id; a probing account/registration on one tenant then querying another.
+verify_steps: passive-first — GET https://api.jtl-cloud.com/erp/v2/graphql without token → expect 401 "JWT not present" (confirm). Requires valid token for full test (AUTH_HELPED). Fetch GraphQL playground to see if it offers unauth schema/introspection.
+impact: cross-tenant PII/ERP data dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Power scope over-grant in client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: GraphQL authorizes every mutation/query with `system.all` as OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute requests on behalf of another user") as grantable scopes to third-party apps. If a client_credentials/waviapp-registration flow permits a caller to assert these scopes (or `application.runas` impersonates another app), full ERP read/write results.
+evidence_needed: obtaining a client grant that includes system.all/all.read/application.runas; then reaching a data endpoint.
+verify_steps: passive — try GET on GraphQL playground / appregistration docs; cannot obtain scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+impact: full ERP compromise, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP Cloud env-config leak → Sentry/PostHog data exposure / internal service discovery
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Public prod HTML ships full `jtl-cloud-env-variables` JSON incl. active Sentry DSN (`82a877a92404e1ad4ca46e308d4ddf27@o4508919293149184.ingest.de.sentry.io/4509087222595664`), PostHog token `phc_SkFAxTIa4RUQxotci1Ftdw7xefZK2Ax0LEIGcl8zuD2`, Zitadel client ID, ORY URL. Public client IDs are normal; but if Sentry is misconfigured (open API/replays, SDK+DSN same in `-qa` block), stack traces/PII may be queryable.
+evidence_needed: whether Sentry project/DSN allows unauthenticated event queries or exposes recent error events with PII.
+verify_steps: passive — check if Sentry DSN projects are publicly queryable (usually require auth); not directly curlable. Route to HUMAN review of Sentry config.
+impact: PII/stack-trace exposure from client-side error telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+## 2026-09-03 21:46:16 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via client-supplied `x-tenant-id` on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: Live probe confirms POST /erp/v2/graphql returns 401 without token ("JWT not present" gate). Multi-tenant cloud separates OAuth2 token from tenant via client-supplied x-tenant-id header (per prior SDL). If tenant isolation relies on that header rather than JWT tenant claims, a token from tenant A with x-tenant-id of victim returns victim data.
+evidence_needed: 401 vs 200/403 with a mismatched/unknown x-tenant-id using a valid scoped token; a test account on one tenant queried from another.
+verify_steps: requires valid scoped token (AUTH_HELPED). Passive next: GET graphql playground/index to check for unauth introspection. Route to HUMAN for sanctioned trial on test tenant.
+impact: cross-tenant PII dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Power scope over-grant via client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: Live OIDC advertises client_credentials + jwt-bearer grants. GraphQL authorizes mutations with `system.all` OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute on behalf of another user") as third-party scopes. If a registered app's client_credentials can assert these, full ERP read/write or runas impersonation.
+evidence_needed: obtaining a client grant asserting these scopes; reaching a data endpoint.
+verify_steps: passive — inspect appregistration docs/GraphQL SDL for scope description; cannot mint scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+impact: full ERP read/write, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP env-config secrets abuse → Sentry/PII exposure
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Live probe CONFIRMED erp.jtl-cloud.com serves jtl-cloud-env-variables JSON with active Sentry DSN, PostHog token, Zitadel client ID, ORY URL, and internal service URLs (account/hub). Public client IDs normal, but the same DSN/config block in `-qa` variant and a public Sentry project may expose client-side stack traces/PII or allow event query if misconfigured.
+evidence_needed: whether Sentry project/DSN is publicly queryable or exposes PII-laden error events.
+verify_steps: Sentry DSN projects normally require auth; not directly curlable. Route to HUMAN review of Sentry/PostHog config.
+impact: PII/stack-trace exposure from client telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+[0m
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-nemotron3.md | head -150; echo "=====REPOSCAN====="; cat /home/runner/work/jtl-hunt/jtl-hunt/leads/reposcan-jtl.md; echo "=====OTHER LEADS====="; cat /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-laguna.md /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-ling3.md /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-longcat.md /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-mimo.md
+## 2026-09-03 16:04:49 UTC [target] (model nemotron3)
+[NEW] 300 containerized test hosts under `docker.jtl-software.de` discovered via passive DNS/CT (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified)
+[NEW] 23 shared test configuration profiles (suffixes like `a-b-4db87dad`, `p-g-443d1d50`, `f-b-e5fa382e`, `l-w-ab0f5ac0`, `t-p-817daf04`) deployed across multiple platforms and environment instances (prefixes 1-, 10-, 11-, 12-, 13-, 14-, 100-, etc.)
+[NEW] 0 live HTTP probes performed — all hosts unvalidated for reachability, tech stack, or attack surface
+[CHANGED] Dedicated deep recon confirms wildcard-dominated DNS (159 resolving, 0 genuinely dedicated after shared-IP filtering)
+[PRIO] jtl-shop:a-b-4db87dad,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] jtl-shop:p-g-443d1d50,8.5,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] jtl-shop:f-b-e5fa382e,8.2,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] jtl-shop:l-w-ab0f5ac0,8.0,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] jtl-shop:t-p-817daf04,7.8,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=6,freshness=8
+[PRIO] shopware6:a-b-4db87dad,7.5,attack_surface=9,business_value=7,tech_exposure=8,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] woocommerce:p-g-443d1d50,7.0,attack_surface=8,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de (representative of 3 JTL-Shop + 29 Shopware6 + 5 WooCommerce instances)
+confidence: 65
+reasoning: Profile a-b-4db87dad is the most widely deployed cross-platform config (37 instances). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms — if one leaks API, all do.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de (representative of 8 JTL-Shop + 12 Shopware6 + 9 WooCommerce = 29 instances)
+confidence: 55
+reasoning: Profile p-g-443d1d50 is second most deployed (29 instances). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs often use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+[HYP] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e
+class: OTHER
+asset: 1-jtl-shop-f-b-e5fa382e.docker.jtl-software.de (representative of 3 JTL-Shop + 7 Shopware6 + 5 WooCommerce = 15 instances)
+confidence: 45
+reasoning: Profile f-b-e5fa382e deployed across 15 containers. JTL-Shop media manager allows file uploads (product images, exports). Test profiles may disable MIME validation, allow .php/.phtml upload, or lack extension filtering. Shared profile = shared vulnerability.
+evidence_needed: POST /admin/media/upload accepts .php/.phtml with Content-Type image/png; uploaded file executable at /media/uploads/shell.php; MIME bypass via polyglot or magic bytes
+verify_steps: GET /admin/media (check for upload UI); OPTIONS /admin/media/upload (check allowed methods); passive fingerprint of upload endpoint via robots.txt/sitemap — no actual upload (mutating)
+impact: RCE on test containers → lateral movement to internal network, source code access, CI/CD credential theft — HIGH
+testability: PASSIVE (fingerprint only; upload test requires AUTH_HELPED)
+[PARKED] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e: confidence 45 < 50 threshold; verify_steps require mutating upload test (not PASSIVE-only); class OTHER borderline for REJECTED-class "known-vulnerable library without program-specific exploit"
+[FINAL] 1. JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad (confidence 65)
+[FINAL] 2. JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50 (confidence 55)
+[NEXT] PROBE: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ HTTP/1.1 — read-only, no auth, single request to confirm API exposure and response structure
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[RISK] jtl: 75 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth exposure in test envs could leak production keys or enable supply-chain attacks; no live validation yet — risk increases with each confirmed finding
+## 2026-09-03 19:09:07 UTC [target] (model nemotron3)
+[NEW] Knowledge base adds 3 LEARN entries (ACCEPTED MISCONFIG a-b-4db87dad, ACCEPTED AUTH p-g-443d1d50, REJECTED OTHER f-b-e5fa382e) not in prior leads
+[NEW] Inventory provides full 300-host enumeration (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified) for targeting
+[CHANGED] Phase advanced to SURFACE with target=api — requires live HTTP validation of top hypotheses
+[PRIO] 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de,8.9,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de,8.4,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de
+confidence: 65
+reasoning: Profile a-b-4db87dad deployed across 37 containers (3 JTL-Shop, 29 Shopware6, 5 WooCommerce). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de
+confidence: 55
+reasoning: Profile p-g-443d1d50 deployed across 29 containers (8 JTL-Shop, 12 Shopware6, 9 WooCommerce). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs historically use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+[HYP] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0
+class: MISCONFIG
+asset: 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de
+confidence: 50
+reasoning: Profile l-w-ab0f5ac0 deployed on 2 JTL-Shop containers (116, 118) plus Shopware6/WooCommerce. JTL-Shop v5+ may expose GraphQL at `/graphql` or `/api/graphql`. Test profiles often enable introspection (`__schema`, `__type`) for development. Shared config = shared exposure.
+evidence_needed: POST /graphql with `{"query":"{__schema{types{name}}}"}` returns 200 with full type schema; GET /graphql?query=... also works; no auth required
+verify_steps: POST https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql Content-Type: application/json body: {"query":"{__schema{types{name}}}"}; GET /graphql?query={__schema{types{name}}}; GET /api/graphql — read-only
+impact: Full API schema enumeration → field-level auth bypass discovery, hidden mutations, PII field mapping — HIGH (enables targeted IDOR/BOLA/mass assignment)
+testability: PASSIVE
+[PARKED] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e: confidence 45 < 50 threshold; verify_steps require mutating upload test (not PASSIVE-only); class OTHER borderline for REJECTED-class "known-vulnerable library without program-specific exploit"
+[FINAL] 1. JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad (confidence 65)
+[FINAL] 2. JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50 (confidence 55)
+[FINAL] 3. JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0 (confidence 50)
+[NEXT] PROBE: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ HTTP/1.1 — read-only, no auth, single request to confirm API exposure and response structure
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+[RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation yet — risk increases with each confirmed finding
+## 2026-09-03 21:52:41 UTC [target] (model nemotron3)
+[NEW] All 300 hosts resolve to single IP 31.172.91.250 (wildcard DNS) but TCP 80/443 connection timeout — no live HTTP reachability from internet
+[CHANGED] Phase SURFACE target=api blocked: top-priority assets (1-jtl-shop-a-b-4db87dad, 1-jtl-shop-p-g-443d1d50, 116-jtl-shop-l-w-ab0f5ac0) unreachable; cannot validate API/OAuth/GraphQL hypotheses passively
+[PRIO] 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de,8.9,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de,8.4,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de
+confidence: 65
+reasoning: Profile a-b-4db87dad deployed across 37 containers (3 JTL-Shop, 29 Shopware6, 5 WooCommerce). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de
+confidence: 55
+reasoning: Profile p-g-443d1d50 deployed across 29 containers (8 JTL-Shop, 12 Shopware6, 9 WooCommerce). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs historically use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+[HYP] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0
+class: MISCONFIG
+asset: 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de
+confidence: 50
+reasoning: Profile l-w-ab0f5ac0 deployed on 2 JTL-Shop containers (116, 118) plus Shopware6/WooCommerce. JTL-Shop v5+ may expose GraphQL at `/graphql` or `/api/graphql`. Test profiles often enable introspection (`__schema`, `__type`) for development. Shared config = shared exposure.
+evidence_needed: POST /graphql with `{"query":"{__schema{types{name}}}"}` returns 200 with full type schema; GET /graphql?query=... also works; no auth required
+verify_steps: POST https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql Content-Type: application/json body: {"query":"{__schema{types{name}}}"}; GET /graphql?query={__schema{types{name}}}; GET /api/graphql — read-only
+impact: Full API schema enumeration → field-level auth bypass discovery, hidden mutations, PII field mapping — HIGH (enables targeted IDOR/BOLA/mass assignment)
+testability: PASSIVE
+[PARKED] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad: cannot verify — host unreachable (TCP timeout on 31.172.91.250:443/80); all 300 hosts share same IP, containers not internet-accessible
+[PARKED] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50: cannot verify — same network unreachability
+[PARKED] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0: cannot verify — same network unreachability
+[FINAL] No hypotheses survive live validation — all require network access to docker.jtl-software.de containers
+[NEXT] RAG: Determine if docker.jtl-software.de test environment requires VPN/SSH tunnel or internal network access; check JTL-Software AG bug bounty program docs for test environment access instructions
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+[RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation possible — containers not internet-accessible; risk confirmation requires internal network access
+=====REPOSCAN=====
+## REPOSCAN 2026-09-03 15:40:39 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 19:03:06 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 21:44:42 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 23:45:27 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+=====OTHER LEADS=====
+## 2026-09-03 15:49:35 UTC [target] (model laguna)
+## 2026-09-03 19:06:35 UTC [target] (model laguna)
+## 2026-09-03 21:45:04 UTC [target] (model laguna)
+## 2026-09-03 15:49:33 UTC [target] (model ling3)
+## 2026-09-03 19:06:31 UTC [target] (model ling3)
+## 2026-09-03 21:45:06 UTC [target] (model ling3)
+## 2026-09-03 15:49:29 UTC [target] (model longcat)
+## 2026-09-03 19:06:25 UTC [target] (model longcat)
+## 2026-09-03 21:45:13 UTC [target] (model longcat)
+# Lead log (seed)
+[0m
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/scope.yml; echo "=====STATE====="; cat /home/runner/work/jtl-hunt/jtl-hunt/state_bigpickle.json; echo; echo "=====KNOWLEDGE====="; cat /home/runner/work/jtl-hunt/jtl-hunt/knowledge/index.md; echo "=====PROBE-RESULTS====="; cat /home/runner/work/jtl-hunt/jtl-hunt/probe-results.md; echo "=====RECON====="; cat /home/runner/work/jtl-hunt/jtl-hunt/recon-notes/DEDICATED-DEEP.md
+programs:
+  jtl:
+    name: JTL-Software AG Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All company-owned infrastructure, ERP systems (JTL-Wawi), shop platforms (JTL-Shop), POS systems (JTL-POS), APIs, cloud services, customer portals, websites, and domains operated by JTL-Software AG"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+  - { id: opencode/big-pickle, name: bigpickle }
+  - { id: opencode/nemotron-3-ultra-free, name: nemotron3 }
+  - { id: opencode/longcat-2.0-free, name: longcat }
+  - { id: opencode/ling-3.0-flash-free, name: ling3 }
+  - { id: opencode/laguna-s-2.1-free, name: laguna }
+=====STATE=====
+{"phase": "POC", "target": "api"}
+=====KNOWLEDGE=====
+# Knowledge Base (seed)
+- 2026-09-03 ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+- 2026-09-03 ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+- 2026-09-03 REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+- 2026-09-03 ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+- 2026-09-03 REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+=====PROBE-RESULTS=====
+
+## 2026-09-02 21:38:57 UTC
+
+
+## 2026-09-02 23:34:39 UTC
+
+
+## 2026-09-03 01:28:22 UTC
+
+
+## 2026-09-03 06:30:41 UTC
+
+
+## 2026-09-03 11:43:15 UTC
+
+
+## 2026-09-03 16:05:29 UTC
+https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ -> ERR <urlopen error timed out>
+https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com -> ERR <urlopen error timed out>
+
+## 2026-09-03 19:10:34 UTC
+https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ -> ERR <urlopen error timed out>
+https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com -> ERR <urlopen error timed out>
+https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql -> ERR <urlopen error timed out>
+
+## 2026-09-03 21:53:35 UTC
+https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ -> ERR <urlopen error timed out>
+https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com -> ERR <urlopen error timed out>
+https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql -> ERR <urlopen error timed out>
+=====RECON=====
+# Dedicated deep surface (wildcard-filtered) 2026-09-03
+
+**Target:** `jtl`
+**Root zones:** `jtl-software.de`
+
+## Wildcard analysis
+
+- Total resolving hostnames in zone: 159
+- After shared/wildcard IP filtering: **0 genuinely dedicated hosts**
+- Reason: all resolving hostnames use shared/CDN/wildcard IP signatures
+
+## Honest conclusion
+
+This target's subdomain space is wildcard-dominated. No genuinely dedicated
+subdomain surface was recovered from passive brute + subfinder enumeration.
+The surface either (a) uses wildcard DNS records, (b) all CNAME records
+point to shared CDN/Cloudflare/CloudFront/AWS IPs, or (c) has no
+subdomain program at all. This is the honest exhaustive result.
+
+---
+_Honest framing: passive DNS enumeration + shared-IP wildcard filtering. No finding claimed. No active testing performed._
+[0m
+Let me look at the scope, state, and other context files to understand my current phase (POC, target=api).
+I have enough context. My phase is POC with target=api. The docker.jtl-software.de containers are unreachable (timeout). The live confirmed reachable assets are the primary jtl-cloud.com services. Let me verify current reachability and check what's known to confirm my delta.
+
+Let me check the analyst-out and probe what I can passively to confirm current state.
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/analyst-out.txt; echo "==="; cat /home/runner/work/jtl-hunt/jtl-hunt/analyst-prompt.txt | head -30
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/ 2>/dev/null && echo "---" && ls -la /home/runner/work/jtl-hunt/jtl-hunt/art/ 2>/dev/null
+total 148
+drwxr-xr-x 12 runner runner  4096 Sep  3 23:47 .
+drwxr-xr-x  3 runner runner  4096 Sep  3 23:47 ..
+drwxr-xr-x  7 runner runner  4096 Sep  3 23:47 .git
+drwxr-xr-x  3 runner runner  4096 Sep  3 23:47 .github
+-rw-r--r--  1 runner runner  1787 Sep  3 23:47 README.md
+-rw-r--r--  1 runner runner    32 Sep  3 23:47 analyst-out.txt
+-rw-r--r--  1 runner runner 32229 Sep  3 23:47 analyst-prompt.txt
+-rw-r--r--  1 runner runner 28380 Sep  3 23:47 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 leads
+-rw-r--r--  1 runner runner  1013 Sep  3 23:47 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 reports
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 reposcan-raw
+-rw-r--r--  1 runner runner  3262 Sep  3 23:47 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 scripts
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  3 23:47 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 triage
+---
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/leads/ /home/runner/work/jtl-hunt/jtl-hunt/knowledge/ /home/runner/work/jtl-hunt/jtl-hunt/inventory/ /home/runner/work/jtl-hunt/jtl-hunt/recon-notes/ 2>/dev/null
+/home/runner/work/jtl-hunt/jtl-hunt/inventory/:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner  4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner 16938 Sep  3 23:47 jtl.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/knowledge/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner 4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner  947 Sep  3 23:47 index.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/leads/:
+total 56
+drwxr-xr-x  2 runner runner  4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner  4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner  6924 Sep  3 23:47 lead-bigpickle.md
+-rw-r--r--  1 runner runner   153 Sep  3 23:47 lead-laguna.md
+-rw-r--r--  1 runner runner   150 Sep  3 23:47 lead-ling3.md
+-rw-r--r--  1 runner runner   156 Sep  3 23:47 lead-longcat.md
+-rw-r--r--  1 runner runner    18 Sep  3 23:47 lead-mimo.md
+-rw-r--r--  1 runner runner 19064 Sep  3 23:47 lead-nemotron3.md
+-rw-r--r--  1 runner runner   408 Sep  3 23:47 reposcan-jtl.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/recon-notes/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 23:47 .
+drwxr-xr-x 12 runner runner 4096 Sep  3 23:47 ..
+-rw-r--r--  1 runner runner  819 Sep  3 23:47 DEDICATED-DEEP.md
+[0m
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-bigpickle.md
+## 2026-09-03 15:49:40 UTC [target] (model bigpickle)
+[NEXT] RAG: Search for JTL-Software AG's main website, API endpoints, and documentation to identify live targets with HTTP responses.  
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.  
+[RISK] JTL-Software AG: 5/10 — No active testing performed. Limited reconnaissance depth.
+## 2026-09-03 19:09:46 UTC [target] (model bigpickle)
+[PRIO] api.jtl-cloud.com,7.7,data_exposure(bank-accounts/customers/orders via client_credentials)
+[PRIO] auth.jtl-cloud.com,7.4,oauth(public Ory,OAuth code/device/token endpoints)
+[PRIO] erp.jtl-cloud.com,6.9,config_leak(Sentry/PostHog/hidden auth URLs in public HTML)
+[HYP] Ory OAuth client-secret/auth bypass via device flow and permissive response_types
+[HYP] ERP REST `application.runas` / `all.read` scope over-grant in client_credentials tenant context
+[HYP] ERP Cloud env-config leak enables Sentry/PostHog data exfil or internal service discovery
+[HYP] Cross-tenant BOLA via x-tenant-id header on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: GraphQL SDL mandates `x-tenant-id` header for target ERP instance; multi-tenant cloud; REST authentication model separates token (OAuth2) from tenant scope. If tenant isolation relies solely on the client-supplied `x-tenant-id` header rather than validating it against the JWT's granted tenant, a token from tenant A with `x-tenant-id: <victim>` may return victim tenant data.
+evidence_needed: 401 vs 200/403 difference when sending a token with a mismatched/unknown x-tenant-id; a probing account/registration on one tenant then querying another.
+verify_steps: passive-first — GET https://api.jtl-cloud.com/erp/v2/graphql without token → expect 401 "JWT not present" (confirm). Requires valid token for full test (AUTH_HELPED). Fetch GraphQL playground to see if it offers unauth schema/introspection.
+impact: cross-tenant PII/ERP data dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Power scope over-grant in client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: GraphQL authorizes every mutation/query with `system.all` as OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute requests on behalf of another user") as grantable scopes to third-party apps. If a client_credentials/waviapp-registration flow permits a caller to assert these scopes (or `application.runas` impersonates another app), full ERP read/write results.
+evidence_needed: obtaining a client grant that includes system.all/all.read/application.runas; then reaching a data endpoint.
+verify_steps: passive — try GET on GraphQL playground / appregistration docs; cannot obtain scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+impact: full ERP compromise, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP Cloud env-config leak → Sentry/PostHog data exposure / internal service discovery
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Public prod HTML ships full `jtl-cloud-env-variables` JSON incl. active Sentry DSN (`82a877a92404e1ad4ca46e308d4ddf27@o4508919293149184.ingest.de.sentry.io/4509087222595664`), PostHog token `phc_SkFAxTIa4RUQxotci1Ftdw7xefZK2Ax0LEIGcl8zuD2`, Zitadel client ID, ORY URL. Public client IDs are normal; but if Sentry is misconfigured (open API/replays, SDK+DSN same in `-qa` block), stack traces/PII may be queryable.
+evidence_needed: whether Sentry project/DSN allows unauthenticated event queries or exposes recent error events with PII.
+verify_steps: passive — check if Sentry DSN projects are publicly queryable (usually require auth); not directly curlable. Route to HUMAN review of Sentry config.
+impact: PII/stack-trace exposure from client-side error telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+## 2026-09-03 21:46:16 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via client-supplied `x-tenant-id` on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: Live probe confirms POST /erp/v2/graphql returns 401 without token ("JWT not present" gate). Multi-tenant cloud separates OAuth2 token from tenant via client-supplied x-tenant-id header (per prior SDL). If tenant isolation relies on that header rather than JWT tenant claims, a token from tenant A with x-tenant-id of victim returns victim data.
+evidence_needed: 401 vs 200/403 with a mismatched/unknown x-tenant-id using a valid scoped token; a test account on one tenant queried from another.
+verify_steps: requires valid scoped token (AUTH_HELPED). Passive next: GET graphql playground/index to check for unauth introspection. Route to HUMAN for sanctioned trial on test tenant.
+impact: cross-tenant PII dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Power scope over-grant via client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: Live OIDC advertises client_credentials + jwt-bearer grants. GraphQL authorizes mutations with `system.all` OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute on behalf of another user") as third-party scopes. If a registered app's client_credentials can assert these, full ERP read/write or runas impersonation.
+evidence_needed: obtaining a client grant asserting these scopes; reaching a data endpoint.
+verify_steps: passive — inspect appregistration docs/GraphQL SDL for scope description; cannot mint scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+impact: full ERP read/write, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP env-config secrets abuse → Sentry/PII exposure
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Live probe CONFIRMED erp.jtl-cloud.com serves jtl-cloud-env-variables JSON with active Sentry DSN, PostHog token, Zitadel client ID, ORY URL, and internal service URLs (account/hub). Public client IDs normal, but the same DSN/config block in `-qa` variant and a public Sentry project may expose client-side stack traces/PII or allow event query if misconfigured.
+evidence_needed: whether Sentry project/DSN is publicly queryable or exposes PII-laden error events.
+verify_steps: Sentry DSN projects normally require auth; not directly curlable. Route to HUMAN review of Sentry/PostHog config.
+impact: PII/stack-trace exposure from client telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+[0m
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-nemotron3.md | head -150; echo "=====REPOSCAN====="; cat /home/runner/work/jtl-hunt/jtl-hunt/leads/reposcan-jtl.md; echo "=====OTHER LEADS====="; cat /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-laguna.md /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-ling3.md /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-longcat.md /home/runner/work/jtl-hunt/jtl-hunt/leads/lead-mimo.md
+## 2026-09-03 16:04:49 UTC [target] (model nemotron3)
+[NEW] 300 containerized test hosts under `docker.jtl-software.de` discovered via passive DNS/CT (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified)
+[NEW] 23 shared test configuration profiles (suffixes like `a-b-4db87dad`, `p-g-443d1d50`, `f-b-e5fa382e`, `l-w-ab0f5ac0`, `t-p-817daf04`) deployed across multiple platforms and environment instances (prefixes 1-, 10-, 11-, 12-, 13-, 14-, 100-, etc.)
+[NEW] 0 live HTTP probes performed — all hosts unvalidated for reachability, tech stack, or attack surface
+[CHANGED] Dedicated deep recon confirms wildcard-dominated DNS (159 resolving, 0 genuinely dedicated after shared-IP filtering)
+[PRIO] jtl-shop:a-b-4db87dad,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] jtl-shop:p-g-443d1d50,8.5,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] jtl-shop:f-b-e5fa382e,8.2,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] jtl-shop:l-w-ab0f5ac0,8.0,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] jtl-shop:t-p-817daf04,7.8,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=6,freshness=8
+[PRIO] shopware6:a-b-4db87dad,7.5,attack_surface=9,business_value=7,tech_exposure=8,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] woocommerce:p-g-443d1d50,7.0,attack_surface=8,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de (representative of 3 JTL-Shop + 29 Shopware6 + 5 WooCommerce instances)
+confidence: 65
+reasoning: Profile a-b-4db87dad is the most widely deployed cross-platform config (37 instances). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms — if one leaks API, all do.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de (representative of 8 JTL-Shop + 12 Shopware6 + 9 WooCommerce = 29 instances)
+confidence: 55
+reasoning: Profile p-g-443d1d50 is second most deployed (29 instances). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs often use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+[HYP] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e
+class: OTHER
+asset: 1-jtl-shop-f-b-e5fa382e.docker.jtl-software.de (representative of 3 JTL-Shop + 7 Shopware6 + 5 WooCommerce = 15 instances)
+confidence: 45
+reasoning: Profile f-b-e5fa382e deployed across 15 containers. JTL-Shop media manager allows file uploads (product images, exports). Test profiles may disable MIME validation, allow .php/.phtml upload, or lack extension filtering. Shared profile = shared vulnerability.
+evidence_needed: POST /admin/media/upload accepts .php/.phtml with Content-Type image/png; uploaded file executable at /media/uploads/shell.php; MIME bypass via polyglot or magic bytes
+verify_steps: GET /admin/media (check for upload UI); OPTIONS /admin/media/upload (check allowed methods); passive fingerprint of upload endpoint via robots.txt/sitemap — no actual upload (mutating)
+impact: RCE on test containers → lateral movement to internal network, source code access, CI/CD credential theft — HIGH
+testability: PASSIVE (fingerprint only; upload test requires AUTH_HELPED)
+[PARKED] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e: confidence 45 < 50 threshold; verify_steps require mutating upload test (not PASSIVE-only); class OTHER borderline for REJECTED-class "known-vulnerable library without program-specific exploit"
+[FINAL] 1. JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad (confidence 65)
+[FINAL] 2. JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50 (confidence 55)
+[NEXT] PROBE: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ HTTP/1.1 — read-only, no auth, single request to confirm API exposure and response structure
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[RISK] jtl: 75 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth exposure in test envs could leak production keys or enable supply-chain attacks; no live validation yet — risk increases with each confirmed finding
+## 2026-09-03 19:09:07 UTC [target] (model nemotron3)
+[NEW] Knowledge base adds 3 LEARN entries (ACCEPTED MISCONFIG a-b-4db87dad, ACCEPTED AUTH p-g-443d1d50, REJECTED OTHER f-b-e5fa382e) not in prior leads
+[NEW] Inventory provides full 300-host enumeration (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified) for targeting
+[CHANGED] Phase advanced to SURFACE with target=api — requires live HTTP validation of top hypotheses
+[PRIO] 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de,8.9,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de,8.4,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de
+confidence: 65
+reasoning: Profile a-b-4db87dad deployed across 37 containers (3 JTL-Shop, 29 Shopware6, 5 WooCommerce). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de
+confidence: 55
+reasoning: Profile p-g-443d1d50 deployed across 29 containers (8 JTL-Shop, 12 Shopware6, 9 WooCommerce). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs historically use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+[HYP] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0
+class: MISCONFIG
+asset: 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de
+confidence: 50
+reasoning: Profile l-w-ab0f5ac0 deployed on 2 JTL-Shop containers (116, 118) plus Shopware6/WooCommerce. JTL-Shop v5+ may expose GraphQL at `/graphql` or `/api/graphql`. Test profiles often enable introspection (`__schema`, `__type`) for development. Shared config = shared exposure.
+evidence_needed: POST /graphql with `{"query":"{__schema{types{name}}}"}` returns 200 with full type schema; GET /graphql?query=... also works; no auth required
+verify_steps: POST https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql Content-Type: application/json body: {"query":"{__schema{types{name}}}"}; GET /graphql?query={__schema{types{name}}}; GET /api/graphql — read-only
+impact: Full API schema enumeration → field-level auth bypass discovery, hidden mutations, PII field mapping — HIGH (enables targeted IDOR/BOLA/mass assignment)
+testability: PASSIVE
+[PARKED] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e: confidence 45 < 50 threshold; verify_steps require mutating upload test (not PASSIVE-only); class OTHER borderline for REJECTED-class "known-vulnerable library without program-specific exploit"
+[FINAL] 1. JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad (confidence 65)
+[FINAL] 2. JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50 (confidence 55)
+[FINAL] 3. JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0 (confidence 50)
+[NEXT] PROBE: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ HTTP/1.1 — read-only, no auth, single request to confirm API exposure and response structure
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+[RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation yet — risk increases with each confirmed finding
+## 2026-09-03 21:52:41 UTC [target] (model nemotron3)
+[NEW] All 300 hosts resolve to single IP 31.172.91.250 (wildcard DNS) but TCP 80/443 connection timeout — no live HTTP reachability from internet
+[CHANGED] Phase SURFACE target=api blocked: top-priority assets (1-jtl-shop-a-b-4db87dad, 1-jtl-shop-p-g-443d1d50, 116-jtl-shop-l-w-ab0f5ac0) unreachable; cannot validate API/OAuth/GraphQL hypotheses passively
+[PRIO] 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de,8.9,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de,8.4,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de
+confidence: 65
+reasoning: Profile a-b-4db87dad deployed across 37 containers (3 JTL-Shop, 29 Shopware6, 5 WooCommerce). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de
+confidence: 55
+reasoning: Profile p-g-443d1d50 deployed across 29 containers (8 JTL-Shop, 12 Shopware6, 9 WooCommerce). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs historically use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+[HYP] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0
+class: MISCONFIG
+asset: 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de
+confidence: 50
+reasoning: Profile l-w-ab0f5ac0 deployed on 2 JTL-Shop containers (116, 118) plus Shopware6/WooCommerce. JTL-Shop v5+ may expose GraphQL at `/graphql` or `/api/graphql`. Test profiles often enable introspection (`__schema`, `__type`) for development. Shared config = shared exposure.
+evidence_needed: POST /graphql with `{"query":"{__schema{types{name}}}"}` returns 200 with full type schema; GET /graphql?query=... also works; no auth required
+verify_steps: POST https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql Content-Type: application/json body: {"query":"{__schema{types{name}}}"}; GET /graphql?query={__schema{types{name}}}; GET /api/graphql — read-only
+impact: Full API schema enumeration → field-level auth bypass discovery, hidden mutations, PII field mapping — HIGH (enables targeted IDOR/BOLA/mass assignment)
+testability: PASSIVE
+[PARKED] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad: cannot verify — host unreachable (TCP timeout on 31.172.91.250:443/80); all 300 hosts share same IP, containers not internet-accessible
+[PARKED] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50: cannot verify — same network unreachability
+[PARKED] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0: cannot verify — same network unreachability
+[FINAL] No hypotheses survive live validation — all require network access to docker.jtl-software.de containers
+[NEXT] RAG: Determine if docker.jtl-software.de test environment requires VPN/SSH tunnel or internal network access; check JTL-Software AG bug bounty program docs for test environment access instructions
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+[RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation possible — containers not internet-accessible; risk confirmation requires internal network access
+=====REPOSCAN=====
+## REPOSCAN 2026-09-03 15:40:39 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 19:03:06 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 21:44:42 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-03 23:45:27 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
+=====OTHER LEADS=====
+## 2026-09-03 15:49:35 UTC [target] (model laguna)
+## 2026-09-03 19:06:35 UTC [target] (model laguna)
+## 2026-09-03 21:45:04 UTC [target] (model laguna)
+## 2026-09-03 15:49:33 UTC [target] (model ling3)
+## 2026-09-03 19:06:31 UTC [target] (model ling3)
+## 2026-09-03 21:45:06 UTC [target] (model ling3)
+## 2026-09-03 15:49:29 UTC [target] (model longcat)
+## 2026-09-03 19:06:25 UTC [target] (model longcat)
+## 2026-09-03 21:45:13 UTC [target] (model longcat)
+# Lead log (seed)
+[0m
+[0m$ [0mcat /home/runner/work/jtl-hunt/jtl-hunt/scope.yml; echo "=====STATE====="; cat /home/runner/work/jtl-hunt/jtl-hunt/state_bigpickle.json; echo; echo "=====KNOWLEDGE====="; cat /home/runner/work/jtl-hunt/jtl-hunt/knowledge/index.md; echo "=====PROBE-RESULTS====="; cat /home/runner/work/jtl-hunt/jtl-hunt/probe-results.md; echo "=====RECON====="; cat /home/runner/work/jtl-hunt/jtl-hunt/recon-notes/DEDICATED-DEEP.md
+programs:
+  jtl:
+    name: JTL-Software AG Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All company-owned infrastructure, ERP systems (JTL-Wawi), shop platforms (JTL-Shop), POS systems (JTL-POS), APIs, cloud services, customer portals, websites, and domains operated by JTL-Software AG"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+  - { id: opencode/big-pickle, name: bigpickle }
+  - { id: opencode/nemotron-3-ultra-free, name: nemotron3 }
+  - { id: opencode/longcat-2.0-free, name: longcat }
+  - { id: opencode/ling-3.0-flash-free, name: ling3 }
+  - { id: opencode/laguna-s-2.1-free, name: laguna }
+=====STATE=====
+{"phase": "POC", "target": "api"}
+=====KNOWLEDGE=====
+# Knowledge Base (seed)
+- 2026-09-03 ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+- 2026-09-03 ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+- 2026-09-03 REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+- 2026-09-03 ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+- 2026-09-03 REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+=====PROBE-RESULTS=====
+
+## 2026-09-02 21:38:57 UTC
+
+
+## 2026-09-02 23:34:39 UTC
+
+
+## 2026-09-03 01:28:22 UTC
+
+
+## 2026-09-03 06:30:41 UTC
+
+
+## 2026-09-03 11:43:15 UTC
+
+
+## 2026-09-03 16:05:29 UTC
+https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ -> ERR <urlopen error timed out>
+https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com -> ERR <urlopen error timed out>
+
+## 2026-09-03 19:10:34 UTC
+https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ -> ERR <urlopen error timed out>
+https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com -> ERR <urlopen error timed out>
+https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql -> ERR <urlopen error timed out>
+
+## 2026-09-03 21:53:35 UTC
+https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ -> ERR <urlopen error timed out>
+https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com -> ERR <urlopen error timed out>
+https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql -> ERR <urlopen error timed out>
+=====RECON=====
+# Dedicated deep surface (wildcard-filtered) 2026-09-03
+
+**Target:** `jtl`
+**Root zones:** `jtl-software.de`
+
+## Wildcard analysis
+
+- Total resolving hostnames in zone: 159
+- After shared/wildcard IP filtering: **0 genuinely dedicated hosts**
+- Reason: all resolving hostnames use shared/CDN/wildcard IP signatures
+
+## Honest conclusion
+
+This target's subdomain space is wildcard-dominated. No genuinely dedicated
+subdomain surface was recovered from passive brute + subfinder enumeration.
+The surface either (a) uses wildcard DNS records, (b) all CNAME records
+point to shared CDN/Cloudflare/CloudFront/AWS IPs, or (c) has no
+subdomain program at all. This is the honest exhaustive result.
+
+---
+_Honest framing: passive DNS enumeration + shared-IP wildcard filtering. No finding claimed. No active testing performed._
+[0m
+Let me look at the scope, state, and other context files to understand my current phase (POC, target=api).
+===
+=== KNOWLEDGE BASE ===
+# Knowledge Base (seed)
+- 2026-09-03 ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+- 2026-09-03 ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+- 2026-09-03 REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+- 2026-09-03 ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+- 2026-09-03 REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+=== MY STATE ===
+{"phase": "POC", "target": "api"}=== MY LAST LEADS (tail) ===
+[PRIO] auth.jtl-cloud.com,7.4,oauth(public Ory,OAuth code/device/token endpoints)
+[PRIO] erp.jtl-cloud.com,6.9,config_leak(Sentry/PostHog/hidden auth URLs in public HTML)
+[HYP] Ory OAuth client-secret/auth bypass via device flow and permissive response_types
+[HYP] ERP REST `application.runas` / `all.read` scope over-grant in client_credentials tenant context
+[HYP] ERP Cloud env-config leak enables Sentry/PostHog data exfil or internal service discovery
+[HYP] Cross-tenant BOLA via x-tenant-id header on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: GraphQL SDL mandates `x-tenant-id` header for target ERP instance; multi-tenant cloud; REST authentication model separates token (OAuth2) from tenant scope. If tenant isolation relies solely on the client-supplied `x-tenant-id` header rather than validating it against the JWT's granted tenant, a token from tenant A with `x-tenant-id: <victim>` may return victim tenant data.
+evidence_needed: 401 vs 200/403 difference when sending a token with a mismatched/unknown x-tenant-id; a probing account/registration on one tenant then querying another.
+verify_steps: passive-first — GET https://api.jtl-cloud.com/erp/v2/graphql without token → expect 401 "JWT not present" (confirm). Requires valid token for full test (AUTH_HELPED). Fetch GraphQL playground to see if it offers unauth schema/introspection.
+impact: cross-tenant PII/ERP data dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Power scope over-grant in client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: GraphQL authorizes every mutation/query with `system.all` as OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute requests on behalf of another user") as grantable scopes to third-party apps. If a client_credentials/waviapp-registration flow permits a caller to assert these scopes (or `application.runas` impersonates another app), full ERP read/write results.
+evidence_needed: obtaining a client grant that includes system.all/all.read/application.runas; then reaching a data endpoint.
+verify_steps: passive — try GET on GraphQL playground / appregistration docs; cannot obtain scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+[0m
+I have full context now. My phase is POC with target=api. Let me do a quick passive verification of the reachable primary assets (jtl-cloud.com) to confirm current state before emitting my analysis. These are the confirmed-live assets from my prior leads.
+
+Let me run a few low-rate passive probes on the primary reachable assets to validate the delta and current reachability.
+[0m$ [0mcd /tmp/opencode && for u in "https://auth.jtl-cloud.com/.well-known/openid-configuration" "https://api.jtl-cloud.com/erp/v2/graphql" "https://erp.jtl-cloud.com/"; do echo "--- $u"; curl -sk -o /dev/null -w "HTTP %{http_code} t=%{time_total}s\n" --max-time 15 "$u" 2>&1; done
+--- https://auth.jtl-cloud.com/.well-known/openid-configuration
+HTTP 200 t=0.214536s
+--- https://api.jtl-cloud.com/erp/v2/graphql
+HTTP 401 t=0.393234s
+--- https://erp.jtl-cloud.com/
+HTTP 200 t=0.290608s
+[0m
+Primary jtl-cloud.com assets are reachable and live. The docker containers are not. My target=api phase continues on these live assets. Let me grab the OIDC config and GraphQL playground info passively to advance my AUTH/IDOR hypotheses within rules.
+[0m$ [0mcd /tmp/opencode && echo "=== OIDC grants ==="; curl -sk --max-time 15 "https://auth.jtl-cloud.com/.well-known/openid-configuration" | python3 -c "import sys,json; d=json.load(sys.stdin); print('grant_types:', d.get('grant_types_supported')); print('response_types:', d.get('response_types_supported')); print('token_endpoint:', d.get('token_endpoint')); print('device:', d.get('device_authorization_endpoint')); print('issuer:', d.get('issuer'))" 2>&1
+echo "=== erp env-config presence ==="; curl -sk --max-time 15 "https://erp.jtl-cloud.com/" | grep -io "jtl-cloud-env-variables" | head -1
+echo "=== graphql playground/index ==="; for p in "/erp/v2/graphql" "/erp/v2/graphiql" "/erp/v2/graphql/playground" "/graphql" "/erp/graphql"; do printf "%s -> " "$p"; curl -sk -o /dev/null -w "%{http_code}\n" --max-time 10 "https://api.jtl-cloud.com$p"; done
+=== OIDC grants ===
+grant_types: ['authorization_code', 'implicit', 'client_credentials', 'refresh_token', 'urn:ietf:params:oauth:grant-type:jwt-bearer']
+response_types: ['code', 'code id_token', 'id_token', 'token id_token', 'token', 'token id_token code']
+token_endpoint: https://auth.jtl-cloud.com/oauth2/token
+device: https://auth.jtl-cloud.com/oauth2/device/auth
+issuer: https://auth.jtl-cloud.com
+=== erp env-config presence ===
+jtl-cloud-env-variables
+=== graphql playground/index ===
+/erp/v2/graphql -> 401
+/erp/v2/graphiql -> 401
+/erp/v2/graphql/playground -> 401
+/graphql -> 404
+/erp/graphql -> 401
+[0m
+Confirmed live state: primary jtl-cloud.com assets reachable; grants include jwt-bearer (interesting for a token-exchange broader-than-intended scope); the `x-tenant-id` BOLA hypothesis requires a valid token (AUTH_HELPED); GraphQL playground not unauth-accessible. The device flow endpoint exists at `/oauth2/device/auth`.
+
+I now have enough to produce structured analysis. I will not run further probes that could touch live customer data. Let me finalize the 8 steps.
+
+Key findings for the analysis:
+- NO_DELTA vs my last leads: primary assets still live (auth/api/erp confirmed HTTP 200/200/401). Docker containers still unreachable (confirmed prior). My BOLA hypothesis remains my top active lead.
+- Phase is POC, target=api. Confirmed live, code-first: the `x-tenant-id` cross-tenant BOLA is the highest-value testable lead but needs a valid scoped token.
+
+Let me emit the structured output.
+
+STEP 1 — DELTA
+- [CHANGED] Phase is now POC target=api; primary cloud assets (auth.jtl-cloud.com 200, erp.jtl-cloud.com 200, api.jtl-cloud.com 401) confirmed live via read-only probes; docker.jtl-software.de containers remain internet-unreachable (timeout), no change.
+
+STEP 2 — PRIORITIZE
+PRIO api.jtl-cloud.com/erp/v2/graphql,7.7,IDOR(cross-tenant x-tenant-id BOLA, JWT-tenant separation)
+PRIO auth.jtl-cloud.com,7.4,oauth(Ory grants incl jwt-bearer + device flow)
+PRIO erp.jtl-cloud.com,6.9,misconfig(Sentry/PostHog env-config)
+
+STEP 3 — HYPOTHESES (top 3, 1 each)
+The BOLA one is my strongest (confidence 60, but AUTH_HELPED). The jwt-bearer and device-flow are the AUTH angle. And the Sentry misconfig.
+
+STEP 4 — SELF-CRITIQUE
+- Sentry/PII: confidence 55 but HUMAN_ONLY, no passive verification possible → PARKED
+- scope over-grant: confidence 50, AUTH_HELPED, can't mint scopes passively → keep but lower
+- BOLA: confidence 60, AUTH_HELPED but concrete verify path exists → FINAL #1
+- jwt-bearer grant is new fact: broaden the AUTH hypothesis to include assertion/client_assertion confusion.
+
+Let me write it.
+
+STEP 5 — NEXT ACTION: PROBE the device authorization endpoint passively? Actually device flow is a real OAuth attack surface. Reading the device auth endpoint is read-only. But testing device flow would need to initiate a flow (mutating? no, it's a read of endpoint). I'll set NEXT to a passive probe of the device authorization endpoint and the nonce/state handling. Given AUTH_HELPED for the top hypothesis, the realistic next is HUMAN for sanctioned test app OR RAG for program test-env access. 
+
+Given my last two leading hypotheses (BOLA confidence 60, and the new jwt-bearer fact) both AUTH_HELPED, and the docker containers are unreachable, the most productive NEXT action is RAG to determine whether JTL provides sanctioned test tenants/apps, since that's what unblocks full verification. But an immediate concrete passive probe is more actionable within my own abilities.
+
+Actually, let me set NEXT as a PROBE on the Ory device authorization endpoint config (passive, read-only) which is within my power and directly tests the oauth/device-flow hypothesis. But I already found device endpoint exists. Testing further device flow would initiate a flow — could be considered to create a pending device grant but not customer data modification; borderline. I'll keep NEXT as RAG for sanctioned test-tenant access, which is the honest blocker for my top AUTH_HELPED hypotheses.
+
+---
+
+Now composing final structured output.
+
+STEP 1 — DELTA:
+- [CHANGED] Phase moved SURFACE→POC target=api; confirmed primary assets live via read-only probes (auth.jtl-cloud.com 200, erp.jtl-cloud.com 200, api.jtl-cloud.com/erp/v2/graphql 401) — docker.jtl-software.de 300 containers remain unreachable (TD timeout, no change).
+
+STEP 2 — PRIORITIZE:
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,7.7,idor(cross-tenant x-tenant-id BOLA vs JWT tenant claim)
+[PRIO] auth.jtl-cloud.com,7.4,oauth(Ory grants: client_credentials+jwt-bearer+device; permissive response_types)
+[PRIO] erp.jtl-cloud.com,6.9,misconfig(Sentry/PostHog env-config leak / internal service URLs)
+
+STEP 3 — HYPOTHESES:
+(HYP 1) Cross-tenant BOLA via client-supplied x-tenant-id on ERP GraphQL — class IDOR, asset api.jtl-cloud.com/erp/v2/graphql, conf 60. Confirmed 401 JWT gate. Multi-tenant cloud separates OAuth token from tenant via client-supplied x-tenant-id (SDL). If tenant isolation relies on header not JWT, token from tenant A + x-tenant-id victim returns victim data. evidence: 200/403 vs 401/200 diff with valid scoped token mismatched x-tenant-id. verify: needs valid scoped token (AUTH_HELPED); passive confirmed GraphQL playground/graphiql 401 not unauth-introspectable; route to HUMAN for sanctioned trial. impact: cross-tenant PII dump. testability AUTH_HELPED.
+
+(HYP 2) Ory jwt-bearer grant allows broader-than-intended scope / assertion confusion — class AUTH, asset auth.jtl-cloud.com/oauth2/token, conf 50. OIDC advertises urn:ietf:params:oauth:grant-type:jwt-bearer + client_credentials + device; response_types include all permissive variants (implicit token/id_token). If jwt-bearer client_assertion accepts arbitrary issuer/aud or self-minted JWTs without strict validation, an attacker who knows a public client_id could mint a token asserting system.all/all.read/application.runas scopes. evidence: token endpoint returning access_token for a forged/untrusted assertion; reaching a data endpoint with asserted power scope. verify: passive — cannot mint without authorized client (AUTH_HELPED). Route HUMAN for sanctioned test app. impact: full ERP read/write, runas impersonation. Severity critical. testability AUTH_HELPED.
+
+(HYP 3) ERP env-config leak enables Sentry/PostHog client-telemetry PII exfil or internal service discovery — class MISCONFIG, asset erp.jtl-cloud.com, conf 55. Confirmed jtl-cloud-env-variables JSON with active Sentry DSN, PostHog token, Zitadel client ID, ORY URL, internal service URLs. Public client IDs normal; if Sentry project/DSN misconfigured (unauth event query, replay of stack traces/PII). evidence: Sentry project publicly queryable or error events with PII fetchable. verify: Sentry DSN not directly curlable; route HUMAN to review Sentry/PostHog config. impact: PII/stack-trace exposure. testability HUMAN_ONLY.
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] ERP env-config Sentry/PII: HUMAN_ONLY, no passive verify possible; keep as review lead not testable survivor.
+- [PARKED] Power-scope client_credentials+runas (prior exact-scope version): subsumed by broader jwt-bearer/device-flow AUTH hypothesis (HYP 2); cannot mint scopes passively.
+- [FINAL] 1. Cross-tenant BOLA via x-tenant-id (conf 60, concrete verify path, high impact).
+- [FINAL] 2. Ory jwt-bearer/client_assertion scope over-grant (conf 50, critical impact, AUTH_HELPED).
+
+STEP 5 — NEXT ACTION:
+[NEXT] RAG: Check JTL bug bounty program (bugs.olivermaicher.eu) / Ory setup for whether sanctioned test tenants, OAuth test clients, or a test ERP instance are provided — the top two hypotheses (x-tenant-id BOLA, jwt-bearer scope) both require a valid scoped token to verify.
+
+STEP 6 — LEARNING:
+- [LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: Ory OIDC advertises grant_types incl client_credentials + jwt-bearer, response_types incl permissive implicit variants (token, id_token), and device_authorization_endpoint — broad grant surface confirms an OAuth-scope/assertion hypothesis is live and testable only with an authorized client.
+- [LEARN] REJECTED NETWORK @ docker.jtl-software.de (reaffirm): 300 containers still not internet-routable (TCP timeout on 31.172.91.250:443); wildcard DNS masks no reachable surface — no probe value.
+
+STEP 7 — RISK:
+[RISK] jtl: 72 — Primary cloud surface (auth/erp/api) live and code-mounted with high-value ERP/tenant-boundary targets (x-tenant-id BOLA, jwt-bearer scope); the decisive tests require a sanctioned token which the program may not provide, so real attacks are unverified vs a real logic flaw; container test-farm adds systemic-supply-chain theoretical risk but is unreachable. All in-scope but POC-limited.
+
+I'll present this cleaned up.STEP 1 — DELTA
+- [CHANGED] Phase SURFACE→POC target=api; primary cloud assets confirmed live via read-only probes (auth.jtl-cloud.com 200, erp.jtl-cloud.com 200, api.jtl-cloud.com/erp/v2/graphql 401 JWT-gate, /graphiql|/playground 401).
+- [CHANGED] Ory OIDC confirmed advertises grant_types incl `client_credentials` + `jwt-bearer` + device flow (`/oauth2/device/auth`), and response_types incl permissive implicit variants (`token`, `id_token`, `token id_token`) — broad OAuth grant surface live.
+- [CHANGED] docker.jtl-software.de 300 containers still unreachable (TCP timeout 31.172.91.250:443/80) — no change, still no internet-routable surface.
+
+STEP 2 — PRIORITIZE
+- [PRIO] api.jtl-cloud.com/erp/v2/graphql,7.7,idor(cross-tenant x-tenant-id BOLA vs JWT-tenant separation)
+- [PRIO] auth.jtl-cloud.com,7.4,oauth(Ory grants incl jwt-bearer+device; permissive response_types)
+- [PRIO] erp.jtl-cloud.com,6.9,misconfig(env-config leak: Sentry DSN/PostHog/internal URLs)
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA via client-supplied `x-tenant-id` on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: Live probe confirms 401 "JWT not present" gate (no valid token). Multi-tenant cloud separates OAuth2 token from tenant scope via client-supplied `x-tenant-id` header (per GraphQL SDL). If tenant isolation relies on that header rather than JWT tenant claims, a token from tenant A with `x-tenant-id: <victim>` returns victim data.
+evidence_needed: 200/403 vs 40x difference sending a valid scoped token with a mismatched/unknown x-tenant-id; a test account on one tenant queried from another.
+verify_steps: passive confirmed graphiql/playground 401 (no unauth introspection). Full test requires a valid scoped token — route to HUMAN for sanctioned test-tenant/registration (AUTH_HELPED). No token===401; token+mismatched-tenant===200 would prove isolation-by-header only.
+impact: cross-tenant PII/ERP dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Ory jwt-bearer client_assertion / permissive grant scope over-grant
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: Live OIDC advertises `client_credentials`, `jwt-bearer`, and device flow grants plus implicit `token`/`id_token` response_types. If jwt-bearer `client_assertion` accepts a loose issuer/aud or a self-minted JWT tied to a known public client_id, a caller can mint a token asserting `system.all`/`all.read`/`application.runas` and reach ERP data endpoints.
+evidence_needed: token endpoint returns a valid access_token for a forged/loose assertion carrying a power scope; that token reaches a data endpoint.
+verify_steps: cannot mint without an authorized client (AUTH_HELPED). Passive: read OIDC metadata + appregistration docs for scope descriptions. Route HUMAN for sanctioned test app.
+impact: full ERP read/write, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP env-config leak → Sentry/PostHog client-telemetry PII / internal service discovery
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Confirmed prod HTML ships `jtl-cloud-env-variables` JSON with active Sentry DSN, PostHog token, Zitadel client ID, ORY URL, and internal account/hub service URLs. Public client IDs are normal; exposure only if Sentry/PostHog project misconfigured for unauth event query or replay of PII-laden stack traces.
+evidence_needed: Sentry project/DSN publicly queryable or error events with PII fetchable.
+verify_steps: Sentry DSN projects normally require auth; not directly curlable. Route to HUMAN review of Sentry/PostHog project config.
+impact: PII/stack-trace exposure from client-side telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] ERP env-config Sentry/PII: no passive verify path (HUMAN_ONLY); keep as review lead, not a testable survivor.
+- [PARKED] Prior power-scope runas (narrow client_credentials-only): subsumed by broader jwt-bearer/device AUTH hypothesis; cannot mint scopes passively.
+- [FINAL] 1. Cross-tenant BOLA via x-tenant-id (conf 60, concrete verify path, high impact)
+- [FINAL] 2. Ory jwt-bearer/assertion scope over-grant (conf 50, critical impact)
+
+STEP 5 — NEXT ACTION
+[NEXT] RAG: Check the JTL program (bugs.olivermaicher.eu) and Ory setup for whether sanctioned test tenants, OAuth test clients, or a test ERP instance are provided — both top survivors (x-tenant-id BOLA, jwt-bearer scope) require a valid scoped token to verify.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: Ory OIDC advertises client_credentials+jwt-bearer+device grants and permissive implicit response_types — confirms OAuth scope/assertion hypothesis is live but testable only with an authorized client.
+- [LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers still not internet-routable (TCP timeout 31.172.91.250:443/80) — wildcard DNS, no reachable probe surface.
+
+STEP 7 — RISK
+- [RISK] jtl: 72 — Primary cloud surface (auth/erp/api) live, code-mounted, in-scope high-value tenant/boundary targets (x-tenant-id BOLA, jwt-bearer scope); decisive tests need a sanctioned token the program may not provide, so no real logic flaw is yet proven vs a genuine reachable asset. Container test-farm adds theoretical systemic-supply-chain risk but is unreachable; all matter unverified.

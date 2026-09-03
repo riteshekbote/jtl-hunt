@@ -133,3 +133,55 @@ testability: PASSIVE
 [LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
 [LEARN] REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
 [RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation possible — containers not internet-accessible; risk confirmation requires internal network access
+## 2026-09-03 23:53:38 UTC [target] (model nemotron3)
+[NEW] bountyshop.jtl-software.com confirmed live (HTTP 200) — official bug bounty test shop running JTL-Shop v5.x (NOVA template), admin panel at /admin/ accessible
+[NEW] api.jtl-cloud.com/erp/v2/graphql confirmed live (HTTP 401) — production GraphQL ERP API requires JWT, returns "JWT not present" for introspection
+[NEW] jtl-software.github.io/devdocs-graphql-playground/ confirmed live (HTTP 200) — GraphiQL playground embedded in developer portal, targets production API
+[NEW] developer.jtl-software.com/cloud/api-reference/graphql-playground embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
+[CHANGED] docker.jtl-software.de 300 containers unreachable from internet (TCP 80/443 timeout on 31.172.91.250) — all prior hypotheses on test containers untestable passively
+[CHANGED] Phase shifted from docker test envs to live production/bug-bounty assets (bountyshop, api.jtl-cloud.com, developer portal)
+[PRIO] bountyshop.jtl-software.com,8.55,attack_surface=8,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=6,freshness=9
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,8.25,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+[PRIO] jtl-software.github.io/devdocs-graphql-playground/,7.35,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+[PRIO] developer.jtl-software.com,5.95,attack_surface=5,business_value=6,tech_exposure=4,gate_ease=10,cloud_surface=4,freshness=7
+[HYP] JTL-Shop v5.x unauthenticated SSTI/RCE via email template (CVE-2026-54390) on bountyshop
+class: OTHER
+asset: bountyshop.jtl-software.com
+confidence: 60
+reasoning: bountyshop runs JTL-Shop v5.x (NOVA template v=5.0.0). CVE-2026-54390 affects 5.2.0–5.7.1 via unsanitized input to Smarty renderer in email subject. Sansec research shows unauthenticated RCE via Smarty modifiers (unserialize, file_get_contents) on 5.4.0+. Test shop version unconfirmed; bug bounty programs often run vulnerable versions for testing.
+evidence_needed: POST to contact/email endpoint with Smarty payload {${system('id')}} returns code execution indicators (Blowfish key, DB creds, webshell); or version fingerprint confirms 5.2.0–5.7.1
+verify_steps: GET https://bountyshop.jtl-software.com/robots.txt; GET /contact; POST /contact with Smarty payload in subject/body — read-only probe first to fingerprint version via headers/meta; then minimal SSTI test {7*7} in contact form subject
+impact: Unauthenticated RCE on official bug bounty test shop → full server compromise, DB creds, Blowfish key, lateral movement to internal network — CRITICAL
+testability: PASSIVE (version fingerprint), AUTH_HELPED (SSTI test requires form submit)
+[HYP] JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header
+class: IDOR
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Developer docs show GraphQL requires Authorization Bearer + x-tenant-id header. Multi-tenant ERP API; if x-tenant-id not validated against token's tenant, attacker can query/mutate other tenants' data (orders, customers, items, stock). Knowledge base prior lead: "Cross-tenant BOLA via client-supplied x-tenant-id on ERP GraphQL" (confidence 60).
+evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B data (items, customers, orders) in GraphQL response; or introspection reveals tenant-scoped types with no ownership checks
+verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
+impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL (multi-tenant SaaS)
+testability: AUTH_HELPED
+[HYP] JTL Cloud OAuth/OIDC device flow client-secret bypass & permissive response_types
+class: AUTH
+asset: api.jtl-cloud.com (OAuth endpoints)
+confidence: 65
+reasoning: Knowledge base prior lead: "Ory OAuth client-secret/auth bypass via device flow and permissive response_types". JTL Cloud uses Ory (OAuth2/OIDC provider). Device flow may allow token acquisition without client_secret; response_type=id_token token may expose access tokens in fragment to redirect_uri. Test/staging configs historically loose.
+evidence_needed: POST /oauth/token with device_code grant without client_secret returns access_token; GET /oauth/authorize?response_type=id_token+token&client_id=...&redirect_uri=https://evil.com returns token in fragment; redirect_uri validation allows arbitrary domains/subdomains
+verify_steps: GET https://api.jtl-cloud.com/.well-known/openid-configuration; POST /oauth/token device_code grant w/o client_secret; GET /oauth/authorize with response_type=id_token token & redirect_uri=https://attacker.com — read-only discovery first
+impact: OAuth token theft → ERP API access as arbitrary client → cross-tenant data via GraphQL — CRITICAL
+testability: PASSIVE (discovery), AUTH_HELPED (token acquisition)
+[PARKED] JTL-Shop v5.x unauthenticated SSTI/RCE via email template (CVE-2026-54390) on bountyshop: version unconfirmed (NOVA v=5.0.0 may be template version not shop version); CVE is known/public — program may have patched test shop; requires mutating form submit for confirmation (not purely passive)
+[FINAL] 1. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 70)
+[FINAL] 2. JTL Cloud OAuth/OIDC device flow client-secret bypass & permissive response_types (confidence 65)
+[FINAL] 3. JTL-Shop v5.x unauthenticated SSTI/RCE via email template on bountyshop (confidence 60) — kept due to HIGH impact + official test target
+[NEXT] PROBE: GET https://api.jtl-cloud.com/.well-known/openid-configuration — read-only OAuth/OIDC discovery to enumerate endpoints, grants, device_flow support, and redirect_uri policy
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: All 300 container hosts resolve to single IP 31.172.91.250 but TCP 80/443 timeout — wildcard DNS masks true attack surface; test containers not internet-routable
+[LEARN] ACCEPTED TARGET @ bountyshop.jtl-software.com: Official bug bounty test shop confirmed live (HTTP 200), JTL-Shop v5.x NOVA template, admin panel at /admin/
+[LEARN] ACCEPTED TARGET @ api.jtl-cloud.com/erp/v2/graphql: Production GraphQL ERP API live, requires JWT, x-tenant-id header for multi-tenancy
+[LEARN] ACCEPTED TARGET @ jtl-software.github.io/devdocs-graphql-playground/: GraphiQL playground live, embedded in developer portal, targets production API
+[RISK] jtl: 82 — High-value core products (JTL-Shop, JTL-Wawi ERP, JTL-Cloud) with live internet-accessible attack surface: official bug bounty test shop (bountyshop.jtl-software.com) running JTL-Shop v5.x with admin panel exposed; production GraphQL ERP API (api.jtl-cloud.com) with multi-tenant architecture and OAuth/OIDC via Ory; GraphQL playground on GitHub Pages. Critical classes in play: cross-tenant BOLA (x-tenant-id), OAuth device flow bypass, potential SSTI/RCE on test shop (CVE-2026-54390). Risk elevated by confirmed live endpoints and prior knowledge of OAuth/GraphQL misconfig patterns in test profiles.
