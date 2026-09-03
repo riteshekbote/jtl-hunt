@@ -319,3 +319,9 @@
 ## 2026-09-03 06:30:41 UTC
 
 ## 2026-09-03 11:43:15 UTC
+
+## 2026-09-03 16:05:03 UTC
+- NEW 300 containerized test hosts under `docker.jtl-software.de` discovered via passive DNS/CT (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified)
+- NEW 23 shared test configuration profiles (suffixes like `a-b-4db87dad`, `p-g-443d1d50`, `f-b-e5fa382e`, `l-w-ab0f5ac0`, `t-p-817daf04`) deployed across multiple platforms and environment instances (prefi
+- NEW 0 live HTTP probes performed — all hosts unvalidated for reachability, tech stack, or attack surface
+- CHANGED Dedicated deep recon confirms wildcard-dominated DNS (159 resolving, 0 genuinely dedicated after shared-IP filtering)
