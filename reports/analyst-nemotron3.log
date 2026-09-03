@@ -319,3 +319,61 @@ testability: PASSIVE (fingerprint only; upload test requires AUTH_HELPED)
 ### STEP 7 — RISK
 
 [RISK] jtl: 75 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth exposure in test envs could leak production keys or enable supply-chain attacks; no live validation yet — risk increases with each confirmed finding
+===== ANALYST nemotron3 2026-09-03 19:09:54 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mdate -u +"%Y-%m-%d %H:%M:%S UTC"
+2026-09-03 19:07:16 UTC
+[0m
+[NEW] Knowledge base adds 3 LEARN entries (ACCEPTED MISCONFIG a-b-4db87dad, ACCEPTED AUTH p-g-443d1d50, REJECTED OTHER f-b-e5fa382e) not in prior leads
+[NEW] Inventory provides full 300-host enumeration (131 JTL-Shop, 81 Shopware6, 47 WooCommerce, 25 Shopware5, 9 PrestaShop, 3 Gambio, 5 Modified) for targeting
+[CHANGED] Phase advanced to SURFACE with target=api — requires live HTTP validation of top hypotheses
+
+[PRIO] 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de,8.9,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=8,freshness=8
+[PRIO] 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de,8.8,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=8
+[PRIO] 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de,8.4,attack_surface=8,business_value=10,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+
+[HYP] JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad
+class: MISCONFIG
+asset: 1-jtl-shop-a-b-4db87dad.docker.jtl-software.de
+confidence: 65
+reasoning: Profile a-b-4db87dad deployed across 37 containers (3 JTL-Shop, 29 Shopware6, 5 WooCommerce). JTL-Shop exposes REST API at `/api/v1/` or `/api/` by default. Test environments often lack auth middleware or have debug endpoints enabled (`/api/_debug`, `/api/v1/_info`, `/api/v1/system/info`). Shared profile suggests identical config across platforms.
+evidence_needed: HTTP 200 on GET /api/v1/ or /api/ with JSON response containing version/users/products data; absent auth headers; debug endpoints returning stack traces or config
+verify_steps: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/; GET /api/; GET /api/_debug; GET /api/v1/system/info; HEAD /api/v1/products — all read-only, no auth
+impact: Unauthenticated access to JTL-Shop REST API → product/customer/order enumeration, potential mass assignment on write endpoints, API key leakage — HIGH severity (core product, multi-tenant exposure across 37 containers)
+testability: PASSIVE
+
+[HYP] JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50
+class: AUTH
+asset: 1-jtl-shop-p-g-443d1d50.docker.jtl-software.de
+confidence: 55
+reasoning: Profile p-g-443d1d50 deployed across 29 containers (8 JTL-Shop, 12 Shopware6, 9 WooCommerce). JTL-Shop supports OAuth2/OIDC for third-party integrations. Test/staging envs historically use loose redirect_uri validation (allowing subdomain wildcard, HTTP localhost, or path traversal). Shared config across platforms means misconfig replicates.
+evidence_needed: OAuth authorize endpoint accepts redirect_uri with path traversal (`/../evil.com`), open redirect on subdomain (`evil.docker.jtl-software.de`), or HTTP scheme; state parameter not enforced
+verify_steps: GET /oauth/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code&state=x; GET /oauth/authorize?redirect_uri=http://localhost:8080/callback; GET /oauth/authorize?redirect_uri=https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/../evil.com — read-only
+impact: OAuth code theft → account takeover on connected JTL-Shop instances — CRITICAL if production OAuth clients share config; HIGH for test env credential harvesting
+testability: PASSIVE
+
+[HYP] JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0
+class: MISCONFIG
+asset: 116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de
+confidence: 50
+reasoning: Profile l-w-ab0f5ac0 deployed on 2 JTL-Shop containers (116, 118) plus Shopware6/WooCommerce. JTL-Shop v5+ may expose GraphQL at `/graphql` or `/api/graphql`. Test profiles often enable introspection (`__schema`, `__type`) for development. Shared config = shared exposure.
+evidence_needed: POST /graphql with `{"query":"{__schema{types{name}}}"}` returns 200 with full type schema; GET /graphql?query=... also works; no auth required
+verify_steps: POST https://116-jtl-shop-l-w-ab0f5ac0.docker.jtl-software.de/graphql Content-Type: application/json body: {"query":"{__schema{types{name}}}"}; GET /graphql?query={__schema{types{name}}}; GET /api/graphql — read-only
+impact: Full API schema enumeration → field-level auth bypass discovery, hidden mutations, PII field mapping — HIGH (enables targeted IDOR/BOLA/mass assignment)
+testability: PASSIVE
+
+[PARKED] JTL-Shop file upload RCE via unrestricted media handler in profile f-b-e5fa382e: confidence 45 < 50 threshold; verify_steps require mutating upload test (not PASSIVE-only); class OTHER borderline for REJECTED-class "known-vulnerable library without program-specific exploit"
+[FINAL] 1. JTL-Shop API endpoint exposure in shared test profile a-b-4db87dad (confidence 65)
+[FINAL] 2. JTL-Shop OAuth/OIDC redirect_uri validation bypass in profile p-g-443d1d50 (confidence 55)
+[FINAL] 3. JTL-Shop GraphQL introspection enabled in profile l-w-ab0f5ac0 (confidence 50)
+
+[NEXT] PROBE: GET https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/api/v1/ HTTP/1.1 — read-only, no auth, single request to confirm API exposure and response structure
+
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) create systemic risk — one misconfig replicates across JTL-Shop, Shopware6, WooCommerce
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation in test/staging environments historically loose; 29-instance profile amplifies impact
+[LEARN] REJECTED OTHER @ jtl-shop:f-b-e5fa382e: File upload RCE requires mutating test; confidence <50; program prohibits data modification on live customer data (these may be test envs but unverified)
+[LEARN] ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+
+[RISK] jtl: 78 — High-value core product (JTL-Shop) deployed in 131 test containers with 23 shared configs; wildcard DNS hides true attack surface; unauthenticated API/OAuth/GraphQL exposure in test envs could leak production keys or enable supply-chain attacks; no live validation yet — risk increases with each confirmed finding

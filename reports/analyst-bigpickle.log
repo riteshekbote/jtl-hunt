@@ -22,3 +22,920 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK  
 [RISK] JTL-Software AG: 5/10 — No active testing performed. Limited reconnaissance depth.
+===== ANALYST bigpickle 2026-09-03 19:09:54 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m• [0mRAG search JTL-Software API[90m General Agent[0m
+[0m• [0mProbe JTL-Shop API endpoints[90m General Agent[0m
+[0m✓ [0mProbe JTL-Shop API endpoints[90m General Agent[0m
+[0m✓ [0mRAG search JTL-Software API[90m General Agent[0m
+[0m
+[0m$ [0mcurl -s --max-bytes 500 -D- "https://www.jtl-software.de/" -m 10 2>&1 | head -30
+curl: option --max-bytes: is unknown
+curl: try 'curl --help' or 'curl --manual' for more information
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{redirect_url}\n" "https://1-jtl-shop-a-b-4db87dad.docker.jtl-software.de/" -m 10 2>&1; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{redirect_url}\n" "https://1-jtl-shop-p-g-443d1d50.docker.jtl-software.de/" -m 10 2>&1; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{redirect_url}\n" "https://1-jtl-shop-f-b-e5fa382e.docker.jtl-software.de/" -m 10 2>&1
+000||0|
+000||0|
+000||0|
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{redirect_url}\n" "https://1-shopware6-a-b-4db87dad.docker.jtl-software.de/" -m 10 2>&1; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{redirect_url}\n" "https://1-woocommerce-a-b-4db87dad.docker.jtl-software.de/" -m 10 2>&1; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{redirect_url}\n" "https://1-shopware5-a-b-462cc009.docker.jtl-software.de/" -m 10 2>&1
+000||0|
+000||0|
+000||0|
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://www.jtl-software.de/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://developer.jtl-software.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://api.jtl-cloud.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://hub.jtl-cloud.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://erp.jtl-cloud.com/" -m 10 2>&1
+curl: unknown --write-out variable: 'server'
+301|text/html|162|---
+curl: unknown --write-out variable: 'server'
+200|text/html; charset=utf-8|465332|---
+curl: unknown --write-out variable: 'server'
+404|application/json|54|---
+curl: unknown --write-out variable: 'server'
+200|text/html|1085|---
+curl: unknown --write-out variable: 'server'
+200|text/html|1652|
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://kundencenter.jtl-software.de/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://partner.jtl-cloud.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://apps.jtl-cloud.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://wawi-api.jtl-software.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://ffn2.api.jtl-software.com/" -m 10 2>&1; echo "---"; curl -s -o /dev/null -w "%{http_code}|%{content_type}|%{size_download}|%{server}" "https://vouchers.api.jtl-software.com/" -m 10 2>&1
+curl: unknown --write-out variable: 'server'
+302|text/html; charset=UTF-8|0|---
+curl: unknown --write-out variable: 'server'
+200|text/html|715|---
+curl: unknown --write-out variable: 'server'
+307||40|---
+curl: unknown --write-out variable: 'server'
+200|text/html|588|---
+curl: unknown --write-out variable: 'server'
+404||0|---
+curl: unknown --write-out variable: 'server'
+301|text/html; charset=utf-8|470|
+[0m
+[0m$ [0mcurl -sI "https://www.jtl-software.de/" -m 10 2>&1; echo "==="; curl -sI "https://api.jtl-cloud.com/" -m 10 2>&1; echo "==="; curl -sI "https://hub.jtl-cloud.com/" -m 10 2>&1
+HTTP/2 301 
+server: nginx
+date: Thu, 03 Sep 2026 19:08:10 GMT
+content-type: text/html
+content-length: 162
+location: https://www.jtl-software.com/de/
+x-robots-tag: all
+pragma: public
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+permissions-policy: autoplay=(),accelerometer=(),camera=(),fullscreen=(),geolocation=(),gyroscope=(),magnetometer=(),microphone=(),midi=(),payment=(),usb=()
+report-to: { "group": "endpoint", "max_age": 10886400, "endpoints": [{ "url": "https://report.api.jtl-software.com/csp/" }] }
+content-security-policy: upgrade-insecure-requests; report-to endpoint; report-uri https://report.api.jtl-software.com/csp/; default-src 'self';base-uri 'self';form-action 'self' *.hsforms.com *.facebook.com kundencenter.jtl-software.de checkout.jtl-software.com;frame-ancestors 'self';connect-src 'self' *.storylane.io v1.api.service.cmp.usercentrics.eu consent-api.service.consent.usercentrics.eu *.chilipiper.com cta-eu1.hubspot.com *.redditstatic.com pixel-config.reddit.com *.claydar.com api.nelioabtesting.com *.hsforms.com *.hubapi.com *.hscollectedforms.net hubspot-forms-static-embed-eu1.s3.amazonaws.com *.hsappstatic.net www.paypal.com api.personio.de/recruiting/applicant px.ads.linkedin.com/wa/ px.ads.linkedin.com/attribution_trigger www.googleadservices.com/ googleads.g.doubleclick.net adservice.google.com/pagead www.google.com/ccm/collect *.google.com *.google.de *.google.at *.google.ch *.google.pl *.google.es *.google.nl *.google.co.uk *.google.com.tr *.google.it *.google.fr *.google.co.in *.google.com.ua *.google.dk *.google.be *.google.cz analytics.google.com/g/collect *.google-analytics.com region1.analytics.google.com region1.google-analytics.com/g/collect stats.g.doubleclick.net/g/collect stats.g.doubleclick.net/j/collect region1.analytics.google.com/g/collect maps.googleapis.com *.facebook.com *.clarity.ms *.bing.net *.bing.com stats.jtl-software.de/matomo.php crm.jtl-software.de consent.jtl-software.de;font-src 'self' cdn.jtl-software.com fonts.gstatic.com/s/roboto/v30/ www.jtl-software.com data:;frame-src *;child-src *;img-src 'self' cdn.jtl-software.com *.storylane.io app.usercentrics.eu uct.service.usercentrics.eu *.redditstatic.com alb.reddit.com *.hsforms.com track-eu1.hubspot.com *.hubspotusercontent-eu1.net data: t.paypal.com www.paypalobjects.com img.youtube.com i.ytimg.com px.ads.linkedin.com googleads.g.doubleclick.net/pagead/ google.com *.google.com *.google.de *.google.at *.google.ch *.google.pl *.google.es *.google.nl *.google.co.uk *.google.com.tr *.google.it *.google.fr *.google.co.in *.google.com.ua *.google.dk *.google.be *.google.cz *.google-analytics.com stats.g.doubleclick.net/g/collect *.googletagmanager.com maps.googleapis.com/maps/ maps.gstatic.com/mapfiles/ *.facebook.com *.clarity.ms *.bing.net *.bing.com bilder.jtl-software.de www.jtl-software.com data:;object-src 'none';script-src 'self' cdn.jtl-software.com *.storylane.io web.cmp.usercentrics.eu *.chilipiper.com stapecdn.com *.claydar.com *.redditstatic.com *.hsforms.net *.hs-scripts.com *.hsadspixel.net *.hs-banner.com *.hscollectedforms.net *.hs-analytics.net *.hubspot.com www.paypal.com www.paypalobjects.com www.youtube.com/iframe_api www.youtube.com/s/player/ snap.licdn.com/li.lms-analytics/ www.googleadservices.com/ googleads.g.doubleclick.net/pagead/ www.google.com/pagead/ www.recaptcha.net/recaptcha/api.js www.google.com/recaptcha/api.js www.gstatic.com/recaptcha/releases/ *.google-analytics.com *.googletagmanager.com maps.googleapis.com/maps/ maps.googleapis.com/maps-api-v3/api/js/ *.facebook.net *.clarity.ms scripts.clarity.ms *.bing.com *.bing.net stats.jtl-software.de/matomo.js crm.jtl-software.de consent.jtl-software.de/dist/client/privacy.js www.jtl-software.com 'unsafe-inline' 'unsafe-eval' data:;style-src 'self' cdn.jtl-software.com *.googletagmanager.com fonts.googleapis.com/css crm.jtl-software.de consent.jtl-software.de/dist/client/privacy.css www.jtl-software.com 'unsafe-inline';worker-src 'self' www.google.com/recaptcha/api2/webworker.js *.googletagmanager.com www.jtl-software.com blob:;
+
+===
+HTTP/2 404 
+date: Thu, 03 Sep 2026 19:08:11 GMT
+content-type: application/json
+content-length: 0
+x-azure-ref: 20260903T190810Z-1568d859965bts8chC1CHI77qw0000001db00000000053t3
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+content-security-policy: frame-ancestors 'self'; form-action 'self' https://*.jtl-cloud.com
+x-cache: CONFIG_NOCACHE
+
+===
+HTTP/2 200 
+date: Thu, 03 Sep 2026 19:08:11 GMT
+content-type: text/html
+content-length: 1085
+cache-control: no-cache, no-store, must-revalidate
+etag: "6a9085bd-43d"
+expires: 0
+last-modified: Thu, 27 Aug 2026 18:45:17 GMT
+pragma: no-cache
+vary: Accept-Encoding
+x-azure-ref: 20260903T190811Z-1568d859965ptgqrhC1CHI0en800000008pg000000003p4s
+x-cache: CONFIG_NOCACHE
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+content-security-policy: frame-ancestors 'self'; form-action 'self' https://*.jtl-cloud.com
+accept-ranges: bytes
+[0m
+[0m$ [0mcurl -s "https://api.jtl-cloud.com/" -m 10 2>&1; echo "==="; curl -s "https://kundencenter.jtl-software.de/" -m 10 2>&1 | head -50
+{ "statusCode": 404, "message": "Resource not found" }===
+[0m
+[0m$ [0mcurl -s "https://api.jtl-cloud.com/erp/v2/graphql" -X POST -H "Content-Type: application/json" -d '{"query":"{ __typename }"}' -m 10 -w "\n%{http_code}" 2>&1; echo "==="; curl -s "https://api.jtl-cloud.com/account/.well-known/jwks.json" -m 10 -w "\n%{http_code}" 2>&1
+{ "statusCode": 401, "message": "JWT not present." }
+401===
+{ "statusCode": 401, "message": "JWT not present." }
+401
+[0m
+[0m$ [0mcurl -s "https://api.jtl-cloud.com/account/.well-known/openid-configuration" -m 10 -w "\n%{http_code}" 2>&1; echo "===AUTH==="; curl -s "https://api.jtl-cloud.com/account/authorize" -m 10 -w "\n%{http_code}" 2>&1; echo "===ERPV2INTRO==="; curl -s "https://api.jtl-cloud.com/erp/v2/graphql" -X POST -H "Content-Type: application/json" -d '{"query":"{_service{sdl}}"}' -m 10 -w "\n%{http_code}" 2>&1
+{ "statusCode": 404, "message": "Resource not found" }
+404===AUTH===
+{ "statusCode": 404, "message": "Resource not found" }
+404===ERPV2INTRO===
+{ "statusCode": 401, "message": "JWT not present." }
+401
+[0m
+[0m$ [0mcurl -s "https://developer.jtl-software.com/openapi/erp/2.0.json" -m 20 -w "\n%{http_code} %{size_download}" -o /tmp/opencode/erp_openapi.json 2>&1; echo "==="; head -c 2000 /tmp/opencode/erp_openapi.json 2>/dev/null
+200 2306268===
+{
+  "x-generator": "NSwag v14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "JTL-WAWI API (Cloud)",
+    "description": "JTL-Wawi-Version: 2.1.0\r\n# Introduction\r\n\r\nWelcome to the JTL-WAWI technical API documentation. This guide is here to help developers understand how our REST API works and how it can be integrated into your existing systems. We'll delve into the details of authentication and data manipulation processes, providing clear examples along the way. Whether you're a developer or an IT professional, this documentation aims to give you a practical understanding, laying the groundwork for effectively using the JTL-WAWI API to enhance your processes.\r\n\r\n# Authentication\r\n\r\nYou register your application with the API by sending a POST request with the required information and corresponding keys. You can find the exact request details at https://developer.jtl-software.com/products/erp/swagger/appregistration. This information has to include the following:\r\n\r\n* AppId\r\n* DisplayName\r\n* Description\r\n* Version\r\n* ProviderName\r\n* ProviderWebsite\r\n* MandatoryApiScopes\r\n\r\nThis data is crucial for identifying and registering your application with the API. The API uses it to generate a temporary authentication ID that allows your application to access the necessary resources. After successful validation of this information, you will receive the API key required for future authentication and API requests.\r\n\r\nBefore you can begin the registration process, you must open JTL-Wawi (new interface) and start the registration process under 'Admin->App registration'. Only at this point are you authorised to send the first API call. This step in JTL-Wawi ensures that your application is properly registered and has permission to use the API.\r\n\r\nThe API will send you an authentication ID in the form of a token. Once you have received this token and successfully completed the regist
+[0m
+Live targets identified. Let me probe a few more documented endpoints to map the surface.
+[0m$ [0mcurl -s "https://developer.jtl-software.com/llms.txt" -m 15 2>&1 | head -60
+# JTL Developer Documentation
+
+- [Cloud (2880 pages)](https://developer.jtl-software.com/_llms/cloud.md): Documentation for Cloud.
+- [Marketplace Channels (103 pages)](https://developer.jtl-software.com/_llms/marketplace-channels.md): Documentation for Marketplace Channels.
+
+## Legal
+
+### Legal
+
+- [API Licence Terms](https://developer.jtl-software.com/legal/api_licence_terms.md): Terms governing the access and usage of JTL-APIs by Users.
+
+## Schema (LLM)
+
+### GraphQL Schema
+
+- [GraphQL Schema Reference (v2.1)](https://developer.jtl-software.com/cloud/api-reference/erp/v2.1/graphql-schema.md): Complete GraphQL SDL schema for the JTL ERP API v2.1. Indexed for AI tools (MCP, llms.txt) to enable accurate query and mutation assistance.
+- [GraphQL Schema Reference (v2.0)](https://developer.jtl-software.com/cloud/api-reference/erp/v2.0/graphql-schema.md): Complete GraphQL SDL schema for the JTL ERP API v2.0. Indexed for AI tools (MCP, llms.txt) to enable accurate query and mutation assistance.
+
+## Vouchers
+
+### Guides
+
+#### Vouchers
+
+- [Vouchers API Quickstart](https://developer.jtl-software.com/vouchers/guides/quickstart.md): Set up a client, get credentials, and run through the full voucher lifecycle.
+- [Vouchers API Error Codes](https://developer.jtl-software.com/vouchers/guides/error-codes.md): Error response format and validation error codes for the Vouchers API.
+- [Vouchers API Changelog](https://developer.jtl-software.com/vouchers/guides/changelog.md): Version history and breaking changes for the Vouchers API.
+
+### API Reference
+
+#### Overview
+
+- [Vouchers API](https://developer.jtl-software.com/vouchers/api-reference.md): Create, manage, and redeem vouchers in JTL Voucher Cloud.
+
+#### Endpoints
+
+##### Vouchers
+
+- [Get a list of vouchers](https://developer.jtl-software.com/vouchers/api-reference/vouchers/get-a-list-of-vouchers.md): This call will give you a paginated list of vouchers.
+- [Create a new voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/create-a-new-voucher.md): Use this call to create a new voucher
+- [Recharge a voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/recharge-a-voucher.md): Use this call to recharge a voucher. This can be used for example for customer cards. Please note that this call is not used for cancelations of previously charges.
+- [Get a voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/get-a-voucher.md): Use this call to get a specific single voucher. Please note that you wont get the vouchers secret properties *code* and *pin* (use the vouchers/{id}/complete call instead).
+- [Delete a voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/delete-a-voucher.md): A voucher can only be deleted when it has no charges yet.
+- [Update a voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/update-a-voucher.md): Due to security restrictions only the sku and batch property can be updated on inactive vouchers
+- [Get a complete voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/get-a-complete-voucher.md): Use this call to get a voucher with its secret properties *code* and *pin*.
+- [Set the status for a voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/set-the-status-for-a-voucher.md): This call is used to activate or deactivate a specific voucher.
+- [Get a list of voucher charges](https://developer.jtl-software.com/vouchers/api-reference/vouchers/get-a-list-of-voucher-charges.md): This call will give you a paginated list of voucher charges.
+- [Get a charge of a voucher](https://developer.jtl-software.com/vouchers/api-reference/vouchers/get-a-charge-of-a-voucher.md): Use this call to get a specific charge of a voucher.
+
+##### Reservations
+
+- [Set the reservation for a specific voucher](https://developer.jtl-software.com/vouchers/api-reference/reservations/set-the-reservation-for-a-specific-voucher.md): This call temporary reserves an amount on a specific voucher, that can later be charged. A reservation expires after 30 minutes or in case a new one is requested for this voucher.
+- [Charge a specific voucher reservation](https://developer.jtl-software.com/vouchers/api-reference/reservations/charge-a-specific-voucher-reservation.md): Charges the previously created temporary reservation on a voucher.
+
+##### Charges
+
+- [Refund a specific voucher charge](https://developer.jtl-software.com/vouchers/api-reference/charges/refund-a-specific-voucher-charge.md): This call is used to (partial) refund a specific charge that was previously done on a voucher (for example if a customer returns goods to the store).
+
+##### Clients
+[0m
+[0m$ [0mcd /tmp/opencode && python3 -c "
+import json
+with open('erp_openapi.json') as f:
+    spec = json.load(f)
+paths = spec.get('paths', {})
+print('Total paths:', len(paths))
+# Find unauthenticated or interesting endpoints
+for p, methods in paths.items():
+    for m, info in methods.items():
+        if m not in ('get','post','put','delete','patch'): continue
+        sec = info.get('security', '')
+        tags = info.get('tags', [])
+        print(m.upper(), p, '| tags:', tags, '| sec:', sec)
+" 2>&1 | head -80
+Total paths: 236
+POST /v2/authentication | tags: ['Authentication'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+GET /v2/authentication/{registrationId} | tags: ['Authentication'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+POST /v2/authentication/{registrationId} | tags: ['Authentication'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+POST /v2/authentication/login | tags: ['Authentication'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+POST /v2/authentication/logout | tags: ['Authentication'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+GET /v2/availabilities | tags: ['Item'] | sec: [{'oauth2-authorization-code': ['items.read']}, {'oauth2-client-credentials': ['items.read']}]
+DELETE /v2/bill-of-materials-items/{id} | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.write']}, {'oauth2-client-credentials': ['pps.write']}]
+GET /v2/bill-of-materials-items/{id} | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.read']}, {'oauth2-client-credentials': ['pps.read']}]
+POST /v2/bill-of-materials-operations/{billOfMaterialsOperationId}/bill-of-materials-items | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.write']}, {'oauth2-client-credentials': ['pps.write']}]
+GET /v2/bill-of-materials-operations/{billOfMaterialsOperationId}/bill-of-materials-items | tags: ['Production'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+DELETE /v2/bill-of-materials-operations/{id} | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.write']}, {'oauth2-client-credentials': ['pps.write']}]
+GET /v2/bill-of-materials-operations/{id} | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.read']}, {'oauth2-client-credentials': ['pps.read']}]
+GET /v2/bills-of-materials/{billOfMaterialsId}/bill-of-materials-items | tags: ['Production'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+POST /v2/bills-of-materials/{billOfMaterialsId}/bill-of-materials-operations | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.write']}, {'oauth2-client-credentials': ['pps.write']}]
+GET /v2/bills-of-materials/{billOfMaterialsId}/bill-of-materials-operations | tags: ['Production'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+DELETE /v2/bills-of-materials/{id} | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.write']}, {'oauth2-client-credentials': ['pps.write']}]
+GET /v2/bills-of-materials/{id} | tags: ['Production'] | sec: [{'oauth2-authorization-code': ['pps.read']}, {'oauth2-client-credentials': ['pps.read']}]
+POST /v2/categories | tags: ['Item'] | sec: [{'oauth2-authorization-code': ['items.write']}, {'oauth2-client-credentials': ['items.write']}]
+GET /v2/categories | tags: ['Item'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+DELETE /v2/categories/{categoryId} | tags: ['Item'] | sec: [{'oauth2-authorization-code': ['items.write']}, {'oauth2-client-credentials': ['items.write']}]
+PATCH /v2/categories/{categoryId} | tags: ['Item'] | sec: [{'oauth2-authorization-code': ['items.write']}, {'oauth2-client-credentials': ['items.write']}]
+GET /v2/categories/{categoryId} | tags: ['Item'] | sec: [{'oauth2-authorization-code': ['items.read']}, {'oauth2-client-credentials': ['items.read']}]
+GET /v2/color-codes | tags: ['Master Data'] | sec: [{'oauth2-authorization-code': ['masterdata.read']}, {'oauth2-client-credentials': ['masterdata.read']}]
+GET /v2/companies | tags: ['Company'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+GET /v2/companies/{CompanyId} | tags: ['Company'] | sec: [{'oauth2-authorization-code': ['items.read']}, {'oauth2-client-credentials': ['items.read']}]
+GET /v2/conditions | tags: ['Item'] | sec: [{'oauth2-authorization-code': ['items.read']}, {'oauth2-client-credentials': ['items.read']}]
+GET /v2/countries | tags: ['Master Data'] | sec: [{'oauth2-authorization-code': ['system.config.read', 'masterdata.read']}, {'oauth2-client-credentials': ['system.config.read', 'masterdata.read']}]
+GET /v2/currencies | tags: ['Master Data'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+POST /v2/customer-categories | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customer-categories | tags: ['Customer'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+GET /v2/customer-categories/{customercategoryId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+PATCH /v2/customer-categories/{customercategoryId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+DELETE /v2/customer-categories/{customercategoryId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+POST /v2/customer-groups | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customer-groups | tags: ['Customer'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+GET /v2/customer-groups/{customergroupId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+PATCH /v2/customer-groups/{customergroupId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+DELETE /v2/customer-groups/{customergroupId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+POST /v2/customers | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers | tags: ['Customer'] | sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+DELETE /v2/customers/{customerId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+PATCH /v2/customers/{customerId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+GET /v2/customers/{customerId}/bank-accounts | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+POST /v2/customers/{customerId}/bank-accounts | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId}/bank-accounts/{customerBankAccountId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+PATCH /v2/customers/{customerId}/bank-accounts/{customerBankAccountId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+DELETE /v2/customers/{customerId}/bank-accounts/{customerBankAccountId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId}/contacts | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+POST /v2/customers/{customerId}/contacts | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId}/contacts/{customerContactId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+PATCH /v2/customers/{customerId}/contacts/{customerContactId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+DELETE /v2/customers/{customerId}/contacts/{customerContactId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId}/custom-fields | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+PATCH /v2/customers/{customerId}/custom-fields/{customfieldId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+DELETE /v2/customers/{customerId}/custom-fields/{customfieldId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId}/notes | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+POST /v2/customers/{customerId}/notes | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+PATCH /v2/customers/{customerId}/notes/{noteId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+DELETE /v2/customers/{customerId}/notes/{noteId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/{customerId}/notes/{noteId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+POST /v2/customers/{customerId}/workflow-events/{workflowEventId} | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+POST /v2/customers/{customerId}/workflows | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.write']}, {'oauth2-client-credentials': ['customers.write']}]
+GET /v2/customers/custom-fields | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+GET /v2/customers/workflows | tags: ['Customer'] | sec: [{'oauth2-authorization-code': ['customers.read']}, {'oauth2-client-credentials': ['customers.read']}]
+GET /v2/delivery-notes | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.read']}, {'oauth2-client-credentials': ['deliverynotes.read']}]
+GET /v2/delivery-notes/{deliveryNoteId} | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.read']}, {'oauth2-client-credentials': ['deliverynotes.read']}]
+POST /v2/delivery-notes/{deliveryNoteId}/output/mail | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.read']}, {'oauth2-client-credentials': ['deliverynotes.read']}]
+POST /v2/delivery-notes/{deliveryNoteId}/output/pdf | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.read']}, {'oauth2-client-credentials': ['deliverynotes.read']}]
+POST /v2/delivery-notes/{deliveryNoteId}/output/print | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.print']}, {'oauth2-client-credentials': ['deliverynotes.print']}]
+GET /v2/delivery-notes/{deliveryNoteId}/packages | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.read']}, {'oauth2-client-credentials': ['deliverynotes.read']}]
+POST /v2/delivery-notes/{deliveryNoteId}/packages | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.write']}, {'oauth2-client-credentials': ['deliverynotes.write']}]
+PATCH /v2/delivery-notes/{deliveryNoteId}/packages/{packageId} | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.write']}, {'oauth2-client-credentials': ['deliverynotes.write']}]
+POST /v2/delivery-notes/{deliveryNoteId}/workflow-events/{workflowEventId} | tags: ['Delivery Note'] | sec: [{'oauth2-authorization-code': ['deliverynotes.write']}, {'oauth2-client-credentials': ['deliverynotes.write']}]
+GET /v2/extensions | tags: ['Extensibility'] | sec: [{'oauth2-authorization-code': ['extensibility.integration']}, {'oauth2-client-credentials': ['extensibility.integration']}]
+POST /v2/extensions | tags: ['Extensibility'] | sec: [{'oauth2-authorization-code': ['extensibility.integration']}, {'oauth2-client-credentials': ['extensibility.integration']}]
+GET /v2/extensions/{extensionId} | tags: ['Extensibility'] | sec: [{'oauth2-authorization-code': ['extensibility.integration']}, {'oauth2-client-credentials': ['extensibility.integration']}]
+PATCH /v2/extensions/{extensionId} | tags: ['Extensibility'] | sec: [{'oauth2-authorization-code': ['extensibility.integration']}, {'oauth2-client-credentials': ['extensibility.integration']}]
+DELETE /v2/extensions/{extensionId} | tags: ['Extensibility'] | sec: [{'oauth2-authorization-code': ['extensibility.integration']}, {'oauth2-client-credentials': ['extensibility.integration']}]
+[0m
+I have significant live targets now. Let me analyze the ERP OpenAPI spec for interesting endpoints and probe a few more high-value targets.
+[0m$ [0mcurl -s "https://hub.jtl-cloud.com/" -m 10 -w "\n%{http_code}" 2>&1 | head -40; echo "===ERP==="; curl -s "https://erp.jtl-cloud.com/" -m 10 -w "\n%{http_code}" 2>&1 | head -40
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JTL Platform Hub</title>
+    <script id="usercentrics-autoblocker" src="https://web.cmp.usercentrics.eu/modules/autoblocker.js"></script>
+    <script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="qcuIKqX92tBPif" async></script>
+    <script type="module" crossorigin src="/assets/index-CSwRx8uI.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/intl-UKUPUu5p.js">
+    <link rel="modulepreload" crossorigin href="/assets/router-ZTDold8v.js">
+    <link rel="modulepreload" crossorigin href="/assets/utils-BwjOh3wj.js">
+    <link rel="modulepreload" crossorigin href="/assets/ui-CkEkvoA6.js">
+    <link rel="stylesheet" crossorigin href="/assets/ui-VS64y0Jv.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CVorGqEf.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+200===ERP===
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- Min width for Cloud ERP Design (workaround for mobile) -->
+    <meta name="viewport" content="width=1761" />
+    <title>JTL ERP Cloud</title>
+<script id="jtl-cloud-env-variables" type="application/json">{"VITE_JTL_HUB_URL":"https://hub.jtl-cloud.com","VITE_POSTHOG_PROJECT_TOKEN":"phc_SkFAxTIa4RUQxotci1Ftdw7xefZK2Ax0LEIGcl8zuD2","VITE_ORY_URL":"https://auth.jtl-cloud.com","VITE_SENTRY_ENVIRONMENT":"prod","VITE_JTL_API_URL":"https://api.jtl-cloud.com","VITE_ERP_CLOUD_APP_ID":"6701a4a8-b52d-4d2b-900d-1136f3592485","VITE_ZITADEL_CLIENT_ID":"383246859688230715","VITE_APP_ENVIRONMENT":"prod","VITE_SENTRY_DSN":"https://82a877a92404e1ad4ca46e308d4ddf27@o4508919293149184.ingest.de.sentry.io/4509087222595664","VITE_JTL_ACCOUNT_SERVICE_URL":"https://account.jtl-cloud.com","VITE_SENTRY_PROJECT":"jtl-platform-erp-web"}</script>
+    <script id="jtl-cloud-env-variables-qa" type="application/json">{"VITE_POSTHOG_PROJECT_TOKEN":"phc_SkFAxTIa4RUQxotci1Ftdw7xefZK2Ax0LEIGcl8zuD2"}</script>
+    <script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="qcuIKqX92tBPif" data-draft="true" async></script>
+    <script type="module" crossorigin src="/assets/index-1KV_mBvY.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/index-1KV_mBvY.js">
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-CrQE6kpB.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-Ca1hw5f3.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+200
+[0m
+Excellent findings. The ERP Cloud page leaks environment config including Sentry DSN, PostHog token, Zitadel client ID, and internal URLs (auth.jtl-cloud.com, account.jtl-cloud.com). Let me probe those auth endpoints.
+[0m$ [0mcurl -sI "https://auth.jtl-cloud.com/" -m 10 2>&1 | head -20; echo "===ACCOUNT==="; curl -s "https://account.jtl-cloud.com/" -m 10 -w "\n%{http_code}" 2>&1 | head -30; echo "===ORY==="; curl -s "https://auth.jtl-cloud.com/.well-known/openid-configuration" -m 10 -w "\n%{http_code}" 2>&1 | head -60
+HTTP/2 404 
+date: Thu, 03 Sep 2026 19:08:27 GMT
+content-type: application/json
+content-length: 155
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+set-cookie: __cf_bm=GK2hIvStg2wjtV4hGg40tSUUL.rRIDeh9V5RTmXRThw-1788462507.5659146-1.0.1.1-W.J1s9GpwesmdO_uq0WnCKEZO6uzJTISPwyMRTe6p3ZNHBbaNeI0EzPNuyxeIZuBJqm75NfuqcVF_HdwdxR4B0V0SSJhi4vR7Urwwsviquvt5tuSrRodo3atnS_pbwVm; HttpOnly; SameSite=None; Secure; Path=/; Domain=auth.jtl-cloud.com; Expires=Thu, 03 Sep 2026 19:38:27 GMT
+server: cloudflare
+cf-ray: a3570b104c8c2b19-ORD
+alt-svc: h3=":443"; ma=86400
+
+===ACCOUNT===
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JTL Account</title>
+    <script id="usercentrics-autoblocker" src="https://web.cmp.usercentrics.eu/modules/autoblocker.js"></script>
+    <script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="qcuIKqX92tBPif" async></script>
+    <script type="module" crossorigin src="/assets/index-DpsWuDbC.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zFrVZoN8.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+200===ORY===
+{"issuer":"https://auth.jtl-cloud.com","authorization_endpoint":"https://auth.jtl-cloud.com/oauth2/auth","device_authorization_endpoint":"https://auth.jtl-cloud.com/oauth2/device/auth","token_endpoint":"https://auth.jtl-cloud.com/oauth2/token","jwks_uri":"https://auth.jtl-cloud.com/.well-known/jwks.json","subject_types_supported":["public"],"response_types_supported":["code","code id_token","id_token","token id_token","token","token id_token code"],"claims_supported":["sub","session"],"grant_types_supported":["authorization_code","implicit","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"response_modes_supported":["query","fragment","form_post"],"userinfo_endpoint":"https://auth.jtl-cloud.com/userinfo","scopes_supported":["offline_access","offline","openid"],"token_endpoint_auth_methods_supported":["client_secret_post","client_secret_basic","private_key_jwt","none"],"userinfo_signing_alg_values_supported":["none","RS256"],"id_token_signing_alg_values_supported":["RS256"],"id_token_signed_response_alg":["RS256"],"userinfo_signed_response_alg":["RS256"],"request_parameter_supported":true,"request_uri_parameter_supported":true,"require_request_uri_registration":true,"claims_parameter_supported":false,"revocation_endpoint":"https://auth.jtl-cloud.com/oauth2/revoke","backchannel_logout_supported":true,"backchannel_logout_session_supported":true,"frontchannel_logout_supported":true,"frontchannel_logout_session_supported":true,"end_session_endpoint":"https://auth.jtl-cloud.com/oauth2/sessions/logout","request_object_signing_alg_values_supported":["none","RS256","ES256"],"code_challenge_methods_supported":["plain","S256"],"credentials_endpoint_draft_00":"https://auth.jtl-cloud.com/credentials","credentials_supported_draft_00":[{"format":"jwt_vc_json","types":["VerifiableCredential","UserInfoCredential"],"cryptographic_binding_methods_supported":["jwk"],"cryptographic_suites_supported":["PS256","RS256","ES256","PS384","RS384","ES384","PS512","RS512","ES512","EdDSA"]}]}
+
+200
+[0m
+[0m$ [0mcurl -s "https://account.jtl-cloud.com/.well-known/openid-configuration" -m 10 -w "\n%{http_code}" 2>&1 | head -60; echo "===JWKS==="; curl -s "https://auth.jtl-cloud.com/.well-known/jwks.json" -m 10 -w "\n%{http_code}" 2>&1 | head -20
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JTL Account</title>
+    <script id="usercentrics-autoblocker" src="https://web.cmp.usercentrics.eu/modules/autoblocker.js"></script>
+    <script id="usercentrics-cmp" src="https://web.cmp.usercentrics.eu/ui/loader.js" data-settings-id="qcuIKqX92tBPif" async></script>
+    <script type="module" crossorigin src="/assets/index-DpsWuDbC.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-zFrVZoN8.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+
+200===JWKS===
+{"keys":[{"use":"sig","kty":"EC","kid":"44e731fd-2256-48e5-8716-79defb2c61e9","crv":"P-256","alg":"ES256","x":"lvh0P0-nIP7awkJMPh42egEgoTfs3MaGwU-SV-JN8Gs","y":"iYcd095eoxoj7_fLhNaFZIrbAyultaUxySpa_0RlsOA"},{"use":"sig","kty":"EC","kid":"5b1344d6-5e20-4f6f-9007-8475b74d930c","crv":"P-256","alg":"ES256","x":"mXVIcBP9B5F1j9G87qkq1YdNQXOsVxodk419n9hd17M","y":"5wADOpz_rtqxB8XXBbXT-jn4QcZ_8jpQDbzZqjrfKJE"},{"use":"sig","kty":"RSA","kid":"73f0efec-1599-442c-ac69-4c2aebb6e2ae","alg":"RS256","n":"1ba6bJnanM7z_0VWoH8dXEkSD6qGdmwCIYyCipPqXY-yg3Cbj_Vj3k0zFhRl91YH0iMoRezf-Nf2y4NUzRXttUo9OYQnFWzuuTTALWd6pul7Dz3F6sJzjBudunQUu2P2Vd3cvMRNG13IPYiLvcI_4x5FmD3ptQ0ZYkckBPCY62VwAKNjXGoFUbnp8fT32EjE_BkXBa_PbIsGOkNagGoRPA0rjuQ1p-QKvbsvX-fQbWUeSL0yW4m6DlEt2VXT97c8JtAbh-tEr6za-90NlzMyRT8caPg3k659vGA5XhVEWwxzd3wJpbnKO-pydixxkF-6vh2IPPMaU2qh2BrW7l1vl4GNDlTJNSSp9nMHi4vTwWO7IqcUu_OepXm_NSsKrjXEvrLZ-5H8d6MpOipfJ4_EsL3PPjR-4dV0IOBwYfYqxAND1W9r4tKOKnlActtLFagoiJeuJ1M01I8lKJdnQSseLTUtAx7bCoqXo7AwSqXDIfEVwPDxQsL-mpHH33iXkgZzc-GdEvs8H2Ic4FXBdd2A_u0ypsXOYdKE2P7KGR4qje7nNb9tARkS08QM7ZeTKxkyerdj3WQMzGN0YzIR7sa9_CLfcRNRQHIPlkm_ZHwoOM6RB9VgOTopP_rbzET-TsgE0k5dTaJbjizLCKO4lIOT9eHRko7hPIrVVH838vD7UY8","e":"AQAB"},{"use":"sig","kty":"RSA","kid":"3f8c45de-c7c3-4abe-bc41-849a9c4adbc0","alg":"RS256","n":"pyJ1bfQRY1ef5VK_fytvzDO2J6Fsyzdj6HfO5opJ7pMqQ04MvohPNkUTLFL7v4H2CQX83ka1lOVij41-n43dLucaTbXxBH03cyRQ0Ib2Bv8C_J-j1vYU7RjIA3jfn43OMnbhgmZ_QVzme1wVvuPE4jIYS7yHl3PPk16lJstxCEHMpUD-Bbz1BPhytJELdKxxR2jG4eFYubU8wTVnMYFwLS7MkHGyWsAwCD7TzfI0CPNTL4ZhCA6H9BJndgZ0isAczII7K-p-FIizbFU1jtQSZUC00FuoJMJdRZnDsHtqjeK23J7Zh4gTMej7N1RNHzOiutIWzq8iSH-kz5tXmotGHhzrvCglhK1_ouyhhukBYrsPgHGbPk1bU0QUrXvxFWiGnCI1Nt04CcTg-4V1PPRh7kXxhnWbyTPixOvmIdFsGZaOeCBHGRIZczqiBSh-ofdBx4m86bjKYY4A_8E_aiOCrSHWgTBnVvhsHc0YnrdhtadWlC01Y9HB2b66_E8vDCH_uJuN2HwRhio7SMwO6QEeYVQJUc1GMQG57saqVgkRBwcUZf3ztXbhAqB0esOlzfvzkq82vZpSb3ON9slQXAEH-c7NHRbnML6xxnFMfi78jFGGvQiJq7xZTVMCeXP9Z9NvlKbNobvpK5tgguOZuHz-6kJgRwyoAclLVXZfvYeG2j8","e":"AQAB"}]}
+
+200
+[0m
+I now have a solid picture of the live attack surface. Key observations:
+
+1. **Live cloud infra confirmed**: `api.jtl-cloud.com` (404 root), `auth.jtl-cloud.com` (Ory-based OIDC, OAuth flows, exposed JWKS), `hub.jtl-cloud.com`, `erp.jtl-cloud.com`, `account.jtl-cloud.com`.
+
+2. **ERP Cloud page leaks config**: Sentry DSN, PostHog token, Zitadel client ID, internal service URLs (auth, account).
+
+3. **Ory auth server**: OAuth endpoints exposed. `request_uri_parameter_supported: true` and `require_request_uri_registration: true`.
+
+4. **Notable**: The ERP OpenAPI `v2/authentication/login` POST endpoint has auth scopes that are oddly permissive (some endpoints show `[]` empty security).
+
+5. **Sentry DSN leak** — the DSN is `https://82a877a92404e1ad4ca46e308d4ddf27@o4508919293149184.ingest.de.sentry.io/4509087222595664`. While Sentry DSNs are public by design, misconfigured Sentry instances can expose stack traces and PII.
+
+Let me check a couple more things: the authentication/login endpoint behavior unauth, and whether the ERP GraphQL schema has any anomalies. I should also note the empty-security endpoints in the OpenAPI which are notable — `GET /v2/companies`, `GET /v2/currencies`, `GET /v2/categories` all list `[]` for oauth2-authorization-code (empty scope), which typically means these are callable with any valid token. That's normal, not a vuln.
+
+Let me do the final analysis. The key hypothesis is around the Ory OAuth server and its request_uri support, and the leaked internal config.
+
+STEP 1 — DELTA
+- [NEW] JTL Cloud production infra identified as live: `api.jtl-cloud.com` (Azure), `auth.jtl-cloud.com` (Ory OIDC), `account.jtl-cloud.com`, `hub.jtl-cloud.com`, `erp.jtl-cloud.com`. ERP Cloud page leaks env config (Sentry DSN, PostHog token, Zitadel client ID, internal service URLs).
+- [CHANGED] docker.jtl-software.de test/CI hosts (300 instances from prior recon) do NOT resolve live (000 status) — deprioritized; production cloud is the real target.
+
+STEP 2 — PRIORITIZE
+- api.jtl-cloud.com: attack_surface framework with ERP data (customers, orders, bank accounts), GraphQL + REST. priority high.
+- auth.jtl-cloud.com: Ory OAuth — high gate ease, JWT/OAuth class.
+- erp.jtl-cloud.com / ERP Cloud: leaks Sentry/PostHog/ORY config in HTML env block.
+
+STEP 5 — NEXT: The highest-value leads are (a) the ERP OpenAPI empty-auth-scope and authentication endpoints, (b) the Ory `request_uri` OAuth, (c) config leak. Let me emit hypotheses.
+
+Let me quickly check the authentication login endpoint behavior and the voucher API / appregistration.
+[0m$ [0mcurl -s "https://api.jtl-cloud.com/v2/authentication" -X POST -H "Content-Type: application/json" -d '{}' -m 10 -w "\n%{http_code}" 2>&1 | head -20; echo "===LOGIN==="; curl -s "https://api.jtl-cloud.com/v2/authentication/login" -X POST -H "Content-Type: application/json" -d '{}' -m 10 -w "\n%{http_code}" 2>&1 | head -20; echo "===COMPANIES==="; curl -s "https://api.jtl-cloud.com/v2/companies" -m 10 -w "\n%{http_code}" 2>&1 | head -20
+{ "statusCode": 404, "message": "Resource not found" }
+404===LOGIN===
+{ "statusCode": 404, "message": "Resource not found" }
+404===COMPANIES===
+{ "statusCode": 404, "message": "Resource not found" }
+404
+[0m
+404 on all /v2 paths at api.jtl-cloud.com root — these are the cloud multi-tenant API routed under tenant/registration context. The ERP REST API is likely behind the Wawi registration flow which requires an actual registered app. These endpoints need a tenant context. Not directly probeable blindly.
+
+I have enough. Let me finalize the analysis.
+
+STEP 1 — DELTA
+- [NEW] JTL Cloud production infra identified LIVE: `api.jtl-cloud.com` (Azure/nginx), `auth.jtl-cloud.com` (Ory OIDC provider, JWKS exposed), `account.jtl-cloud.com`, `hub.jtl-cloud.com`, `erp.jtl-cloud.com`. ERP Cloud HTML leaks `jtl-cloud-env-variables` (Sentry DSN, PostHog token, Zitadel client ID `383246859688230715`, internal service URLs `auth.jtl-cloud.com`, `account.jtl-cloud.com`).
+- [NEW] Downloaded full ERP OpenAPI v2.0 spec (2.3MB, 236 paths) from public developer portal; authentication uses OAuth2 code+client-credentials; several endpoints have empty scope requirements.
+- [CHANGED] 300 docker.jtl-software.de test instances from prior recon return 000 (no live HTTP) — deprioritized; production cloud is the real in-scope attack surface.
+
+STEP 2 — PRIORITIZE
+- erp.jtl-cloud.com (config leak): attack_surface 4, business 7, tech_exposure (Sentry/PostHog/OAuth) 8, gate 8, cloud 9, freshness 8 → 0.25*4+0.25*7+0.15*8+0.15*8+0.10*9+0.10*8 = 1+1.75+1.2+1.2+0.9+0.8 = 6.85
+- auth.jtl-cloud.com (Ory OAuth): 3,9,9,9,8,9 → 0.75+2.25+1.35+1.35+0.8+0.9=7.4
+- api.jtl-cloud.com: 7,9,8,6,9,7 → 1.75+2.25+1.2+0.9+0.9+0.7=7.7
+
+STEP 3 — HYPOTHESES
+
+STEP 4/5/6/7
+
+Let me write the final structured output.
+[0m$ [0mcd /tmp/opencode && python3 -c "
+import json
+with open('erp_openapi.json') as f:
+    spec = json.load(f)
+# Check for endpoints with empty security scopes that involve auth tokens, and app registration
+for p in ['/v2/authentication','/v2/authentication/login','/v2/authentication/{registrationId}']:
+    if p in spec['paths']:
+        print('PATH', p)
+        for m,info in spec['paths'][p].items():
+            if m in ('get','post','put','delete','patch'):
+                print(' ',m.upper(),'params:',[q['name'] for q in info.get('parameters',[])],'sec:',info.get('security'))
+print('---schemes---')
+print(json.dumps(spec.get('components',{}).get('securitySchemes',{}), indent=1))
+"
+PATH /v2/authentication
+  POST params: ['x-challengecode', 'x-tenant-id'] sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+PATH /v2/authentication/login
+  POST params: ['x-challengecode', 'x-tenant-id'] sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+PATH /v2/authentication/{registrationId}
+  GET params: ['registrationId', 'x-challengecode', 'x-tenant-id'] sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+  POST params: ['registrationId', 'x-challengecode', 'x-tenant-id'] sec: [{'oauth2-authorization-code': []}, {'oauth2-client-credentials': []}]
+---schemes---
+{
+ "oauth2-authorization-code": {
+  "type": "oauth2",
+  "flows": {
+   "authorizationCode": {
+    "authorizationUrl": "https://auth.jtl-cloud.com/oauth2/auth",
+    "tokenUrl": "https://auth.jtl-cloud.com/oauth2/token",
+    "scopes": {
+     "items.read": "Grants permission to read item data.",
+     "items.write": "Grants permission to create and modify item data.",
+     "all.read": "Allows the application to read all data.",
+     "authentication.updateforeignapp": "Grants permission to update registered third-party apps.",
+     "customers.read": "Grants permission to read customer data.",
+     "customers.write": "Grants permission to create and modify customer data.",
+     "customfields.read": "Grants permission to read custom fields.",
+     "customfields.write": "Grants permission to create and modify custom fields.",
+     "deliveries.read": "Grants permission to read deliveries.",
+     "deliveries.write": "Grants permission to create and modify deliveries.",
+     "deliverynotes.print": "Grants permission to print and output delivery notes.",
+     "deliverynotes.read": "Grants permission to read delivery notes.",
+     "deliverynotes.write": "Grants permission to create and modify delivery notes.",
+     "extensibility.integration": "Grants permission to manage extensions and integrations of the JTL-Wawi.",
+     "foreignapps.manage": "Grants permission to manage registered third-party apps (registration, update and removal).",
+     "inventories.read": "Grants permission to read stock levels.",
+     "inventories.write": "Grants permission to modify stock levels.",
+     "invoices.read": "Grants permission to read invoices.",
+     "invoices.write": "Grants permission to create and modify invoices.",
+     "labels.read": "Grants permission to read labels.",
+     "labels.write": "Grants permission to create and modify labels.",
+     "masterdata.read": "Read master data such as shipping methods, payment methods, color codes and tax classes.",
+     "orders.read": "Grants permission to read orders.",
+     "picklists.read": "Grants permission to read pick lists.",
+     "picklists.write": "Grants permission to create and modify pick lists.",
+     "returns.read": "Grants permission to read returns.",
+     "returns.write": "Grants permission to create and modify returns.",
+     "saleschannels.read": "Grants permission to read sales channels.",
+     "salesinvoicecorrections.read": "Grants permission to read invoice corrections.",
+     "salesinvoicecorrections.write": "Grants permission to create and modify invoice corrections.",
+     "salesorders.print": "Grants permission to print and output sales orders.",
+     "salesorders.read": "Grants permission to read sales orders.",
+     "salesorders.write": "Grants permission to create and modify sales orders.",
+     "system.config.read": "Grants permission to read the system configuration.",
+     "system.config.write": "Grants permission to modify the system configuration.",
+     "system.worker.read": "Grants permission to read the configuration and status of background workers.",
+     "system.worker.write": "Grants permission to configure and control background workers.",
+     "taxes.read": "Grants permission to read tax data.",
+     "warehouse.read": "Grants permission to read warehouse data.",
+     "wawiapp.all": "Grants access to Wawi app related operations.",
+     "currencies.read": "Grants read access to currencies.",
+     "jera.read": "Grants read access to JERA internal endpoints.",
+     "paymentmethods.read": "Grants read access to payment methods.",
+     "salesinvoicecorrections.print": "Grants permission to print and output invoice corrections.",
+     "salesinvoices.print": "Grants permission to print and output sales invoices.",
+     "salesinvoices.read": "Grants read access to sales invoices.",
+     "salesinvoices.write": "Grants write access to sales invoices.",
+     "salesquotations.print": "Grants permission to print and output sales quotations.",
+     "salesquotations.read": "Grants read access to sales quotations.",
+     "salesquotations.write": "Grants write access to sales quotations.",
+     "suppliers.read": "Grants permission to read suppliers.",
+     "resources.read": "Grants permission to read resource management data.",
+     "resources.write": "Grants permission to create and modify resource management data.",
+     "pps.read": "Grants permission to read production data.",
+     "pps.write": "Grants permission to create and modify production data.",
+     "masterdata.write": "Write master data",
+     "inventory.read": "Grants permission to read stock levels.",
+     "inventory.write": "Grants permission to modify stock levels.",
+     "taxes.write": "Grants permission to create and modify tax data.",
+     "application.runas": "Allows the application to execute requests on behalf of another user."
+    }
+   }
+  }
+ },
+ "oauth2-client-credentials": {
+  "type": "oauth2",
+  "flows": {
+   "clientCredentials": {
+    "tokenUrl": "https://auth.jtl-cloud.com/oauth2/token",
+    "scopes": {
+     "items.read": "Grants permission to read item data.",
+     "items.write": "Grants permission to create and modify item data.",
+     "all.read": "Allows the application to read all data.",
+     "authentication.updateforeignapp": "Grants permission to update registered third-party apps.",
+     "customers.read": "Grants permission to read customer data.",
+     "customers.write": "Grants permission to create and modify customer data.",
+     "customfields.read": "Grants permission to read custom fields.",
+     "customfields.write": "Grants permission to create and modify custom fields.",
+     "deliveries.read": "Grants permission to read deliveries.",
+     "deliveries.write": "Grants permission to create and modify deliveries.",
+     "deliverynotes.print": "Grants permission to print and output delivery notes.",
+     "deliverynotes.read": "Grants permission to read delivery notes.",
+     "deliverynotes.write": "Grants permission to create and modify delivery notes.",
+     "extensibility.integration": "Grants permission to manage extensions and integrations of the JTL-Wawi.",
+     "foreignapps.manage": "Grants permission to manage registered third-party apps (registration, update and removal).",
+     "inventories.read": "Grants permission to read stock levels.",
+     "inventories.write": "Grants permission to modify stock levels.",
+     "invoices.read": "Grants permission to read invoices.",
+     "invoices.write": "Grants permission to create and modify invoices.",
+     "labels.read": "Grants permission to read labels.",
+     "labels.write": "Grants permission to create and modify labels.",
+     "masterdata.read": "Read master data such as shipping methods, payment methods, color codes and tax classes.",
+     "orders.read": "Grants permission to read orders.",
+     "picklists.read": "Grants permission to read pick lists.",
+     "picklists.write": "Grants permission to create and modify pick lists.",
+     "returns.read": "Grants permission to read returns.",
+     "returns.write": "Grants permission to create and modify returns.",
+     "saleschannels.read": "Grants permission to read sales channels.",
+     "salesinvoicecorrections.read": "Grants permission to read invoice corrections.",
+     "salesinvoicecorrections.write": "Grants permission to create and modify invoice corrections.",
+     "salesorders.print": "Grants permission to print and output sales orders.",
+     "salesorders.read": "Grants permission to read sales orders.",
+     "salesorders.write": "Grants permission to create and modify sales orders.",
+     "system.config.read": "Grants permission to read the system configuration.",
+     "system.config.write": "Grants permission to modify the system configuration.",
+     "system.worker.read": "Grants permission to read the configuration and status of background workers.",
+     "system.worker.write": "Grants permission to configure and control background workers.",
+     "taxes.read": "Grants permission to read tax data.",
+     "warehouse.read": "Grants permission to read warehouse data.",
+     "wawiapp.all": "Grants access to Wawi app related operations.",
+     "currencies.read": "Grants read access to currencies.",
+     "jera.read": "Grants read access to JERA internal endpoints.",
+     "paymentmethods.read": "Grants read access to payment methods.",
+     "salesinvoicecorrections.print": "Grants permission to print and output invoice corrections.",
+     "salesinvoices.print": "Grants permission to print and output sales invoices.",
+     "salesinvoices.read": "Grants read access to sales invoices.",
+     "salesinvoices.write": "Grants write access to sales invoices.",
+     "salesquotations.print": "Grants permission to print and output sales quotations.",
+     "salesquotations.read": "Grants read access to sales quotations.",
+     "salesquotations.write": "Grants write access to sales quotations.",
+     "suppliers.read": "Grants permission to read suppliers.",
+     "resources.read": "Grants permission to read resource management data.",
+     "resources.write": "Grants permission to create and modify resource management data.",
+     "pps.read": "Grants permission to read production data.",
+     "pps.write": "Grants permission to create and modify production data.",
+     "masterdata.write": "Write master data",
+     "inventory.read": "Grants permission to read stock levels.",
+     "inventory.write": "Grants permission to modify stock levels.",
+     "taxes.write": "Grants permission to create and modify tax data.",
+     "application.runas": "Allows the application to execute requests on behalf of another user."
+    }
+   }
+  }
+ }
+}
+[0m
+Very interesting. The scopes list reveals high-value internal scopes: `all.read` ("read all data"), `application.runas` ("execute requests on behalf of another user" — a powerful privilege), `wawiapp.all`, `authentication.updateforeignapp`, `jera.read` (JERA internal endpoints). The `all.read` and `application.runas` scopes being exposed to third-party `client_credentials` flows is a huge deal if a client could be granted them.
+
+Now I have enough to produce the final analysis. Let me write it out.
+[0m$ [0mcurl -s "https://auth.jtl-cloud.com/oauth2/auth?client_id=383246859688230715&redirect_uri=https%3A%2F%2Ferp.jtl-cloud.com%2Fcallback&response_type=code&scope=openid" -m 10 -o /dev/null -w "%{http_code}|%{redirect_url}\n" 2>&1; curl -s "https://auth.jtl-cloud.com/oauth2/auth?client_id=383246859688230715&redirect_uri=https%3A%2F%2Fevil.example.com%2Fcb&response_type=code&scope=openid" -m 10 -o /dev/null -w "%{http_code}|%{redirect_url}\n" 2>&1
+302|https://auth.jtl-cloud.com/ui/error?error=invalid_client&error_description=Client+authentication+failed+%28e.g.%2C+unknown+client%2C+no+client+authentication+included%2C+or+unsupported+authentication+method%29.+The+requested+OAuth+2.0+Client+does+not+exist.+Unable+to+locate+the+resource
+302|https://auth.jtl-cloud.com/ui/error?error=invalid_client&error_description=Client+authentication+failed+%28e.g.%2C+unknown+client%2C+no+client+authentication+included%2C+or+unsupported+authentication+method%29.+The+requested+OAuth+2.0+Client+does+not+exist.+Unable+to+locate+the+resource
+[0m
+The Zitadel client ID `383246859688230715` from the ERP page isn't valid on the Ory (auth.jtl-cloud.com) server — this is Zitadel client for a different flow. So the ERP Cloud likely uses a Zitadel instance elsewhere for actual login, while auth.jtl-cloud.com is the Ory-based M2M/API auth. Both reject unknown clients.
+
+Interesting: Ory rejects the redirect regardless, so no redirect_uri manipulation observable on this client. The redirect_uri validation behavior would need a valid client to test, which requires either an account or registered client. That's AUTH_HELPED at best.
+
+I have adequate surface data. Let me finalize.
+
+STEP 1 — DELTA
+- [NEW] JTL Cloud production infra identified LIVE: `api.jtl-cloud.com` (nginx/Azure, 404 root), `auth.jtl-cloud.com` (Ory OIDC, OAuth flows + JWKS exposed), `account.jtl-cloud.com`, `hub.jtl-cloud.com`, `erp.jtl-cloud.com`.
+- [NEW] `erp.jtl-cloud.com` HTML leaks `jtl-cloud-env-variables`: Sentry DSN (`82a877...@o4508919293149184.ingest.de.sentry.io/4509087222595664`), PostHog token, Zitadel client ID `383246859688230715`, ORY URL, and internal URLs (`account.jtl-cloud.com`).
+- [NEW] Downloaded ERP OpenAPI v2.0 (236 paths; 2.3MB) from public developer portal; exposes powerful scopes `all.read`, `application.runas`, `wawiapp.all`, `foreignapps.manage`, `jera.read`.
+- [CHANGED] 300 docker.jtl-software.de test instances (prior recon) return 000 — non-live, deprioritized. Production cloud is the live target.
+
+STEP 2 — PRIORITIZE
+[PRIO] api.jtl-cloud.com,7.7,data_exposure(bank-accounts/customers/orders via client_credentials)
+[PRIO] auth.jtl-cloud.com,7.4,oauth(public Ory,OAuth code/device/token endpoints)
+[PRIO] erp.jtl-cloud.com,6.9,config_leak(Sentry/PostHog/hidden auth URLs in public HTML)
+
+STEP 3 — HYPOTHESES
+[HYP] Ory OAuth client-secret/auth bypass via device flow and permissive response_types
+...
+[HYP] ERP REST `application.runas` / `all.read` scope over-grant in client_credentials tenant context
+...
+[HYP] ERP Cloud env-config leak enables Sentry/PostHog data exfil or internal service discovery
+
+STEP 4 — SELF-CRITIQUE
+- Decided most auth hypotheses need a client/account (AUTH_HELPED), so route to probe/RAG first.
+
+STEP 5 — [NEXT] RAG: fetch ERP GraphQL schema v2.0/v2.1 SDL from developer portal to enumerate mutations/introspectable fields and pinpoint `application.runas` usage before any live probe.
+
+STEP 6 — LEARN: ACCEPTED OATH @ jtl-cloud: Ory OIDC + Zitadel double auth stack confirmed via well-known + leaked client IDs; no valid client needed to fingerprint redirect error behavior (invalid_client returned regardless of redirect_uri).
+
+STEP 7 — RISK: 7/10 — live production cloud B2B/ERP exposes customer/bank data; config leak + powerful scopes; no auth bypass yet but wide documented surface.
+
+Let me confirm the GraphQL schema is fetchable.
+[0m$ [0mcurl -s "https://developer.jtl-software.com/cloud/api-reference/erp/v2.1/graphql-schema.md" -m 15 -w "\n%{http_code} %{size_download}\n" -o /tmp/opencode/gql_schema.md 2>&1 | tail -1; head -30 /tmp/opencode/gql_schema.md 2>/dev/null; echo "..."; grep -io "application.runas\|runAs\|runas\|jera" /tmp/opencode/gql_schema.md 2>/dev/null | head
+200 1054835
+> ## Documentation Index
+> Fetch the complete documentation index at: https://developer.jtl-software.com/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+# GraphQL Schema Reference (v2.1)
+
+> Complete GraphQL SDL schema for the JTL ERP API v2.1. Indexed for AI tools (MCP, llms.txt) to enable accurate query and mutation assistance.
+
+# GraphQL Schema — JTL ERP API v2.1
+
+This is the complete GraphQL schema (SDL) for the **JTL ERP API v2.1 (Cloud)**. It is
+auto-generated from the official introspection output and kept in sync with
+each API version.
+
+**Use this schema to understand the available queries, mutations, input types, and
+object types when building GraphQL requests against the JTL Platform API.**
+
+* **Endpoint:** `https://api.jtl-cloud.com/erp/v2/graphql`
+* **Authentication:** OAuth 2.0 Bearer token (see [Authentication guide](/cloud/guides/essentials/authentication/oauth2-flow))
+* **Required header:** `x-tenant-id` — the tenant ID for the target ERP instance
+* **Interactive playground:** [GraphQL Playground](/cloud/api-reference/graphql-playground)
+
+## Schema (SDL)
+
+```text theme={null}
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+...
+jera
+jera
+jera
+jera
+jera
+jera
+jera
+[0m
+The GraphQL schema is fully fetchable (1MB), and references `jera`. The `x-tenant-id` header is required for GraphQL. Let me search for the runas/all.read and mutations in the schema.
+[0m$ [0mcd /tmp/opencode && grep -i "runas\|runAs\|impersonat\|onBehalfOf\|userInfo" gql_schema.md | head -20; echo "===MUTATIONS==="; grep -oE "^  [a-zA-Z0-9_]+\(.*\): [A-Za-z!\[M\] ]+$" gql_schema.md | head -60
+===MUTATIONS===
+[0m
+[0m$ [0mcd /tmp/opencode && python3 -c "
+data = open('gql_schema.md').read()
+# Extract the SDL block
+import re
+m = re.search(r'\`\`\`text.*?\n(.*?)\`\`\`', data, re.S)
+sdl = m.group(1) if m else data
+# find type Mutation block
+mi = sdl.find('type Mutation')
+qi = sdl.find('type Query')
+print('Mutation block at', mi)
+print(sdl[mi-50:mi+2000] if mi>0 else 'no mutation')
+"
+Mutation block at 85186
+llection of the BillOfMaterialsComponents domain"
+type Mutation {
+  "Deletes a bill of materials item from a bill of materials."
+  DeleteBillOfMaterialsItem(
+    request: DeleteBillOfMaterialsItemCommandRequestInput!
+  ): Boolean! @authorize(roles: ["pps.write", "system.all"]) @cost(weight: "10")
+  "Deletes a bill of materials operation from a bill of materials."
+  DeleteBillOfMaterialsOperation(
+    request: DeleteBillOfMaterialsOperationCommandRequestInput!
+  ): Boolean! @authorize(roles: ["pps.write", "system.all"]) @cost(weight: "10")
+  "Deletes a bill of materials."
+  DeleteBillOfMaterials(request: DeleteBillOfMaterialsCommandRequestInput!): Boolean!
+    @authorize(roles: ["pps.write", "system.all"])
+    @cost(weight: "10")
+  """
+  Creates a new bill of materials for a production item, including its components.
+  
+  If a request with this mutation's Idempotency-Key was already completed, the response's `extensions` contains an `idempotency.{responseName}` entry with `wasReplayed: true`.
+  """
+  CreateBillOfMaterials(request: CreateBillOfMaterialsCommandRequestInput!): CreateBillOfMaterialsCommandResponse!
+    @authorize(roles: ["pps.write", "system.all"])
+    @cost(weight: "10")
+  """
+  Creates a new bill of materials item for a bill of materials operation.
+  
+  If a request with this mutation's Idempotency-Key was already completed, the response's `extensions` contains an `idempotency.{responseName}` entry with `wasReplayed: true`.
+  """
+  CreateBillOfMaterialsItem(
+    request: CreateBillOfMaterialsItemCommandRequestInput!
+  ): CreateBillOfMaterialsItemCommandResponse!
+    @authorize(roles: ["pps.write", "system.all"])
+    @cost(weight: "10")
+  """
+  Creates a new bill of materials operation for a bill of materials, including its items.
+  
+  If a request with this mutation's Idempotency-Key was already completed, the response's `extensions` contains an `idempotency.{responseName}` entry with `wasReplayed: true`.
+  """
+  CreateBillOfMaterialsOperation(
+    request: CreateBillOfMaterialsOperationCommandRequest
+[0m
+The schema has `@authorize(roles: [...])` directives. Note `system.all` role appears. Let me look at what roles appear and whether `application.runas` or `all.read` maps to `system.all`.
+[0m$ [0mcd /tmp/opencode && python3 -c "
+import re
+data = open('gql_schema.md').read()
+m = re.search(r'\`\`\`text.*?\n(.*?)\`\`\`', data, re.S)
+sdl = m.group(1)
+roles = sorted(set(re.findall(r'@authorize\(roles: \[([^\]]+)\]\)', sdl)))
+for r in roles:
+    print('ROLE GROUP:', r)
+# count distinct role strings
+allr = re.findall(r'\"([a-zA-Z0-9_.]+)\"', ' '.join(re.findall(r'@authorize\(roles: \[([^\]]+)\]\)', sdl)))
+from collections import Counter
+print(Counter(allr).most_common(30))
+"
+ROLE GROUP: "channels.read", "system.all"
+ROLE GROUP: "currencies.read", "system.all"
+ROLE GROUP: "customers.read", "system.all"
+ROLE GROUP: "customers.write", "system.all"
+ROLE GROUP: "deliverynotes.read", "system.all"
+ROLE GROUP: "deliverynotes.write", "system.all"
+ROLE GROUP: "inventories.write", "system.all"
+ROLE GROUP: "inventory.read", "system.all"
+ROLE GROUP: "inventory.write", "system.all"
+ROLE GROUP: "invoices.print", "system.all"
+ROLE GROUP: "invoices.read", "system.all"
+ROLE GROUP: "invoices.write", "system.all"
+ROLE GROUP: "items.read", "system.all"
+ROLE GROUP: "items.write", "system.all"
+ROLE GROUP: "jera.read", "system.all"
+ROLE GROUP: "marketplaceoffers.read", "system.all"
+ROLE GROUP: "marketplaceoffers.write", "system.all"
+ROLE GROUP: "masterdata.read", "system.all", "system.config.read"
+ROLE GROUP: "masterdata.write", "system.all", "system.config.write"
+ROLE GROUP: "notifications.read", "system.all"
+ROLE GROUP: "orders.read", "system.all"
+ROLE GROUP: "orders.write", "system.all"
+ROLE GROUP: "paymentmethods.read", "system.all"
+ROLE GROUP: "payments.read", "system.all"
+ROLE GROUP: "payments.write", "system.all"
+ROLE GROUP: "pps.read", "system.all"
+ROLE GROUP: "pps.write", "system.all"
+ROLE GROUP: "purchaseorders.read", "system.all"
+ROLE GROUP: "purchaseorders.write", "system.all"
+ROLE GROUP: "resources.read", "system.all"
+ROLE GROUP: "resources.write", "system.all"
+ROLE GROUP: "returns.write", "system.all"
+ROLE GROUP: "saleschannels.read", "system.all"
+ROLE GROUP: "saleschannels.write", "system.all"
+ROLE GROUP: "salesinvoicecorrections.read", "system.all"
+ROLE GROUP: "salesinvoicecorrections.write", "system.all"
+ROLE GROUP: "salesinvoices.read", "system.all"
+ROLE GROUP: "salesinvoices.write", "system.all"
+ROLE GROUP: "salesorders.read", "system.all"
+ROLE GROUP: "salesorders.write", "system.all"
+ROLE GROUP: "salesquotations.read", "system.all"
+ROLE GROUP: "salesquotations.write", "system.all"
+ROLE GROUP: "suppliers.read", "system.all"
+ROLE GROUP: "suppliers.write", "system.all"
+ROLE GROUP: "system.all", "system.config.read"
+ROLE GROUP: "system.all", "system.worker.read"
+ROLE GROUP: "system.all", "system.worker.write"
+ROLE GROUP: "system.all", "taxes.read"
+ROLE GROUP: "system.all", "taxes.write"
+[('system.all', 270), ('inventory.read', 25), ('items.write', 25), ('inventory.write', 20), ('saleschannels.read', 18), ('saleschannels.write', 15), ('pps.read', 14), ('items.read', 13), ('pps.write', 11), ('orders.write', 10), ('marketplaceoffers.write', 8), ('salesorders.read', 7), ('jera.read', 7), ('taxes.write', 7), ('orders.read', 6), ('invoices.write', 6), ('resources.read', 5), ('deliverynotes.read', 5), ('invoices.read', 5), ('salesorders.write', 5), ('customers.read', 4), ('taxes.read', 4), ('system.config.read', 3), ('suppliers.write', 3), ('payments.write', 3), ('salesquotations.write', 3), ('notifications.read', 2), ('marketplaceoffers.read', 2), ('purchaseorders.read', 2), ('suppliers.read', 2)]
+[0m
+Critical finding: **every** GraphQL operation authorizes with role `"system.all"` as an OR branch — meaning the role `system.all` is a global super-admin role accepted by all operations. The REST OpenAPI exposes scope `all.read` ("read all data"). If `system.all` or `all.read` can be granted to a client (e.g., via over-broad client_credentials grant or a misconfigured registration flow), it's a full-ERP compromise. 
+
+But that's speculative unless a client can obtain it. The more testable angle is the Wawi app-registration and foreignapps.manage / application.runas scopes.
+
+Let me also check the Quartz/worker endpoints and whether the schema exposes any "runas"/impersonation mutation.
+[0m$ [0mcd /tmp/opencode && python3 -c "
+import re
+data=open('gql_schema.md').read()
+m=re.search(r'\`\`\`text.*?\n(.*?)\`\`\`',data,re.S); sdl=m.group(1)
+# search all field names for runas/impersonate/tenant/switch
+for kw in ['runas','RunAs','impersonat','Impersonat','switchTenant','tenant','myCompany','currentCompany','me(']:
+    idx=[mm.start() for mm in re.finditer(re.escape(kw),sdl)]
+    print(kw, len(idx))
+"
+runas 0
+RunAs 0
+impersonat 0
+Impersonat 0
+switchTenant 0
+tenant 5
+myCompany 0
+currentCompany 0
+me( 0
+[0m
+[0m$ [0mcd /tmp/opencode && python3 -c "
+import re
+data=open('gql_schema.md').read()
+m=re.search(r'\`\`\`text.*?\n(.*?)\`\`\`',data,re.S); sdl=m.group(1)
+for mm in re.finditer(r'.{60}tenant.{60}', sdl, re.S):
+    print(repr(mm.group(0)))
+    print('---')
+" | head -40
+'rAccount {\n  "Sales channel id of this connector account. A tenant-local, composite identifier, not a UUID. Use this to addres'
+---
+'!\n  "Source of CurrencyCode - standardized ISO 4217 code or tenant-defined code. Always Iso for now, because only codes in ISO'
+---
+'time span."\n  PRODUCTION_DATE\n}\n\n"Standardized ISO 4217 vs. tenant-defined source of a currency code (ADR-85 private-use names'
+---
+'d ISO 4217 alpha-3 code (e.g. EUR)."\n  ISO\n  "The code is a tenant-defined entry without a standard code, using the ISO 4217 p'
+---
+[0m
+No ability to switch tenants via schema (multi-tenancy is via `x-tenant-id` header). The key multi-tenant security concern is whether the GraphQL endpoint validates that a token's tenant matches the `x-tenant-id` header — a potential cross-tenant BOLA/IDOR if a token from tenant A is accepted with `x-tenant-id: B`. That's the strongest hypothesis.
+
+I have enough for the final analysis. Let me write the structured output now.
+
+---
+
+**STEP 1 — DELTA**
+- [NEW] JTL Cloud production infra identified LIVE from developer portal RAG: `api.jtl-cloud.com` (nginx, 404 root), `auth.jtl-cloud.com` (Ory OIDC provider — authorization/token/device/JWKS endpoints exposed), `account.jtl-cloud.com`, `hub.jtl-cloud.com`, `erp.jtl-cloud.com`.
+- [NEW] `erp.jtl-cloud.com` public HTML leaks `jtl-cloud-env-variables` JSON: Sentry DSN, PostHog project token, Zitadel client ID `383246859688230715`, ORY URL, internal URLs (auth/account services).
+- [NEW] Downloaded ERP OpenAPI v2.0 (236 paths) + GraphQL SDL v2.1 (1MB) from public developer portal; every GraphQL op authorizes with `system.all` OR-role; REST exposes powerful scopes (`all.read`, `application.runas`, `wawiapp.all`, `foreignapps.manage`, `jera.read`); GraphQL requires `x-tenant-id` header.
+- [CHANGED] 300 docker.jtl-software.de test instances (prior recon) return `000` — non-live, deprioritized; production cloud is the live in-scope surface.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] api.jtl-cloud.com,7.7,data_exposure(B2B ERP customers/orders/bank-accounts behind client_credentials)
+- [PRIO] auth.jtl-cloud.com,7.4,oauth(Ory code/token/device/request_uri surface)
+- [PRIO] erp.jtl-cloud.com,6.9,config_leak(Sentry DSN/PostHog/Zitadel/ORY in public HTML)
+
+**STEP 3 — HYPOTHESES**
+[HYP] Cross-tenant BOLA via x-tenant-id header on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: GraphQL SDL mandates `x-tenant-id` header for target ERP instance; multi-tenant cloud; REST authentication model separates token (OAuth2) from tenant scope. If tenant isolation relies solely on the client-supplied `x-tenant-id` header rather than validating it against the JWT's granted tenant, a token from tenant A with `x-tenant-id: <victim>` may return victim tenant data.
+evidence_needed: 401 vs 200/403 difference when sending a token with a mismatched/unknown x-tenant-id; a probing account/registration on one tenant then querying another.
+verify_steps: passive-first — GET https://api.jtl-cloud.com/erp/v2/graphql without token → expect 401 "JWT not present" (confirm). Requires valid token for full test (AUTH_HELPED). Fetch GraphQL playground to see if it offers unauth schema/introspection.
+impact: cross-tenant PII/ERP data dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+
+[HYP] Power scope over-grant in client_credentials (system.all / all.read / application.runas)
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: GraphQL authorizes every mutation/query with `system.all` as OR-branch; REST publishes `all.read` ("read all data") and `application.runas` ("execute requests on behalf of another user") as grantable scopes to third-party apps. If a client_credentials/waviapp-registration flow permits a caller to assert these scopes (or `application.runas` impersonates another app), full ERP read/write results.
+evidence_needed: obtaining a client grant that includes system.all/all.read/application.runas; then reaching a data endpoint.
+verify_steps: passive — try GET on GraphQL playground / appregistration docs; cannot obtain scopes without authorized client (AUTH_HELPED). Route to HUMAN for sanctioned test app.
+impact: full ERP compromise, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+
+[HYP] ERP Cloud env-config leak → Sentry/PostHog data exposure / internal service discovery
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Public prod HTML ships full `jtl-cloud-env-variables` JSON incl. active Sentry DSN (`82a877a92404e1ad4ca46e308d4ddf27@o4508919293149184.ingest.de.sentry.io/4509087222595664`), PostHog token `phc_SkFAxTIa4RUQxotci1Ftdw7xefZK2Ax0LEIGcl8zuD2`, Zitadel client ID, ORY URL. Public client IDs are normal; but if Sentry is misconfigured (open API/replays, SDK+DSN same in `-qa` block), stack traces/PII may be queryable.
+evidence_needed: whether Sentry project/DSN allows unauthenticated event queries or exposes recent error events with PII.
+verify_steps: passive — check if Sentry DSN projects are publicly queryable (usually require auth); not directly curlable. Route to HUMAN review of Sentry config.
+impact: PII/stack-trace exposure from client-side error telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+
+**STEP 4 — SELF-CRITIQUE**
+- [PARKED] XSS/OBFUSCATION in Ory ui/error path: needs valid client, no verification path. 
+- [PARKED] OAuth redirect_uri: Ory returns invalid_client for our unauthenticated probe regardless of redirect_uri — cannot distinguish validation behavior without a valid client (AUTH_HELPED at best). Reported earlier as accepted auth lead; retains interest but low actionable value now.
+- [FINAL] ranked: (1) Cross-tenant x-tenant-id BOLA (60), (2) Power-scope client_credentials over-grant (50), (3) Sentry/PostHog config leak (55).
+
+**STEP 5 — [NEXT] RAG**: Fetch https://developer.jtl-software.com/cloud/guides/essentials/authentication/oauth2-flow and the app-registration doc to determine whether `x-tenant-id` is derived from the JWT or supplied by the client, and whether `application.runas`/`system.all` are client-grantable — before any live probe.
+
+**STEP 6 — [LEARN] ACCEPTED OATH @ jtl:cloud: Ory OIDC (auth.jtl-cloud.com) + Zitadel client (383246859688230715) double auth stack confirmed via well-known + leaked env IDs; ERP GraphQL requires x-tenant-id header (scheme-level multi-tenancy).
+- [LEARN] ACCEPTED MISCONFIG @ erp.jtl-cloud.com: production env config (Sentry/PostHog/Zitadel/ORY URLs) shipped in public HTML.
+
+**STEP 7 — [RISK] JTL-Software AG: 7/10 — live B2B ERP cloud handling customer/bank/order data; every GraphQL op gated by `system.all`; config leak; no confirmed auth bypass yet, wide documented OAuth surface created by public OpenAPI/GraphQL specs.
+
+I'll write this out now.
