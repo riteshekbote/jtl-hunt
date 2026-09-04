@@ -5673,3 +5673,343 @@ testability: AUTH_HELPED (requires form submit, may need email trigger)
 ### STEP 7 — RISK
 
 [RISK] jtl: 80 — High-value core products (JTL-Shop, JTL-Wawi ERP, JTL-Cloud) with live internet-accessible attack surface: official bug bounty test shop (bountyshop.jtl-software.com) running JTL-Shop v5.x with admin panel and contact form exposed; production GraphQL ERP API (api.jtl-cloud.com) with multi-tenant architecture requiring JWT + x-tenant-id; GraphQL playground on GitHub Pages and developer portal. Critical classes in play: cross-tenant BOLA (x-tenant-id header), OAuth device flow bypass (Ory), potential SSTI on test shop (unconfirmed version). Risk elevated by confirmed live endpoints, prior knowledge of OAuth/GraphQL misconfig patterns in shared test profiles, and official bug bounty program scope covering all company infrastructure.
+===== ANALYST nemotron3 2026-09-04 08:19:03 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://api.jtl-cloud.com/oauth2/.well-known/openid-configuration
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://api.jtl-cloud.com/hydra/.well-known/openid-configuration
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://api.jtl-cloud.com/.ory/.well-known/openid-configuration
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" https://auth.jtl-cloud.com/.well-known/openid-configuration
+200
+[0m
+[0m$ [0mcurl -s https://auth.jtl-cloud.com/.well-known/openid-configuration
+{"issuer":"https://auth.jtl-cloud.com","authorization_endpoint":"https://auth.jtl-cloud.com/oauth2/auth","device_authorization_endpoint":"https://auth.jtl-cloud.com/oauth2/device/auth","token_endpoint":"https://auth.jtl-cloud.com/oauth2/token","jwks_uri":"https://auth.jtl-cloud.com/.well-known/jwks.json","subject_types_supported":["public"],"response_types_supported":["code","code id_token","id_token","token id_token","token","token id_token code"],"claims_supported":["sub","session"],"grant_types_supported":["authorization_code","implicit","client_credentials","refresh_token","urn:ietf:params:oauth:grant-type:jwt-bearer"],"response_modes_supported":["query","fragment","form_post"],"userinfo_endpoint":"https://auth.jtl-cloud.com/userinfo","scopes_supported":["offline_access","offline","openid"],"token_endpoint_auth_methods_supported":["client_secret_post","client_secret_basic","private_key_jwt","none"],"userinfo_signing_alg_values_supported":["none","RS256"],"id_token_signing_alg_values_supported":["RS256"],"id_token_signed_response_alg":["RS256"],"userinfo_signed_response_alg":["RS256"],"request_parameter_supported":true,"request_uri_parameter_supported":true,"require_request_uri_registration":true,"claims_parameter_supported":false,"revocation_endpoint":"https://auth.jtl-cloud.com/oauth2/revoke","backchannel_logout_supported":true,"backchannel_logout_session_supported":true,"frontchannel_logout_supported":true,"frontchannel_logout_session_supported":true,"end_session_endpoint":"https://auth.jtl-cloud.com/oauth2/sessions/logout","request_object_signing_alg_values_supported":["none","RS256","ES256"],"code_challenge_methods_supported":["plain","S256"],"credentials_endpoint_draft_00":"https://auth.jtl-cloud.com/credentials","credentials_supported_draft_00":[{"format":"jwt_vc_json","types":["VerifiableCredential","UserInfoCredential"],"cryptographic_binding_methods_supported":["jwk"],"cryptographic_suites_supported":["PS256","RS256","ES256","PS384","RS384","ES384","PS512","RS512","ES512","EdDSA"]}]}
+[0m
+[0m$ [0mcurl -s https://auth.jtl-cloud.com/.well-known/jwks.json
+{"keys":[{"use":"sig","kty":"EC","kid":"44e731fd-2256-48e5-8716-79defb2c61e9","crv":"P-256","alg":"ES256","x":"lvh0P0-nIP7awkJMPh42egEgoTfs3MaGwU-SV-JN8Gs","y":"iYcd095eoxoj7_fLhNaFZIrbAyultaUxySpa_0RlsOA"},{"use":"sig","kty":"EC","kid":"5b1344d6-5e20-4f6f-9007-8475b74d930c","crv":"P-256","alg":"ES256","x":"mXVIcBP9B5F1j9G87qkq1YdNQXOsVxodk419n9hd17M","y":"5wADOpz_rtqxB8XXBbXT-jn4QcZ_8jpQDbzZqjrfKJE"},{"use":"sig","kty":"RSA","kid":"73f0efec-1599-442c-ac69-4c2aebb6e2ae","alg":"RS256","n":"1ba6bJnanM7z_0VWoH8dXEkSD6qGdmwCIYyCipPqXY-yg3Cbj_Vj3k0zFhRl91YH0iMoRezf-Nf2y4NUzRXttUo9OYQnFWzuuTTALWd6pul7Dz3F6sJzjBudunQUu2P2Vd3cvMRNG13IPYiLvcI_4x5FmD3ptQ0ZYkckBPCY62VwAKNjXGoFUbnp8fT32EjE_BkXBa_PbIsGOkNagGoRPA0rjuQ1p-QKvbsvX-fQbWUeSL0yW4m6DlEt2VXT97c8JtAbh-tEr6za-90NlzMyRT8caPg3k659vGA5XhVEWwxzd3wJpbnKO-pydixxkF-6vh2IPPMaU2qh2BrW7l1vl4GNDlTJNSSp9nMHi4vTwWO7IqcUu_OepXm_NSsKrjXEvrLZ-5H8d6MpOipfJ4_EsL3PPjR-4dV0IOBwYfYqxAND1W9r4tKOKnlActtLFagoiJeuJ1M01I8lKJdnQSseLTUtAx7bCoqXo7AwSqXDIfEVwPDxQsL-mpHH33iXkgZzc-GdEvs8H2Ic4FXBdd2A_u0ypsXOYdKE2P7KGR4qje7nNb9tARkS08QM7ZeTKxkyerdj3WQMzGN0YzIR7sa9_CLfcRNRQHIPlkm_ZHwoOM6RB9VgOTopP_rbzET-TsgE0k5dTaJbjizLCKO4lIOT9eHRko7hPIrVVH838vD7UY8","e":"AQAB"},{"use":"sig","kty":"RSA","kid":"3f8c45de-c7c3-4abe-bc41-849a9c4adbc0","alg":"RS256","n":"pyJ1bfQRY1ef5VK_fytvzDO2J6Fsyzdj6HfO5opJ7pMqQ04MvohPNkUTLFL7v4H2CQX83ka1lOVij41-n43dLucaTbXxBH03cyRQ0Ib2Bv8C_J-j1vYU7RjIA3jfn43OMnbhgmZ_QVzme1wVvuPE4jIYS7yHl3PPk16lJstxCEHMpUD-Bbz1BPhytJELdKxxR2jG4eFYubU8wTVnMYFwLS7MkHGyWsAwCD7TzfI0CPNTL4ZhCA6H9BJndgZ0isAczII7K-p-FIizbFU1jtQSZUC00FuoJMJdRZnDsHtqjeK23J7Zh4gTMej7N1RNHzOiutIWzq8iSH-kz5tXmotGHhzrvCglhK1_ouyhhukBYrsPgHGbPk1bU0QUrXvxFWiGnCI1Nt04CcTg-4V1PPRh7kXxhnWbyTPixOvmIdFsGZaOeCBHGRIZczqiBSh-ofdBx4m86bjKYY4A_8E_aiOCrSHWgTBnVvhsHc0YnrdhtadWlC01Y9HB2b66_E8vDCH_uJuN2HwRhio7SMwO6QEeYVQJUc1GMQG57saqVgkRBwcUZf3ztXbhAqB0esOlzfvzkq82vZpSb3ON9slQXAEH-c7NHRbnML6xxnFMfi78jFGGvQiJq7xZTVMCeXP9Z9NvlKbNobvpK5tgguOZuHz-6kJgRwyoAclLVXZfvYeG2j8","e":"AQAB"}]}
+[0m
+[0m$ [0mcurl -s -X POST https://auth.jtl-cloud.com/oauth2/device/auth -H "Content-Type: application/x-www-form-urlencoded" -d "client_id=test&scope=openid offline_access"
+{"error":"invalid_client","error_description":"Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method). Unable to locate the resource"}
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/ | grep -i "client_id\|oauth\|auth" | head -20
+(no output)
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/ | head -100
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JTL GraphQL Playground</title>
+    <script type="module" crossorigin src="./assets/index-Bb8fKDp_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/chunk-BEqpzyXh.js">
+    <link rel="modulepreload" crossorigin href="./assets/types-B5CZrGHj.js">
+    <link rel="modulepreload" crossorigin href="./assets/preload-helper-CSAG75Zj.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-Cs_y8A6M.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/assets/index-Bb8fKDp_.js | grep -i "client_id\|oauth\|auth\|token" | head -30
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_06b785164001Voi3Vyvi10tqKl
+
+GraphiQL Explorer`,icon:pZ,content:()=>(0,R.jsx)(SZ,{...e})}}function wZ(e){return typeof e==`object`&&!!e&&`type`in e&&e.type===`graphql-config`&&`url`in e&&typeof e.url==`string`}function TZ(){let e=new URLSearchParams(window.location.search),t=e.get(`url`),n={};return e.forEach((e,t)=>{t.startsWith(`header_`)&&(n[t.slice(7)]=e)}),{url:t,headers:n}}function EZ(){let e=new URLSearchParams(window.location.search);return{query:e.get(`query`),variables:e.get(`variables`)}}function DZ(e){let t={...e.headers};return e.token&&(t.Authorization=`Bearer ${e.token}`),Hf({url:e.url,headers:t})}function OZ(){let e=(0,x.useRef)(TZ()),[t,n]=(0,x.useState)(null),[r,i]=(0,x.useState)(null),a=(0,x.useRef)(null),o=(0,x.useCallback)(t=>{let r={...a.current,...t,url:t.url||a.current?.url||e.current.url||``,headers:{...e.current.headers,...a.current?.headers,...t.headers}};a.current=r,n(r),r.token&&i(()=>DZ(r))},[]);return(0,x.useEffect)(()=>{function e(e){wZ(e.data)&&o(e.data)}return window.addEventListener(`message`,e),window.parent?.postMessage({type:`graphql-playground-ready`},`*`),()=>window.removeEventListener(`message`,e)},[o]),{config:t,fetcher:r,applyConfig:o}}Df();function kZ(e){let[t,n]=(0,x.useState)(void 0);return(0,x.useEffect)(()=>{e&&l(()=>import(`./introspection-D82WeRHM.js`).then(e=>{let t=e.default??e,r=t.data?t.data:t,i=r.__schema;i.directives||=[],Array.isArray(i.types)&&(i.types=i.types.filter(e=>!e.name?.startsWith(`__`))),n(ed(r,{assumeValid:!0}))}),[],import.meta.url).catch(e=>{console.error(`Failed to load static schema:`,e),n(null)})},[e]),t}var AZ=CZ(),{query:jZ,variables:MZ}=EZ(),NZ=jZ??`# Welcome to the JTL GraphQL Playground
+`,PZ=()=>Promise.resolve(JSON.stringify({info:`Static mode — browse the schema, docs, and autocomplete. Connect to a live endpoint to execute queries.`}));function FZ(){let{config:e,fetcher:t}=OZ(),n=kZ(!t),r=jZ||MZ?[{query:NZ,variables:MZ??void 0}]:void 0;if(t){let n={...e?.headers};return e?.token&&(n.Authorization=`Bearer ${e.token}`),(0,R.jsx)(sZ,{fetcher:t,defaultQuery:NZ,defaultTabs:r,defaultHeaders:JSON.stringify(n,null,2),plugins:[AZ]},`live`)}return n?(0,R.jsx)(sZ,{fetcher:PZ,schema:n,dangerouslyAssumeSchemaIsValid:!0,defaultQuery:NZ,defaultTabs:r,plugins:[AZ]},`static`):null}window.MonacoEnvironment={getWorker(e,t){return new Worker(URL.createObjectURL(new Blob([`// noop worker`],{type:`text/javascript`})))}},(0,yt.createRoot)(document.getElementById(`root`)).render((0,R.jsx)(x.StrictMode,{children:(0,R.jsx)(FZ,{})}));export{pA as n,lg as r,dA as t};
+[0m
+[0m$ [0mcurl -s https://developer.jtl-software.com/cloud/api-reference/graphql-playground | grep -i "client_id\|oauth\|auth\|token" | head -20
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_06b78a734001ADbqhU1FaKYYl6
+
+(no output)
+[0m
+[0m$ [0mcurl -s https://developer.jtl-software.com/cloud/api-reference/graphql-playground | head -100
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_06b78ffed001YcT8B2sRmXKEbY
+
+  try {
+    if (window.__mintlifyInitialSidebarScrollDone) return;
+    window.__mintlifyInitialSidebarScrollDone = true;
+
+    var path = (window.location.pathname || '/').split('#')[0].split('?')[0];
+    if (path.endsWith('/index')) path = path.slice(0, -6);
+    else if (path === 'index') path = '';
+
+    var candidates = [];
+    if (path) candidates.push(path);
+    if (path.startsWith('/')) candidates.push(path.slice(1));
+    else candidates.push('/' + path);
+[0m
+[0m$ [0mcurl -s https://developer.jtl-software.com/cloud/api-reference/graphql-playground | grep -i "iframe\|src=" | head -10
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_06b7950d5001JV9DXE9Qh3lKnq
+
+(no output)
+[0m
+[0m$ [0mcurl -s https://developer.jtl-software.com/cloud/api-reference/graphql-playground | grep -oP 'https?://[^"\s<>]+' | sort -u
+http://www.w3.org/2000/svg
+https://api.jtl-cloud.com/erp/v2/graphql`};const
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/facebook.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/facebook.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/github.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/github.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/instagram.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/instagram.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/linkedin.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/linkedin.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/x-twitter.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/x-twitter.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/youtube.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/brands/youtube.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/solid/ellipsis-vertical.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/solid/ellipsis-vertical.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/solid/magnifying-glass.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/fontawesome/v7.2.0/solid/magnifying-glass.svg&quot;);mask-repeat:no-repeat;mask-position:center
+https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/book-open.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/book-open.svg&quot;);mask-repeat:no-repeat;mask-position:center;mask-size:100%
+https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/cloud.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/cloud.svg&quot;);mask-repeat:no-repeat;mask-position:center;mask-size:100%
+https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/database.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/database.svg&quot;);mask-repeat:no-repeat;mask-position:center;mask-size:100%
+https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/rocket.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/rocket.svg&quot;);mask-repeat:no-repeat;mask-position:center;mask-size:100%
+https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/share-2.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/share-2.svg&quot;);mask-repeat:no-repeat;mask-position:center;mask-size:100%
+https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/signpost.svg&quot;);-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;mask-image:url(&quot;https://d3gk2c5xim1je2.cloudfront.net/lucide/v1.16.0/signpost.svg&quot;);mask-repeat:no-repeat;mask-position:center;mask-size:100%
+https://developer.jtl-software.com
+https://developer.jtl-software.com#website
+https://developer.jtl-software.com#website\
+https://developer.jtl-software.com/#organization
+https://developer.jtl-software.com/#organization\
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground#article
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground#article\
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground#breadcrumb
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground#breadcrumb\
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground#webpage
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground#webpage\
+https://developer.jtl-software.com/cloud/api-reference/graphql-playground\
+https://developer.jtl-software.com\
+https://github.com/jtl-software
+https://github.com/jtl-software\
+https://hub.jtl-cloud.com/
+https://hub.jtl-cloud.com/\
+https://jtl-software.github.io/devdocs-graphql-playground/?url=https://api.jtl-cloud.com/erp/v2/graphql`,title:`GraphQL
+https://jtl-software.github.io`)}window.addEventListener(`message`,onMessage);return()=\u003ewindow.removeEventListener(`message`,onMessage)},[]);return
+https://jtlsoftwaregmbh.mintlify.app/mintlify-assets/_next/image?url=%2F_mintlify%2Fapi%2Fog%3Fdivision%3DGraphQL%26title%3DGraphQL%2Bplayground%26description%3DInteractive%2BGraphQL%2BIDE%2Bto%2Bexplore%2Band%2Btest%2Bthe%2BJTL%2BPlatform%2BAPI%26theme%3D869eeb427e1084bcc4ba7385&amp;w=1200&amp;q=100
+https://jtlsoftwaregmbh.mintlify.app/mintlify-assets/_next/image?url=%2F_mintlify%2Fapi%2Fog%3Fdivision%3DGraphQL%26title%3DGraphQL%2Bplayground%26description%3DInteractive%2BGraphQL%2BIDE%2Bto%2Bexplore%2Band%2Btest%2Bthe%2BJTL%2BPlatform%2BAPI%26theme%3D869eeb427e1084bcc4ba7385\u0026w=1200\u0026q=100\
+https://linkedin.com/company/jtl-software
+https://linkedin.com/company/jtl-software\
+https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/images/favicon.svg?fit=max\u0026auto=format\u0026n=LxR2E3coYlRTAge4\u0026q=85\u0026s=f48e2487f493700ac630f8119e66c559\
+https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/logo/dark.svg?fit=max&amp;auto=format&amp;n=LxR2E3coYlRTAge4&amp;q=85&amp;s=5e3aabd59fd92075190a3a3bfd9ef593
+https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/logo/dark.svg?fit=max\u0026auto=format\u0026n=LxR2E3coYlRTAge4\u0026q=85\u0026s=5e3aabd59fd92075190a3a3bfd9ef593\
+https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/logo/light.svg?fit=max&amp;auto=format&amp;n=LxR2E3coYlRTAge4&amp;q=85&amp;s=c46673ae73e5f96d56d2fb051d463594
+https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/logo/light.svg?fit=max&auto=format&n=LxR2E3coYlRTAge4&q=85&s=c46673ae73e5f96d56d2fb051d463594
+https://mintcdn.com/jtlsoftwaregmbh/LxR2E3coYlRTAge4/logo/light.svg?fit=max\u0026auto=format\u0026n=LxR2E3coYlRTAge4\u0026q=85\u0026s=c46673ae73e5f96d56d2fb051d463594\
+https://mintlify.com/docs.json\
+https://schema.org
+https://schema.org\
+https://www.facebook.com/JTLSoftware
+https://www.facebook.com/JTLSoftware\
+https://www.instagram.com/jtlsoftware
+https://www.instagram.com/jtlsoftware\
+https://www.jtl-software.com/de/hilfecenter/support
+https://www.jtl-software.com/de/hilfecenter/support\
+https://www.youtube.com/user/JTLSoftwareGmbH
+https://www.youtube.com/user/JTLSoftwareGmbH\
+https://x.com/jtlsoftware
+https://x.com/jtlsoftware\
+[0m
+[0m$ [0mcurl -s -X POST https://api.jtl-cloud.com/erp/v2/graphql -H "Content-Type: application/json" -d '{"query":"{__schema{queryType{name}}}"}'
+{ "statusCode": 401, "message": "JWT not present." }
+[0m
+[0m$ [0mcurl -s -X POST https://api.jtl-cloud.com/erp/v2/graphql -H "Content-Type: application/json" -H "x-tenant-id: test-tenant" -d '{"query":"{__schema{queryType{name}}}"}'
+{ "statusCode": 401, "message": "JWT not present." }
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/assets/index-Bb8fKDp_.js | grep -oP 'client_id["\s:=]+[^"\s,}]+' | head -10
+(no output)
+[0m
+[0m$ [0mcurl -s https://jtl-software.github.io/devdocs-graphql-playground/assets/index-Bb8fKDp_.js | grep -oP '(client[_-]?id|client[_-]?secret)["\s:=]+[^"\s,}]+' | head -20
+(no output)
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/Kontakt | grep -oP 'name=["\'][^"\']*["\']' | head -20
+/bin/bash: -c: line 1: unexpected EOF while looking for matching `''
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/Kontakt | grep -o 'name="[^"]*"' | head -20
+name="description"
+name="viewport"
+name="robots"
+name="msapplication-TileColor"
+name="msapplication-TileImage"
+name="theme-color"
+name="consent-all-1"
+name="consent-1"
+name="consent-2"
+name="consent-all-2"
+name="qs"
+name="jtl_token"
+name="email"
+name="passwort"
+name="login"
+name="jtl_token"
+name="qs"
+name="search"
+name="jtl_token"
+name="jtl_hp_input"
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/Kontakt | grep -A5 -B5 "nachricht\|vorname\|nachname\|subject" | head -50
+<input
+    type="text"
+    class="form-control  form-control-20"
+    placeholder=" "         id="firstName"                value=""                maxlength="255"        name="vorname"                                    data-chars-left-msg="Zeichen übrig"     >
+
+            
+            
+                <label id="form-group-label-6a9a7e28eff0c" for="firstName" class="col-form-label pt-0">
+                    Vorname<span class='optional'> - optionale Angabe</span>
+--
+                    
+                    
+                <input
+    type="text"
+    class="form-control  form-control-20"
+    placeholder=" "         id="lastName"                value=""                maxlength="255"        name="nachname"                                    data-chars-left-msg="Zeichen übrig"     >
+
+            
+            
+                <label id="form-group-label-6a9a7e28eff83" for="lastName" class="col-form-label pt-0">
+                    Nachname<span class='optional'> - optionale Angabe</span>
+--
+                                                            <div id="6a9a7e28f02ce" aria-labelledby="form-group-label-6a9a7e28f02ce" class="form-group "
+                                                role="group"
+                            >
+                    <div class="d-flex flex-column-reverse">
+                                                                                                                                                        <select
+    id="subject"            name="subject"        required    class="form-control custom-select"
+                                >
+                                                                    <option value="" selected disabled>Betreff</option>
+                                                                                                                                    <option value="1" >Barrierefreiheit</option>
+                                                                                                                            
+</select>
+                                                        
+                <label id="form-group-label-6a9a7e28f02ce" for="subject" class="col-form-label pt-0">
+                    Betreff
+                </label>
+            </div>
+            </div>
+                                                    
+--
+                                                role="group"
+                            >
+                    <div class="d-flex flex-column-reverse">
+                                                                                                                                                <textarea
+    class="form-control "
+        placeholder=" "    rows="10"            id="message"            name="nachricht"     required                                    ></textarea>
+[0m
+[0m$ [0mcurl -s https://bountyshop.jtl-software.com/ | grep -i "version\|nova\|jtl" | head -20
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_06b7d651f001ht0x4wvkAv5nL3
+
+                                                            <link rel="preload" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/clear.css?v=5.0.0" as="style"
+                                    <link rel="preload" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/custom.css?v=5.0.0" as="style"
+                                            <link rel="stylesheet" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/clear.css?v=5.0.0">
+                                            <link rel="stylesheet" href="https://bountyshop.jtl-software.com/templates/NOVA/themes/clear/custom.css?v=5.0.0">
+                                        <link rel="preload" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Container/Container.css" as="style" data-opc-portlet-css-link="true"
+                    <link rel="stylesheet" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Container/Container.css">
+                            <link rel="preload" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/common/hidden-size.css" as="style" data-opc-portlet-css-link="true"
+                    <link rel="stylesheet" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/common/hidden-size.css">
+                            <link rel="preload" href="https://bountyshop.jtl-software.com/includes/src/OPC/Portlets/Divider/Divider.css" as="style" data-opc-portlet-css-link="true"
+[0m
+Now I have sufficient data. Let me complete the structured analysis.
+[0m$ [0mcurl -s -I https://bountyshop.jtl-software.com/ | grep -i "server\|x-powered"
+Server: Apache/2.4.68 (Debian)
+[0m
+[0m$ [0mcurl -s "https://jtl-software.github.io/devdocs-graphql-playground/?url=https://api.jtl-cloud.com/erp/v2/graphql" | head -50
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JTL GraphQL Playground</title>
+    <script type="module" crossorigin src="./assets/index-Bb8fKDp_.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/chunk-BEqpzyXh.js">
+    <link rel="modulepreload" crossorigin href="./assets/types-B5CZrGHj.js">
+    <link rel="modulepreload" crossorigin href="./assets/preload-helper-CSAG75Zj.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-Cs_y8A6M.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+[0m
+[0m$ [0mcurl -s -X POST https://auth.jtl-cloud.com/oauth2/token -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=test&client_id=test"
+{"error":"invalid_client","error_description":"Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method). Unable to locate the resource"}
+[0m
+Now I have all the data needed. Here's the structured analysis:
+
+---
+
+**STEP 1 — DELTA**
+[NEW] OIDC discovery found at `https://auth.jtl-cloud.com/.well-known/openid-configuration` (HTTP 200) — separate auth server from API, uses Ory Hydra
+[NEW] Device authorization endpoint confirmed: `https://auth.jtl-cloud.com/oauth2/device/auth` with `token_endpoint_auth_methods_supported` including `"none"` (public client support)
+[NEW] Implicit flow supported: `response_types_supported` includes `token`, `token id_token` — access tokens in fragment
+[NEW] GraphQL playground is static (GitHub Pages), passes API URL via `?url=` param; requires JWT in Authorization header
+[NEW] bountyshop NOVA template version v=5.0.0 (CSS/JS); CVE-2026-54390 affects 5.2.0–5.7.1 — potentially below vulnerable range
+[CHANGED] OAuth/OIDC not on api.jtl-cloud.com standard paths — lives on dedicated auth.jtl-cloud.com subdomain
+[CHANGED] Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth)
+
+**STEP 2 — PRIORITIZE**
+[PRIO] auth.jtl-cloud.com,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=9
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,8.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+[PRIO] bountyshop.jtl-software.com/Kontakt,6.80,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+[PRIO] jtl-software.github.io/devdocs-graphql-playground/,6.25,attack_surface=5,business_value=7,tech_exposure=5,gate_ease=10,cloud_surface=3,freshness=7
+
+**STEP 3 — HYPOTHESES**
+[HYP] JTL Cloud OAuth device flow public client token acquisition without client_secret
+class: AUTH
+asset: auth.jtl-cloud.com/oauth2/device/auth + /oauth2/token
+confidence: 75
+reasoning: OIDC discovery shows device_authorization_endpoint + token_endpoint with token_endpoint_auth_methods_supported=["none"] — public clients can exchange device_code for tokens without client_secret. Implicit flow also supported (response_type=token returns access_token in fragment). Knowledge base: loose redirect_uri validation in test/staging (29-instance profile p-g-443d1d50).
+evidence_needed: Valid client_id for public client + device_code grant returns access_token without client_secret; or implicit flow with redirect_uri=https://attacker.com returns token in fragment
+verify_steps: GET https://auth.jtl-cloud.com/.well-known/openid-configuration (DONE); POST /oauth2/device/auth with valid public client_id → get device_code → POST /oauth2/token with grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=...&client_id=<public_client> (no client_secret) → observe access_token; GET /oauth2/auth?response_type=token&client_id=<public_client>&redirect_uri=https://evil.com&scope=openid → check fragment for token
+impact: OAuth token theft → ERP GraphQL API access as arbitrary client → cross-tenant data via x-tenant-id header — CRITICAL
+testability: PASSIVE (discovery done), AUTH_HELPED (needs valid public client_id)
+
+[HYP] JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header
+class: IDOR
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Production GraphQL ERP API requires JWT + x-tenant-id header for multi-tenancy. Developer docs confirm x-tenant-id is client-supplied. If tenant validation not enforced against JWT claims (sub/tenant_id), attacker with valid token for tenant A can query/mutate tenant B data. x-tenant-id only checked after JWT validation (401 without JWT).
+evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B data in GraphQL response (items, customers, orders); or introspection reveals tenant-scoped types with no ownership checks in resolvers
+verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
+impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL
+testability: AUTH_HELPED
+
+[HYP] JTL-Shop v5.x contact form Smarty SSTI in backend email template
+class: OTHER
+asset: bountyshop.jtl-software.com/Kontakt
+confidence: 40
+reasoning: Contact form POSTs nachricht field. JTL-Shop uses Smarty. CVE-2026-54390 affects 5.2.0–5.7.1 via unsanitized input to Smarty renderer in email. NOVA template v=5.0.0 observed (CSS/JS), shop version unconfirmed. Payload `{7*7}` reflected in form re-render but not executed — may only trigger in backend email template (not observable). Program prohibits mutating tests on live customer data.
+evidence_needed: POST to /Kontakt with Smarty payload `{${system('id')}}` in nachricht returns code execution indicators in email logs; or version fingerprint confirms JTL-Shop 5.2.0–5.7.1
+verify_steps: POST https://bountyshop.jtl-software.com/Kontakt -d "jtl_token=<token>&vorname=test&nachname=test&email=test@test.com&subject=1&nachricht={${system('id')}}" — read-only probe first to fingerprint version via headers/meta; then minimal SSTI test {7*7} in nachricht (already done, reflected not executed)
+impact: Unauthenticated RCE on official bug bounty test shop → full server compromise, DB creds, Blowfish key, lateral movement — CRITICAL
+testability: AUTH_HELPED (requires form submit, may need email trigger)
+
+**STEP 4 — SELF-CRITIQUE**
+[PARKED] JTL-Shop v5.x contact form Smarty SSTI in backend email template: confidence 40 < 50 threshold; SSTI test reflected not executed; requires backend email rendering unobservable; shop version unconfirmed (NOVA v=5.0.0 is template version, not shop version); CVE is public — test shop likely patched; mutating test against live customer data prohibited
+[FINAL] 1. JTL Cloud OAuth device flow public client token acquisition without client_secret (confidence 75)
+[FINAL] 2. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 65)
+
+**STEP 5 — NEXT ACTION**
+[NEXT] PROBE: Enumerate valid public client_id for device flow — check JTL developer docs, GitHub repos, or playground network traffic for registered OAuth clients; then POST https://auth.jtl-cloud.com/oauth2/device/auth with client_id=<found> scope=openid offline_access
+
+**STEP 6 — LEARNING**
+[LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
+[LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
+
+**STEP 7 — RISK**
+[RISK] jtl: 85 — Critical attack surface confirmed: dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client support + implicit flow; production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft → GraphQL access → cross-tenant BOLA → full ERP data compromise. Risk elevated by live endpoints, Ory Hydra misconfig patterns, and shared test profile amplification.

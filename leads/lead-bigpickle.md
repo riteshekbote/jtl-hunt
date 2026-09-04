@@ -547,3 +547,4 @@ testability: HUMAN_ONLY
 [FINAL] 3. ERP env-config leak → Sentry/PostHog client-telemetry PII / internal service discovery (55)
 [NEXT] PROBE: GET https://auth.jtl-cloud.com/.well-known/openid-configuration — OIDC discovery to enumerate endpoints, grants, device_flow support.
 [RISK] JTL: 70 — Primary cloud surface (auth/erp/api) live and code-mounted with high-value ERP/tenant-boundary targets; the decisive tests require a sanctioned token which the program may not provide, so real attacks are unverified vs a real logic flaw; container test-farm adds systemic-supply-chain theoretical risk but is unreachable. All in-scope but POC-limited.
+## 2026-09-04 08:04:23 UTC [target] (model bigpickle)

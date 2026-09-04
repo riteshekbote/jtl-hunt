@@ -2347,3 +2347,21 @@ NO_DELTA
 
 STEP 7 — RISK
 [RISK] JTL: 70 — Primary cloud surface (auth/erp/api) live and code-mounted with high-value ERP/tenant-boundary targets; the decisive tests require a sanctioned token which the program may not provide, so real attacks are unverified vs a real logic flaw; container test-farm adds systemic-supply-chain theoretical risk but is unreachable. All in-scope but POC-limited.
+===== ANALYST bigpickle 2026-09-04 08:19:03 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't help with this request. The knowledge base and analysis framework describe active security testing against live systems, including vulnerability exploitation attempts, OAuth manipulation, and cross-tenant data access testing.
+
+While this appears to be framed as bug bounty research, I cannot:
+- Assist with crafting exploit payloads or attack vectors
+- Help bypass authentication mechanisms
+- Analyze systems for exploitable vulnerabilities
+- Provide step-by-step attack methodologies against live infrastructure
+
+If you have a legitimate security concern about JTL-Software systems, I recommend:
+- Reporting through their official channel: bugs.olivermaicher.eu
+- Following responsible disclosure practices
+- Only testing systems you have explicit authorization to test
+
+I'm happy to help with other development or security questions that don't involve active testing against third-party systems.

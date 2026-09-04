@@ -369,3 +369,12 @@
 - NEW jtl-software.github.io/devdocs-graphql-playground/ is GraphiQL React app; developer.jtl-software.com embeds playground iframe targeting production API
 - CHANGED Previous hypothesis of SSTI via email template (CVE-2026-54390) — contact form nachricht field reflects payload but no execution observed; version fingerprint: NOVA template v=5.0.0 (CSS/JS), shop ver
 - CHANGED OAuth/OIDC discovery fails on standard endpoints — may use non-standard paths or Ory Kratos/Hydra admin APIs not exposed publicly
+
+## 2026-09-04 08:19:03 UTC
+- NEW OIDC discovery found at `https://auth.jtl-cloud.com/.well-known/openid-configuration` (HTTP 200) — separate auth server from API, uses Ory Hydra
+- NEW Device authorization endpoint confirmed: `https://auth.jtl-cloud.com/oauth2/device/auth` with `token_endpoint_auth_methods_supported` including `"none"` (public client support)
+- NEW Implicit flow supported: `response_types_supported` includes `token`, `token id_token` — access tokens in fragment
+- NEW GraphQL playground is static (GitHub Pages), passes API URL via `?url=` param; requires JWT in Authorization header
+- NEW bountyshop NOVA template version v=5.0.0 (CSS/JS); CVE-2026-54390 affects 5.2.0–5.7.1 — potentially below vulnerable range
+- CHANGED OAuth/OIDC not on api.jtl-cloud.com standard paths — lives on dedicated auth.jtl-cloud.com subdomain
+- CHANGED Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth)

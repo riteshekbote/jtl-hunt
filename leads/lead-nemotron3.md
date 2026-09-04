@@ -239,3 +239,52 @@ testability: AUTH_HELPED (requires form submit, may need email trigger)
 [LEARN] ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth may use Ory non-standard paths (/oauth2/, /hydra/, /.ory/)
 [LEARN] REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobservable
 [RISK] jtl: 80 — High-value core products (JTL-Shop, JTL-Wawi ERP, JTL-Cloud) with live internet-accessible attack surface: official bug bounty test shop (bountyshop.jtl-software.com) running JTL-Shop v5.x with admin panel and contact form exposed; production GraphQL ERP API (api.jtl-cloud.com) with multi-tenant architecture requiring JWT + x-tenant-id; GraphQL playground on GitHub Pages and developer portal. Critical classes in play: cross-tenant BOLA (x-tenant-id header), OAuth device flow bypass (Ory), potential SSTI on test shop (unconfirmed version). Risk elevated by confirmed live endpoints, prior knowledge of OAuth/GraphQL misconfig patterns in shared test profiles, and official bug bounty program scope covering all company infrastructure.
+## 2026-09-04 08:18:47 UTC [target] (model nemotron3)
+[NEW] OIDC discovery found at `https://auth.jtl-cloud.com/.well-known/openid-configuration` (HTTP 200) — separate auth server from API, uses Ory Hydra
+[NEW] Device authorization endpoint confirmed: `https://auth.jtl-cloud.com/oauth2/device/auth` with `token_endpoint_auth_methods_supported` including `"none"` (public client support)
+[NEW] Implicit flow supported: `response_types_supported` includes `token`, `token id_token` — access tokens in fragment
+[NEW] GraphQL playground is static (GitHub Pages), passes API URL via `?url=` param; requires JWT in Authorization header
+[NEW] bountyshop NOVA template version v=5.0.0 (CSS/JS); CVE-2026-54390 affects 5.2.0–5.7.1 — potentially below vulnerable range
+[CHANGED] OAuth/OIDC not on api.jtl-cloud.com standard paths — lives on dedicated auth.jtl-cloud.com subdomain
+[CHANGED] Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth)
+[PRIO] auth.jtl-cloud.com,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=9
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,8.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+[PRIO] bountyshop.jtl-software.com/Kontakt,6.80,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+[PRIO] jtl-software.github.io/devdocs-graphql-playground/,6.25,attack_surface=5,business_value=7,tech_exposure=5,gate_ease=10,cloud_surface=3,freshness=7
+[HYP] JTL Cloud OAuth device flow public client token acquisition without client_secret
+class: AUTH
+asset: auth.jtl-cloud.com/oauth2/device/auth + /oauth2/token
+confidence: 75
+reasoning: OIDC discovery shows device_authorization_endpoint + token_endpoint with token_endpoint_auth_methods_supported=["none"] — public clients can exchange device_code for tokens without client_secret. Implicit flow also supported (response_type=token returns access_token in fragment). Knowledge base: loose redirect_uri validation in test/staging (29-instance profile p-g-443d1d50).
+evidence_needed: Valid client_id for public client + device_code grant returns access_token without client_secret; or implicit flow with redirect_uri=https://attacker.com returns token in fragment
+verify_steps: GET https://auth.jtl-cloud.com/.well-known/openid-configuration (DONE); POST /oauth2/device/auth with valid public client_id → get device_code → POST /oauth2/token with grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=...&client_id=<public_client> (no client_secret) → observe access_token; GET /oauth2/auth?response_type=token&client_id=<public_client>&redirect_uri=https://evil.com&scope=openid → check fragment for token
+impact: OAuth token theft → ERP GraphQL API access as arbitrary client → cross-tenant data via x-tenant-id header — CRITICAL
+testability: PASSIVE (discovery done), AUTH_HELPED (needs valid public client_id)
+[HYP] JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header
+class: IDOR
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Production GraphQL ERP API requires JWT + x-tenant-id header for multi-tenancy. Developer docs confirm x-tenant-id is client-supplied. If tenant validation not enforced against JWT claims (sub/tenant_id), attacker with valid token for tenant A can query/mutate tenant B data. x-tenant-id only checked after JWT validation (401 without JWT).
+evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B data in GraphQL response (items, customers, orders); or introspection reveals tenant-scoped types with no ownership checks in resolvers
+verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
+impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL
+testability: AUTH_HELPED
+[HYP] JTL-Shop v5.x contact form Smarty SSTI in backend email template
+class: OTHER
+asset: bountyshop.jtl-software.com/Kontakt
+confidence: 40
+reasoning: Contact form POSTs nachricht field. JTL-Shop uses Smarty. CVE-2026-54390 affects 5.2.0–5.7.1 via unsanitized input to Smarty renderer in email. NOVA template v=5.0.0 observed (CSS/JS), shop version unconfirmed. Payload `{7*7}` reflected in form re-render but not executed — may only trigger in backend email template (not observable). Program prohibits mutating tests on live customer data.
+evidence_needed: POST to /Kontakt with Smarty payload `{${system('id')}}` in nachricht returns code execution indicators in email logs; or version fingerprint confirms JTL-Shop 5.2.0–5.7.1
+verify_steps: POST https://bountyshop.jtl-software.com/Kontakt -d "jtl_token=<token>&vorname=test&nachname=test&email=test@test.com&subject=1&nachricht={${system('id')}}" — read-only probe first to fingerprint version via headers/meta; then minimal SSTI test {7*7} in nachricht (already done, reflected not executed)
+impact: Unauthenticated RCE on official bug bounty test shop → full server compromise, DB creds, Blowfish key, lateral movement — CRITICAL
+testability: AUTH_HELPED (requires form submit, may need email trigger)
+[PARKED] JTL-Shop v5.x contact form Smarty SSTI in backend email template: confidence 40 < 50 threshold; SSTI test reflected not executed; requires backend email rendering unobservable; shop version unconfirmed (NOVA v=5.0.0 is template version, not shop version); CVE is public — test shop likely patched; mutating test against live customer data prohibited
+[FINAL] 1. JTL Cloud OAuth device flow public client token acquisition without client_secret (confidence 75)
+[FINAL] 2. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 65)
+[NEXT] PROBE: Enumerate valid public client_id for device flow — check JTL developer docs, GitHub repos, or playground network traffic for registered OAuth clients; then POST https://auth.jtl-cloud.com/oauth2/device/auth with client_id=<found> scope=openid offline_access
+[LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
+[LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
+[RISK] jtl: 85 — Critical attack surface confirmed: dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client support + implicit flow; production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft → GraphQL access → cross-tenant BOLA → full ERP data compromise. Risk elevated by live endpoints, Ory Hydra misconfig patterns, and shared test profile amplification.

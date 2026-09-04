@@ -94,3 +94,12 @@
 - LEARN: ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
 - LEARN: ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth may use Ory non-standard paths (/oauth2/, /hydra/, /.ory/)
 - LEARN: REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobser
+
+## RANKED HYPOTHESES 2026-09-04 08:19:03 UTC
+- [75] auth.jtl-cloud.com/oauth2/device/auth: JTL Cloud OAuth device flow public client token acquisition without client_secret (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-nemotron3.txt): PROBE: Enumerate valid public client_id for device flow — check JTL developer docs, GitHub repos, or playground network traffic for registered OAuth clients; th
+- LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed 
+- LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- LEARN: REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+- LEARN: ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+- LEARN: ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)

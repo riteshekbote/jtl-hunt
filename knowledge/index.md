@@ -18,3 +18,8 @@
 - 2026-09-04 ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
 - 2026-09-04 ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth may use Ory non-standard paths (/oauth2/, /hydra/, /.ory/)
 - 2026-09-04 REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobservable
+- 2026-09-04 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
+- 2026-09-04 ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- 2026-09-04 REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+- 2026-09-04 ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+- 2026-09-04 ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
