@@ -43,3 +43,13 @@
 - 2026-09-04 ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile).
 - 2026-09-04 ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql.
 - 2026-09-04 ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth uses Ory non-standard paths (/oauth2/, /hydra/, /.ory/).
+- 2026-09-04 ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redirect_uri on client 97170e64-d390-4696-ba46-d6fcef8207de despite localhost-only registered URIs.
+- 2026-09-04 REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
+- 2026-09-04 ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT via client_credentials grant with leaked credentials
+- 2026-09-04 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README
+- 2026-09-04 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in production; dual API instances live (ffn + ffn2)
+- 2026-09-04 REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; additional API key layer present (from /api/v1/merchant/credentials)
+- 2026-09-04 ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live with device_authorization, PKCE, JWKS; distinct from Ory Hydra auth.jtl-cloud.com
+- 2026-09-04 ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated scopes (urn:jtl:tenants, offline_access) without client authentication
+- 2026-09-04 REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disables device_code despite server support
+- 2026-09-04 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet

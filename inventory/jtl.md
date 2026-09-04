@@ -446,3 +446,5 @@
 - CHANGED `id.jtl-cloud.com` redirect_uri validation strict — 8 bypass variants all 400; exact-URI validation enforced
 - CHANGED `auth.jtl-cloud.com` jwt-bearer + request_uri require valid client auth — SSRF/request_uri blocked by unknown-client 302
 - CHANGED Bountyshop contact form SSTI rejected — payload reflected not executed; version unconfirmed; backend email trigger unobservable
+
+## 2026-09-04 23:24:05 UTC

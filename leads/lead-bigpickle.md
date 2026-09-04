@@ -704,3 +704,41 @@ evidence_needed: two tenant-scoped tokens; swapped header → 200 vs 403.
 verify_steps: HUMAN: POST introspection/query with tenant-A token + tenant-B x-tenant-id.
 impact: cross-tenant ERP PII/financial dump. Severity: critical.
 testability: HUMAN_ONLY
+## 2026-09-04 23:18:52 UTC [target] (model bigpickle)
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,7.55,IDOR (multi-tenant GraphQL, JWT+header-only tenant, critical payoff, human-gated)
+[PRIO] id.jtl-cloud.com,7.25,AUTH (Zitadel public-client device flow; the token gate for the above)
+[PRIO] oauth2.api.jtl-software.com,6.95,AUTH (confirmed scope escalation + leaked secret + unvalidated redirect_uri)
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Official app samples validate JWT signature only; no tenant claim baked in. Tenant selection is client-supplied X-Tenant-ID header. Any valid ecosystem JWT bearer is the sole input to tenant authorization — if GraphQL trusts the header, one token reads all tenants.
+evidence_needed: same token with two different x-tenant-id values returns data for both (200) instead of 403 on the foreign tenant.
+verify_steps: HUMAN: POST /erp/v2/graphql "Authorization: Bearer <tok>" "X-Tenant-ID: <tenant-A>" benign query, then repeat with tenant-B header; compare status/bodies. PASSIVE n/a (401 without JWT).
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked client secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/doauthorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 65
+reasoning: Client registered localhost-only redirect URIs yet /authorize and /doauthorize return 302→/login for redirect_uri=http://evil.example/cb (no 400). Secret leaked in public README (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e). client_credentials already yields escalated ffn.merchant.write scope from read-only registered client.
+evidence_needed: after real login, authorization code issued to unregistered attacker URI and redeemable at /token with leaked secret → victim-bound token (sub=<uid>, ffn.merchant.write).
+verify_steps: HUMAN: login with test FFN account, capture code at attacker URI, POST /token grant_type=authorization_code + redirect_uri=<attacker uri> + Basic client auth → 200 victim token. PASSIVE done (302, no validation error → no intercept first).
+impact: OAuth phishing → victim FFN merchant/fulfiller orders/stock/shipping via leakable token. severity: high.
+testability: AUTH_HELPED
+[HYP] Zitadel device-flow public-client token phishing as BOLA bootstrap
+class: AUTH
+asset: https://id.jtl-cloud.com/oauth/v2/device_authorization (clients 383246859688230715, 383246859839225659)
+confidence: 45
+reasoning: Both clients public (no secret); device authorization accepts urn:jtl:tenants/offline_access without validation. Spec-compliant device flow — weak as standalone bug, strong as the access mechanism that turns the BOLA hypothesis testable.
+evidence_needed: consent completion yields access_token whose tenant claims survive at /erp/v2/graphql.
+verify_steps: HUMAN: open verification_uri_complete with test identity, poll /oauth/v2/token grant_type=device_code, then replay token against /erp/v2/graphql with target tenant header.
+impact: victim-consented tenant-scoped ERP token; chains to cross-tenant read. severity: medium (interaction required).
+testability: AUTH_HELPED
+[PARKED] FFN-issued JWT reused against api.jtl-cloud.com/erp/v2/graphql: no evidence of shared JWKS between oauth2.api.jtl-software.com and id.jtl-cloud.com; cross-service token confusion is speculation, confidence 20.
+[PARKED] PostHog/Sentry token abuse (erp.jtl-cloud.com env leak): data-access path into analytics would touch customer data and is program-excluded; no legitimate report path.
+[FINAL] 1) ERP BOLA 70 (critical if proven, token-gated) 2) FFN OAuth code theft+scope escalation 65 (confirmed ingredients, needs login) 3) Zitadel device-flow bootstrap 45 (feeds #1; weak alone).
+[NEXT] PROBE: GET https://account.jtl-cloud.com/self-service/registration/browser (follow 303; observe whether a self-created test identity flow is open) — decides whether the HUMAN_ONLY BOLA/device-chain is even feasible and yields a flow id for the report.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redirect_uri on client 97170e64-d390-4696-ba46-d6fcef8207de despite localhost-only registered URIs.
+[LEARN] REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
+[RISK] JTL: 80 — confirmed production OAuth defects (scope escalation on leaked creds, unvalidated redirect_uri, public-client device flows) plus plausible-critical but unproven cross-tenant ERP BOLA keep exposure high; mitigation of top chain hinges on whether ERP GraphQL validates x-tenant-id against JWT subject.
