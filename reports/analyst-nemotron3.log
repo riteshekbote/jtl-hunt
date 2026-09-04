@@ -6199,3 +6199,201 @@ testability: PASSIVE (discovery), AUTH_HELPED (needs valid public client_id)
 ### STEP 7 — RISK
 
 [RISK] jtl: 85 — Critical attack surface confirmed: dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client support + implicit flow; production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft → GraphQL access → cross-tenant BOLA → full ERP data compromise. Risk elevated by live endpoints, Ory Hydra misconfig patterns, and shared test profile amplification.
+===== ANALYST nemotron3 2026-09-04 16:57:50 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt
+total 188
+drwxr-xr-x 12 runner runner  4096 Sep  4 16:44 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 16:44 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 16:44 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 16:44 .github
+-rw-r--r--  1 runner runner  1787 Sep  4 16:44 README.md
+-rw-r--r--  1 runner runner    43 Sep  4 16:44 analyst-out.txt
+-rw-r--r--  1 runner runner 49642 Sep  4 16:44 analyst-prompt.txt
+-rw-r--r--  1 runner runner 45793 Sep  4 16:44 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 leads
+-rw-r--r--  1 runner runner  1422 Sep  4 16:44 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 reposcan-raw
+-rw-r--r--  1 runner runner  3262 Sep  4 16:44 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 16:44 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 16:44 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 16:44 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 16:44 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 16:44 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 16:44 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 triage
+[0m
+[0m→ [0mRead analyst-out.txt
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/knowledge/
+total 16
+drwxr-xr-x  2 runner runner 4096 Sep  4 16:44 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 16:44 ..
+-rw-r--r--  1 runner runner 5048 Sep  4 16:44 index.md
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/leads/
+total 156
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 .
+drwxr-xr-x 12 runner runner  4096 Sep  4 16:44 ..
+-rw-r--r--  1 runner runner 76465 Sep  4 16:44 lead-bigpickle.md
+-rw-r--r--  1 runner runner   357 Sep  4 16:44 lead-laguna.md
+-rw-r--r--  1 runner runner   350 Sep  4 16:44 lead-ling3.md
+-rw-r--r--  1 runner runner   364 Sep  4 16:44 lead-longcat.md
+-rw-r--r--  1 runner runner    18 Sep  4 16:44 lead-mimo.md
+-rw-r--r--  1 runner runner 51297 Sep  4 16:44 lead-nemotron3.md
+-rw-r--r--  1 runner runner   816 Sep  4 16:44 reposcan-jtl.md
+[0m
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-mimo.md
+[0m→ [0mRead leads/reposcan-jtl.md
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/inventory/
+total 36
+drwxr-xr-x  2 runner runner  4096 Sep  4 16:44 .
+drwxr-xr-x 12 runner runner  4096 Sep  4 16:44 ..
+-rw-r--r--  1 runner runner 25194 Sep  4 16:44 jtl.md
+[0m
+[0m→ [0mRead inventory/jtl.md
+[0m→ [0mRead state_nemotron3.json
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/triage/
+total 56
+drwxr-xr-x  2 runner runner 4096 Sep  4 16:44 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 16:44 ..
+-rw-r--r--  1 runner runner    0 Sep  4 16:44 .gitkeep
+-rw-r--r--  1 runner runner  187 Sep  4 16:44 run-2026-09-02-21-37.md
+-rw-r--r--  1 runner runner  282 Sep  4 16:44 run-2026-09-02-23-33.md
+-rw-r--r--  1 runner runner  158 Sep  4 16:44 run-2026-09-03-01-25.md
+-rw-r--r--  1 runner runner  283 Sep  4 16:44 run-2026-09-03-06-28.md
+-rw-r--r--  1 runner runner  175 Sep  4 16:44 run-2026-09-03-11-42.md
+-rw-r--r--  1 runner runner  167 Sep  4 16:44 run-2026-09-03-15-50.md
+-rw-r--r--  1 runner runner  232 Sep  4 16:44 run-2026-09-03-19-06.md
+-rw-r--r--  1 runner runner  213 Sep  4 16:44 run-2026-09-03-21-44.md
+-rw-r--r--  1 runner runner  253 Sep  4 16:44 run-2026-09-03-23-48.md
+-rw-r--r--  1 runner runner  201 Sep  4 16:44 run-2026-09-04-03-03.md
+-rw-r--r--  1 runner runner  227 Sep  4 16:44 run-2026-09-04-08-04.md
+-rw-r--r--  1 runner runner  143 Sep  4 16:44 run-2026-09-04-12-46.md
+[0m
+Now I have a complete picture. Let me execute the 8-step analysis.
+
+---
+
+## STEP 1 — DELTA
+
+[NEW] **FFN OAuth credentials leaked in public GitHub** — valid client_id `97170e64-d390-4696-ba46-d6fcef8207de` + client_secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) committed to `github.com/kruegge82/jtl-ffn-php-sdk` README; produces working tokens at `oauth2.api.jtl-software.com/token`
+
+[NEW] **OAuth scope escalation confirmed** at `oauth2.api.jtl-software.com` — client registered for `ffn.merchant.read` obtains JWT containing `ffn.merchant.write` scope; server grants any `ffn.*` scope without validation
+
+[NEW] **Silent scope degradation** — requesting unauthorized scopes (e.g., `ffn.admin.write`) returns HTTP 200 + access_token with empty scopes `[]` instead of `invalid_scope` error
+
+[NEW] **FFN API fully mapped** — 6 role groups (admin/portal/fulfiller/merchant/account/shared) × ~30 endpoints on `ffn.api.jtl-software.com` + `ffn2.api.jtl-software.com`; public docfx documentation and self-describing endpoint listing accessible; API version 0.1-dev in production
+
+[NEW] **FFN API requires dual auth layer** — Bearer token from OAuth2 accepted by token endpoint but 401 on all data endpoints; requires API key from `/api/v1/merchant/credentials` paired with token; full exploitation requires FFN portal account
+
+[CHANGED] Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) to device flow token acquisition (needs public client_id enumeration first) — nemotron3 confidence 75
+
+[CHANGED] `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test environment hypotheses permanently untestable from internet
+
+---
+
+## STEP 2 — PRIORITIZE
+
+[PRIO] auth.jtl-cloud.com,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=9
+[PRIO] oauth2.api.jtl-software.com,8.75,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=10
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,8.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+[PRIO] ffn.api.jtl-software.com,7.85,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=5,cloud_surface=8,freshness=10
+[PRIO] bountyshop.jtl-software.com/Kontakt,6.80,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+
+---
+
+## STEP 3 — HYPOTHESES
+
+[HYP] JTL Cloud OAuth device flow public client token acquisition without client_secret
+class: AUTH
+asset: auth.jtl-cloud.com/oauth2/device/auth + /oauth2/token
+confidence: 75
+reasoning: OIDC discovery shows device_authorization_endpoint + token_endpoint with token_endpoint_auth_methods_supported=["none"] — public clients can exchange device_code for tokens without client_secret. Implicit flow also supported (response_type=token returns access_token in fragment). Knowledge base: loose redirect_uri validation in test/staging (29-instance profile p-g-443d1d50).
+evidence_needed: Valid client_id for public client + device_code grant returns access_token without client_secret; or implicit flow with redirect_uri=https://attacker.com returns token in fragment
+verify_steps: GET https://auth.jtl-cloud.com/.well-known/openid-configuration (DONE); POST /oauth2/device/auth with valid public client_id → get device_code → POST /oauth2/token with grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=...&client_id=<public_client> (no client_secret) → observe access_token; GET /oauth2/auth?response_type=token&client_id=<public_client>&redirect_uri=https://evil.com&scope=openid → check fragment for token
+impact: OAuth token theft → ERP GraphQL API access as arbitrary client → cross-tenant data via x-tenant-id header — CRITICAL
+testability: PASSIVE (discovery done), AUTH_HELPED (needs valid public client_id)
+
+[HYP] FFN OAuth scope escalation + leaked credentials → FFN API merchant write access
+class: AUTH
+asset: oauth2.api.jtl-software.com/token + ffn.api.jtl-software.com
+confidence: 80
+reasoning: Valid FFN OAuth client_id/secret committed to public GitHub (kruegge82/jtl-ffn-php-sdk). Client registered for `ffn.merchant.read` obtains JWT containing `ffn.merchant.write` — server grants any `ffn.*` scope without validation. Silent scope degradation: unauthorized scopes return HTTP 200 with empty scopes `[]` instead of error. FFN API has 6 role groups × ~30 endpoints but requires additional API key from `/api/v1/merchant/credentials`.
+evidence_needed: Use leaked credentials to obtain token with escalated scopes; pair with API key from merchant credentials endpoint; access FFN API data endpoints (orders, fulfillments, products)
+verify_steps: POST https://oauth2.api.jtl-software.com/token -d "grant_type=client_credentials&client_id=97170e64-d390-4696-ba46-d6fcef8207de&client_secret=<leaked>&scope=ffn.merchant.read ffn.merchant.write" → observe token claims; POST https://ffn.api.jtl-software.com/api/v1/merchant/credentials with valid token → get API key; GET https://ffn.api.jtl-software.com/api/v1/orders -H "Authorization: Bearer <token>" -H "X-Api-Key: <key>"
+impact: FFN merchant data access (orders, fulfillments, products, returns) → financial/PII exposure — HIGH; scope escalation indicates fundamental OAuth authorization flaw
+testability: PASSIVE (credentials public), AUTH_HELPED (needs FFN portal account for API key)
+
+[HYP] JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header
+class: IDOR
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Production GraphQL ERP API requires JWT + x-tenant-id header for multi-tenancy. Developer docs confirm x-tenant-id is client-supplied. If tenant validation not enforced against JWT claims (sub/tenant_id), attacker with valid token for tenant A can query/mutate tenant B data. x-tenant-id only checked after JWT validation (401 without JWT).
+evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B data in GraphQL response (items, customers, orders); or introspection reveals tenant-scoped types with no ownership checks in resolvers
+verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
+impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL
+testability: AUTH_HELPED
+
+---
+
+## STEP 4 — SELF-CRITIQUE
+
+[PARKED] JTL-Shop v5.x contact form Smarty SSTI in backend email template: confidence 40 < 50 threshold; SSTI test reflected not executed; requires backend email rendering unobservable; shop version unconfirmed (NOVA v=5.0.0 is template version, not shop version); CVE is public — test shop likely patched; mutating test against live customer data prohibited
+
+[PARKED] All docker.jtl-software.de hypotheses: containers not internet-routable (TCP timeout on 31.172.91.250:80/443); wildcard DNS masks true attack surface; cannot validate passively
+
+[FINAL] 1. FFN OAuth scope escalation + leaked credentials → FFN API merchant write access (confidence 80)
+[FINAL] 2. JTL Cloud OAuth device flow public client token acquisition without client_secret (confidence 75)
+[FINAL] 3. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 65)
+
+---
+
+## STEP 5 — NEXT ACTION
+
+[NEXT] PROBE: Enumerate valid public client_id for device/implicit flow at auth.jtl-cloud.com — check JTL developer docs (https://developer.jtl-software.com), GitHub repos (github.com/jtl-software), or GraphQL playground network traffic for registered OAuth clients; then POST https://auth.jtl-cloud.com/oauth2/device/auth with client_id=<found> scope=openid offline_access
+
+---
+
+## STEP 6 — LEARNING
+
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT. Server grants any `ffn.*` scope without validation.
+
+[LEARN] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README. Secret `sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` produces working tokens.
+
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible. API version 0.1-dev in production. Dual API instances live (ffn + ffn2).
+
+[LEARN] REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token. Additional API key layer present (from /api/v1/merchant/credentials). Full exploitation requires FFN portal account.
+
+[LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
+
+[LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
+
+---
+
+## STEP 7 — RISK
+
+[RISK] jtl: 90 — Critical attack surface confirmed: (1) FFN OAuth with leaked credentials + scope escalation + silent scope degradation on production API (oauth2.api.jtl-software.com + ffn.api.jtl-software.com); (2) dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client ("none") + implicit flow; (3) production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; (4) official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft (device/implicit flow) OR leaked FFN credentials → GraphQL/FFN API access → cross-tenant BOLA via x-tenant-id → full ERP/FFN data compromise. Risk elevated by live endpoints, Ory Hydra misconfig patterns, public credential leak, and shared test profile amplification (37+29 instances).

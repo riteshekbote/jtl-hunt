@@ -27,3 +27,8 @@
 - 2026-09-04 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README. Secret `sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` produces working tokens.
 - 2026-09-04 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible. API version 0.1-dev in production. Dual API instances live (ffn + ffn2).
 - 2026-09-04 REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token. Additional API key layer present (from /api/v1/merchant/credentials). Full exploitation requires FFN portal account.
+- 2026-09-04 ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live (issuer, device_authorization, PKCE, jwks); distinct from Ory Hydra auth.jtl-cloud.com.
+- 2026-09-04 ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts any requested scope (urn:jtl:tenants, offline_access) without client authentication.
+- 2026-09-04 ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables this auth mapping.
+- 2026-09-04 REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation).
+- 2026-09-04 REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302.

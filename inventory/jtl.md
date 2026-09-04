@@ -395,3 +395,20 @@
 - NEW bountyshop NOVA template version v=5.0.0 (CSS/JS); CVE-2026-54390 affects 5.2.0–5.7.1 — potentially below vulnerable range
 - CHANGED OAuth/OIDC not on api.jtl-cloud.com standard paths — lives on dedicated auth.jtl-cloud.com subdomain
 - CHANGED Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth, 401 without JWT)
+
+## 2026-09-04 16:57:50 UTC
+- NEW `id.jtl-cloud.com` discovered — live Zitadel OIDC instance (issuer confirmed via `/oauth/v2/keys`, device auth + PKCE), separate from Ory Hydra at `auth.jtl-cloud.com`
+- NEW ERP web app Zitadel client `383246859688230715` (public, from `erp.jtl-cloud.com` env JSON) — device authorization accepted **without client_secret**, returns valid device_code/user_code
+- NEW Hub Zitadel client `383246859839225659` (public) — also accepts device authorization without secret
+- NEW Both device flows accept elevated scopes `urn:jtl:tenants`, `urn:jtl:tenant`, `offline_access` on request
+- NEW ERP client's registered redirect_uri confirmed: `https://erp.jtl-cloud.com/auth/callback` → authorize returns 302 (not 400)
+- NEW redirect_uri validation on `id.jtl-cloud.com` is strict — 8 bypass variants (scheme/subdomain/path@/..) all rejected 400
+- NEW `account.jtl-cloud.com` = Ory Kratos flow UI (nodes/oidc provider login); `login.jtl-cloud.com` = unconfigured Zitadel external domain (eu1.zitadel.cloud)
+- CHANGED JWT-bearer + `request_uri` on Ory (`auth.jtl-cloud.com`) require valid client auth — SSRF via request_uri blocked by unknown client
+- NEW **FFN OAuth credentials leaked in public GitHub** — valid client_id `97170e64-d390-4696-ba46-d6fcef8207de` + client_secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) com
+- NEW **OAuth scope escalation confirmed** at `oauth2.api.jtl-software.com` — client registered for `ffn.merchant.read` obtains JWT containing `ffn.merchant.write` scope; server grants any `ffn.*` scope wit
+- NEW **Silent scope degradation** — requesting unauthorized scopes (e.g., `ffn.admin.write`) returns HTTP 200 + access_token with empty scopes `[]` instead of `invalid_scope` error
+- NEW **FFN API fully mapped** — 6 role groups (admin/portal/fulfiller/merchant/account/shared) × ~30 endpoints on `ffn.api.jtl-software.com` + `ffn2.api.jtl-software.com`; public docfx documentation and se
+- NEW **FFN API requires dual auth layer** — Bearer token from OAuth2 accepted by token endpoint but 401 on all data endpoints; requires API key from `/api/v1/merchant/credentials` paired with token; full e
+- CHANGED Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) to device flow token acquisition (needs public client_id enumeration first) — nemotron3 confidence 75
+- CHANGED `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test environment hypotheses permanently untestable from internet
