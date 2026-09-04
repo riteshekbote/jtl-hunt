@@ -4811,3 +4811,236 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] JTL: 76 — FFN OAuth leaks an operational client secret that mints escalated-scope tokens via undocumented client_credentials and sits behind an authorize pipeline accepting arbitrary redirect_uri pre-auth; chain completes to victim token theft if post-login code routing is unvalidated (HUMAN test pending). Data plane still gated on portal-user existence; Zitadel device flow is consent-gated; ERP BOLA token-blocked.
+===== ANALYST bigpickle 2026-09-04 21:36:50 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && echo "---" && find . -maxdepth 2 -type d | head -50
+total 196
+drwxr-xr-x 12 runner runner  4096 Sep  4 21:34 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 21:34 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 21:34 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 21:34 .github
+-rw-r--r--  1 runner runner  1787 Sep  4 21:34 README.md
+-rw-r--r--  1 runner runner    32 Sep  4 21:34 analyst-out.txt
+-rw-r--r--  1 runner runner 54238 Sep  4 21:34 analyst-prompt.txt
+-rw-r--r--  1 runner runner 50389 Sep  4 21:34 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 leads
+-rw-r--r--  1 runner runner  1480 Sep  4 21:34 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 reposcan-raw
+-rw-r--r--  1 runner runner  3262 Sep  4 21:34 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 21:34 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 21:34 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 21:34 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 21:34 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 21:34 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 21:34 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 21:34 triage
+---
+.
+./.git
+./.git/hooks
+./.git/logs
+./.git/info
+./.git/refs
+./.git/objects
+./triage
+./recon-notes
+./inventory
+./knowledge
+./reports
+./scripts
+./leads
+./reposcan-raw
+./.github
+./.github/workflows
+[0m
+I'll ground the analysis in the actual repo state before producing the structured output.
+[0m✱ [0mGlob "**/*.{md,yml,yaml,txt,json}"[90m 44 matches[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead analyst-out.txt
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead triage/run-2026-09-04-19-18.md
+[0m→ [0mRead README.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead reports/hypotheses-nemotron3.txt
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead knowledge/index.md
+[0m
+[0m$ [0mgit log --oneline -15 && echo "---STATUS---" && git status --short && echo "---TRIAGE---" && ls -t triage/ && echo "---REPORTS---" && ls -t reports/
+8f9e03d reposcan 2026-09-04-21-32
+---STATUS---
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+---TRIAGE---
+run-2026-09-02-21-37.md
+run-2026-09-02-23-33.md
+run-2026-09-03-01-25.md
+run-2026-09-03-06-28.md
+run-2026-09-03-11-42.md
+run-2026-09-03-15-50.md
+run-2026-09-03-19-06.md
+run-2026-09-03-21-44.md
+run-2026-09-03-23-48.md
+run-2026-09-04-03-03.md
+run-2026-09-04-08-04.md
+run-2026-09-04-12-46.md
+run-2026-09-04-16-44.md
+run-2026-09-04-19-18.md
+---REPORTS---
+analyst-nemotron3.log
+hypotheses-bigpickle.txt
+hypotheses-laguna.txt
+hypotheses-ling3.txt
+hypotheses-longcat.txt
+hypotheses-nemotron3.txt
+hypotheses.md
+valid-bugs.md
+analyst-bigpickle.log
+analyst-laguna.log
+analyst-ling3.log
+analyst-longcat.log
+[0m
+[0m→ [0mRead triage/run-2026-09-04-16-44.md
+[0m→ [0mRead leads/reposcan-jtl.md
+[0m→ [0mRead reposcan-raw/summary.txt
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m$ [0mls -la reports/analyst-bigpickle.log && tail -80 reports/analyst-bigpickle.log
+-rw-r--r-- 1 runner runner 390693 Sep  4 21:34 reports/analyst-bigpickle.log
+location: https://oauth2.api.jtl-software.com/login
+x-request-id: 23763322-0b24-4679-b268-5168ad7f64fb
+set-cookie: XSRF-TOKEN=eyJpdiI6ImcvOHhRTUVUQ2ZXeFlJc2YycWJGVHc9PSIsInZhbHVlIjoiM2ZOSHFLck94Ky8rMG5HLzZFNmhNNzUrK0M2Yy9qRWsyOUdQQlJqN2FIclVic2RObC95VEtmWFh6dnJucnRGOWhoQUxUL3NySXBCd0VYODJrS0lnTC8wOEFLbjlYMUNXK3pqa2tVaDkrQ0t2Y3BtL0JYNjRWaTJHVGR5Rk02R0EiLCJtYWMiOiI2MWQ3MDk5NmZiOTU4ZGIwZmIxYmY1ODZjZmJjM2YxYTE5ZTdlN2ZiNjMxODIzODExNTdhNTVjYTNmN2VjMmFkIiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 21:23:28 GMT; Max-Age=7200; path=/; domain=oauth2.api.jtl-software.com
+set-cookie: JTL-OAUTH=eyJpdiI6ImNvb2p6OVREdFJSQzBMM0QvdnJhTGc9PSIsInZhbHVlIjoiRms2bzhpNE5CamFlNlVaSUZyNDlmazZxdE5RekdjeHJYY3cvaytObWx6OC9lejkrWXhtZU5nR1E4S1JXL3I5ZWVuZkxsenJpT2FSVmdMbkE2c0NjL2J2Z294eWNCamFwL0pNTVp5SEpIL01Da0V4UjVwNXJFY0l0YVFiby90OHYiLCJtYWMiOiIwMDlmZmE3N2YwZDFmZDU1NmVlZjljZmVkYTdiYzVjNjc5YTViYThhNzA2ODlhNWJhNTU0ZDg5MDE2NTE2N2I1IiwidGFnIjoiIn0%3D; expires=Fri, 04 Sep 2026 21:23:28 GMT; Max-Age=7200; path=/; domain=oauth2.api.jtl-software.com; httponly
+x-robots-tag: none, noindex, noarchive, nofollow, nosnippet, nositelinkssearchbox
+--- body loc:
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://oauth2.api.jtl-software.com/login'" />
+
+        <title>Redirecting to https://oauth2.api.jtl-software.com/login</title>
+    </head>
+    <body>
+        Redirecting to <a href=
+[0m
+STEP 1 — DELTA
+- [NEW] Hub Zitadel client `383246859839225659` registered redirect confirmed exact: `https://hub.jtl-cloud.com/auth/callback` (302→login), while `/oauth/callback` rejected 400 invalid_request — strict, mirrors ERP pattern
+- [NEW] `login.jtl-cloud.com` is now confirmed as the live Zitadel login UI (302 target) — supersedes earlier "unconfigured external domain" note
+- [NEW] FFN OAuth (`oauth2.api.jtl-software.com`) is a **custom Laravel OAuth server** (XSRF-TOKEN + encrypted JTL-OAUTH cookies, nginx), not Ory/Zitadel
+- [NEW] `/authorize` AND `/doauthorize` accept **arbitrary `redirect_uri=http://evil.example/cb` pre-auth** (302→/login, no 400) — redirect validation deferred/absent pre-login
+- [NEW] Client secret recovered verbatim from README token-exchange example (sha256:9cc93f… match); client_credentials re-confirmed live though docs disclaim it; scope escalation re-confirmed (`ffn.merchant.write` issued for read-registered client; token `sub=""`)
+- [NEW] `/api-docs/v1/swagger.json` enumerates Access group — `/api/v1/access/tokens` CRUD, `/api/v1/users/current`, `/api/v1/access/locks`
+- [CHANGED] FFN data-plane 401 root cause reframed: docs state portal first-login creates user record; empty-sub token → 401, not an API-key gate
+
+STEP 2 — PRIORITIZE
+- [PRIO] oauth2.api.jtl-software.com (FFN OAuth),8.15,attack_surface=8,business_value=7,tech_exposure=8(custom OAuth+scope validation),gate_ease=10,cloud_surface=7,freshness=10
+- [PRIO] id.jtl-cloud.com (Zitadel),8.40,attack_surface=8,business_value=9,tech_exposure=9,gate_ease=6,cloud_surface=9,freshness=10
+- [PRIO] api.jtl-cloud.com/erp/v2/graphql,8.25,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+
+STEP 3 — HYPOTHESES
+[HYP] FFN OAuth token theft via unvalidated redirect_uri + leaked client credentials
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/doauthorize + /token (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 65
+reasoning: Custom Laravel OAuth. README leaks secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z (sha256:9cc93f…). client_credentials grant live despite docs denying it; token minted 200, scopes [ffn.merchant.write] for read-registered client, sub empty. Both /authorize and /doauthorize accepted redirect_uri=http://evil.example/cb (302→/login) for a code client with registered localhost-only URIs.
+evidence_needed: after real login, code delivered to an unregistered redirect_uri and redeemable at /token with leaked creds.
+verify_steps: PASSIVE done (authorize+doauthorize 302, no 400). HUMAN: complete login/consent with test JTL customer-center account, capture code at attacker URI, POST /token grant_type=authorization_code + redirect_uri=<attacker uri> → 200 with victim-bound token (sub=<uid>, scopes=ffn.merchant.write).
+impact: OAuth phishing vs any FFN merchant/fulfiller — victim authorizes leaked escalated-scope client, attacker redeems code with leaked secret → victim FFN API data (orders, stock, returns, shipping). Severity: high.
+testability: AUTH_HELPED
+[HYP] Zitadel device-flow public-client token phishing on Hub client
+class: AUTH
+asset: https://id.jtl-cloud.com/oauth/v2/device_authorization (client 383246859839225659)
+confidence: 70
+reasoning: Hub client public (no secret); device_auth returns device_code and accepts urn:jtl:tenants/offline_access without validation; registered redirect https://hub.jtl-cloud.com/auth/callback confirmed (302). ERP client 383246859688230715 same pattern.
+evidence_needed: consent completion yielding access_token with victim tenant claims.
+verify_steps: HUMAN: open verification_uri_complete with a test account, poll /oauth/v2/token grant_type=device_code, then Bearer + x-tenant-id to api.jtl-cloud.com/erp/v2/graphql.
+impact: victim-consented tenant-scoped token for hub/ERP. Severity: medium/high (interaction required).
+testability: AUTH_HELPED
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Official samples issue JWTs with no tenant binding; tenant passed only via X-Tenant-ID. GraphQL trusting the header makes any valid JWT read any tenant.
+evidence_needed: two tenant-scoped tokens; swapped header → 200 vs 403.
+verify_steps: HUMAN: POST introspection/query with tenant-A token + tenant-B x-tenant-id.
+impact: cross-tenant ERP PII/financial dump. Severity: critical.
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] FFN Access/tokens API-key bypass: empty-sub token 401 on all three access endpoints; gate = user-record existence (docs-confirmed), not header/API-key — cannot mint without portal user
+- [PARKED] Silent scope degradation: merged as supporting evidence for escalation finding
+- [PARKED] redirect_uri bypass on id.jtl-cloud.com: 8/8 variants rejected — closed
+- [FINAL] 1. FFN scope escalation + leaked creds + deferred redirect validation → token theft (75)
+- [FINAL] 2. Zitadel device-flow public client − ERP/Hub (70)
+- [FINAL] 3. ERP cross-tenant BOLA (70, HUMAN_ONLY)
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Using a test JTL customer-center account, run authorize→doauthorize for leaked client 97170e64… with redirect_uri=<attackerUri>/cb, complete consent, confirm the code reaches the unregistered URI and redeems at oauth2.api.jtl-software.com/token (token-theft POC), then complete the id.jtl-cloud.com ERP device-flow consent to capture a tenant token for the BOLA test.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: custom Laravel OAuth; client_credentials live (docs claim unsupported); scope escalation re-confirmed — ffn.merchant.write issued for read-registered client, empty sub
+- [LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com/doauthorize: arbitrary redirect_uri (evil.example) accepted pre-login (302→/login), no 400 — validation deferred; final code-routing unproven
+- [LEARN] ACCEPTED TARGET @ ffn.api.jtl-software.com/api-docs/v1/swagger.json: Access group enumerated — users/current, access/tokens CRUD, access/locks
+- [LEARN] REJECTED AUTH @ ffn.api.jtl-software.com: escalated Bearer 401 on all data endpoints — empty-sub client token, docs: portal first-login creates user; not an API-key gate
+- [LEARN] ACCEPTED AUTH @ id.jtl-cloud.com: Hub client registered redirect confirmed `https://hub.jtl-cloud.com/auth/callback` (302); non-registered `/oauth/callback` → 400 invalid_request
+
+STEP 7 — RISK
+- [RISK] JTL: 76 — FFN OAuth leaks an operational client secret that mints escalated-scope tokens via undocumented client_credentials and sits behind an authorize pipeline accepting arbitrary redirect_uri pre-auth; chain completes to victim token theft if post-login code routing is unvalidated (HUMAN test pending). Data plane still gated on portal-user existence; Zitadel device flow is consent-gated; ERP BOLA token-blocked.
+[0m
+Repo is the JTL bug-bounty automation hub; my last run (19:26) left FFN/Zitadel/BOLA hypotheses all HUMAN-gated. Before writing up, I'll run a small set of read-only passive probes on the two open, high-value angles (sibling-app env-JSON pattern; ffn2 swagger) since everything else is gate-blocked.
+[0m$ [0mfor u in "https://hub.jtl-cloud.com/" "https://account.jtl-cloud.com/" "https://login.jtl-cloud.com/"; do
+  code=$(curl -sS -o /tmp/probe_body.html -m 25 -w '%{http_code}' "$u" 2>/dev/null)
+  size=$(wc -c </tmp/probe_body.html 2>/dev/null)
+  envhit=$(rg -o 'jtl-cloud-env-variables|PostHog|Sentry|zitadel|Zitadel|client_id' /tmp/probe_body.html 2>/dev/null | sort | uniq -c | tr '\n' ' ')
+  echo "$u -> HTTP $code size=$size env_hits=[$envhit]"
+  sleep 1.2
+done
+https://hub.jtl-cloud.com/ -> HTTP 200 size=1085 env_hits=[]
+https://account.jtl-cloud.com/ -> HTTP 200 size=708 env_hits=[]
+https://login.jtl-cloud.com/ -> HTTP 200 size=32129 env_hits=[]
+[0m
+[0m$ [0mfor u in "https://hub.jtl-cloud.com/" "https://account.jtl-cloud.com/"; do
+  echo "=== $u ==="; curl -sS -m 25 "$u" 2>/dev/null | rg -i 'script src|href=|title>|refresh|location|zitadel|kratos|redirect' | head -20; sleep 1.2
+done
+=== https://hub.jtl-cloud.com/ ===
+/bin/bash: line 2: rg: command not found
+=== https://account.jtl-cloud.com/ ===
+/bin/bash: line 2: rg: command not found
+[0m
+[0m$ [0mfor u in "https://ffn2.api.jtl-software.com/api-docs/v1/swagger.json" "https://ffn.api.jtl-software.com/api-docs/v1/swagger.json"; do
+  code=$(curl -sS -o /tmp/swagger.json -m 25 -w '%{http_code}' "$u" 2>/dev/null)
+  size=$(wc -c </tmp/swagger.json 2>/dev/null)
+  title=$(rg -o '"title"\s*:\s*"[^"]*"' /tmp/swagger.json 2>/dev/null | head -1)
+  paths=$(rg -o '"\/api[^"]*"' /tmp/swagger.json 2>/dev/null | wc -l)
+  echo "$u -> HTTP $code size=$size $title paths=$paths"
+  sleep 1.2
+done
+https://ffn2.api.jtl-software.com/api-docs/v1/swagger.json -> HTTP 200 size=42668  paths=0
+https://ffn.api.jtl-software.com/api-docs/v1/swagger.json -> HTTP 200 size=42668  paths=0
+[0m
+[0m$ [0mcurl -sS -m 25 -o /tmp/hub_body.html "https://hub.jtl-cloud.com/" 2>/dev/null; sleep 1
+curl -sS -m 25 -o /tmp/account_body.html "https://account.jtl-cloud.com/" 2>/dev/null; sleep 1
+curl -sS -m 25 -o /tmp/ffn2_swagger.json "https://ffn2.api.jtl-software.com/api-docs/v1/swagger.json" 2>/dev/null; sleep 1
+curl -sS -m 25 -o /tmp/ffn_swagger.json "https://ffn.api.jtl-software.com/api-docs/v1/swagger.json" 2>/dev/null
+sha256sum /tmp/ffn2_swagger.json /tmp/ffn_swagger.json
+diff -q /tmp/ffn2_swagger.json /tmp/ffn_swagger.json && echo "IDENTICAL swagger" || echo "DIFFER"
+b6ff8b2dcb3f87947602f051a1b14d8f0d4255645fa0ad2656035c9ac54ae319  /tmp/ffn2_swagger.json
+b6ff8b2dcb3f87947602f051a1b14d8f0d4255645fa0ad2656035c9ac54ae319  /tmp/ffn_swagger.json
+IDENTICAL swagger
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mRead /tmp/hub_body.html failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mRead /tmp/account_body.html failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

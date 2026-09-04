@@ -1,4 +1,4 @@
-## 2026-09-04 19:26:07 UTC [target] (model bigpickle)
+## 2026-09-04 21:36:43 UTC [target] (model bigpickle)
 [HYP] FFN OAuth token theft via unvalidated redirect_uri + leaked client credentials
 class: AUTH
 asset: https://oauth2.api.jtl-software.com/doauthorize + /token (client 97170e64-d390-4696-ba46-d6fcef8207de)

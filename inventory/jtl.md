@@ -430,3 +430,19 @@
 - NEW REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302
 - CHANGED Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) to device flow token acquisition (needs public client_id enumeration first) — nemotron3 confidence 75
 - CHANGED `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test environment hypotheses permanently untestable from internet
+
+## 2026-09-04 21:36:50 UTC
+- NEW Zitadel OIDC instance at `id.jtl-cloud.com` confirmed live with device_authorization, PKCE, JWKS — distinct from Ory Hydra at `auth.jtl-cloud.com`
+- NEW ERP Zitadel client `383246859688230715` and Hub client `383246859839225659` are public (from `erp.jtl-cloud.com` env JSON leak) — device authorization accepts `urn:jtl:tenants`, `offline_access` witho
+- NEW `erp.jtl-cloud.com` env JSON exposes Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL — enables full auth mapping
+- NEW FFN OAuth scope escalation confirmed at `oauth2.api.jtl-software.com` — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT; server grants any `ffn.*` scope
+- NEW Silent scope degradation: unauthorized scopes (e.g., `ffn.admin.write`) return HTTP 200 + access_token with empty scopes `[]` instead of `invalid_scope`
+- NEW FFN OAuth client_id `97170e64-d390-4696-ba46-d6fcef8207de` + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) leaked in public GitHub `kruegge82/jtl-ffn-php-sdk`
+- NEW FFN API requires dual auth: Bearer token + API key from `/api/v1/merchant/credentials` — 401 on data endpoints with token alone
+- NEW Ory Hydra at `auth.jtl-cloud.com` supports device flow + implicit flow + public client (`"none"` auth method) — but no valid public client_id enumerated yet
+- NEW `developer.jtl-software.com/cloud/api-reference/graphql-playground` embeds iframe targeting production `api.jtl-cloud.com/erp/v2/graphql`
+- CHANGED Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) → device flow token acquisition on Zitadel/Ory (needs public client_id)
+- CHANGED `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test env hypotheses permanently untestable
+- CHANGED `id.jtl-cloud.com` redirect_uri validation strict — 8 bypass variants all 400; exact-URI validation enforced
+- CHANGED `auth.jtl-cloud.com` jwt-bearer + request_uri require valid client auth — SSRF/request_uri blocked by unknown-client 302
+- CHANGED Bountyshop contact form SSTI rejected — payload reflected not executed; version unconfirmed; backend email trigger unobservable

@@ -157,3 +157,25 @@
 - LEARN: ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables this auth m
 - LEARN: REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation).
 - LEARN: REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302.
+
+## RANKED HYPOTHESES 2026-09-04 21:36:50 UTC
+- [85] id.jtl-cloud.com/oauth/v2/device_authorization: Zitadel device flow public client token acquisition for ERP/Hub clients (from art/lead_nemotron3.txt)
+- [65] https://oauth2.api.jtl-software.com/doauthorize: FFN OAuth token theft via unvalidated redirect_uri + leaked client credentials (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-nemotron3.txt): PROBE: POST https://id.jtl-cloud.com/oauth/v2/device_authorization -d "client_id=383246859688230715&scope=openid urn:jtl:tenants offline_access" → obtain device
+- LEARN: ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live (issuer, device_authorization, PKCE, jwks); distinct from Ory Hydra auth.jtl-cloud.com.
+- LEARN: ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts any requeste
+- LEARN: ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables auth mappin
+- LEARN: REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation).
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302.
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT. Server g
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README. Secret sha256:9cc93ff6d4f8f279ba105674818232d
+- LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible. API version 0.1-dev in p
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token. Additional
+- LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed 
+- LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support.
+- LEARN: REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobser
+- LEARN: REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable.
+- LEARN: ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed.
+- LEARN: ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile).
+- LEARN: ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql.
+- LEARN: ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth uses Ory non-standard paths (/oauth2/, /hydra/, /.ory/).

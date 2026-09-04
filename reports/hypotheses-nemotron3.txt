@@ -1,44 +1,43 @@
-## 2026-09-04 19:21:09 UTC [target] (model nemotron3)
-[NEW] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
-[NEW] ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth uses Ory non-standard paths (/oauth2/, /hydra/, /.ory/)
-[NEW] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
-[NEW] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
-[NEW] REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobservable
-[NEW] ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT; server grants any `ffn.*` scope without validation
-[NEW] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README; secret `sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` produces working tokens
-[NEW] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in production; dual API instances live (ffn + ffn2)
-[NEW] REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token; additional API key layer present (from /api/v1/merchant/credentials); full exploitation requires FFN portal account
-[NEW] ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live (issuer, device_authorization, PKCE, jwks); distinct from Ory Hydra auth.jtl-cloud.com
-[NEW] ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts any requested scope (urn:jtl:tenants, offline_access) without client authentication
-[NEW] ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables auth mapping
-[NEW] REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation)
-[NEW] REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302
-[CHANGED] Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) to device flow token acquisition (needs public client_id enumeration first) — nemotron3 confidence 75
-[CHANGED] `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test environment hypotheses permanently untestable from internet
-[PRIO] oauth2.api.jtl-software.com/token,9.50,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=10
-[PRIO] id.jtl-cloud.com/oauth/v2/device_authorization,9.50,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=10
-[PRIO] auth.jtl-cloud.com/oauth2/device/auth,9.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=9
+## 2026-09-04 21:36:25 UTC [target] (model nemotron3)
+[NEW] Zitadel OIDC instance at `id.jtl-cloud.com` confirmed live with device_authorization, PKCE, JWKS — distinct from Ory Hydra at `auth.jtl-cloud.com`
+[NEW] ERP Zitadel client `383246859688230715` and Hub client `383246859839225659` are public (from `erp.jtl-cloud.com` env JSON leak) — device authorization accepts `urn:jtl:tenants`, `offline_access` without client_secret
+[NEW] `erp.jtl-cloud.com` env JSON exposes Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL — enables full auth mapping
+[NEW] FFN OAuth scope escalation confirmed at `oauth2.api.jtl-software.com` — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT; server grants any `ffn.*` scope
+[NEW] Silent scope degradation: unauthorized scopes (e.g., `ffn.admin.write`) return HTTP 200 + access_token with empty scopes `[]` instead of `invalid_scope`
+[NEW] FFN OAuth client_id `97170e64-d390-4696-ba46-d6fcef8207de` + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) leaked in public GitHub `kruegge82/jtl-ffn-php-sdk`
+[NEW] FFN API requires dual auth: Bearer token + API key from `/api/v1/merchant/credentials` — 401 on data endpoints with token alone
+[NEW] Ory Hydra at `auth.jtl-cloud.com` supports device flow + implicit flow + public client (`"none"` auth method) — but no valid public client_id enumerated yet
+[NEW] `developer.jtl-software.com/cloud/api-reference/graphql-playground` embeds iframe targeting production `api.jtl-cloud.com/erp/v2/graphql`
+[CHANGED] Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) → device flow token acquisition on Zitadel/Ory (needs public client_id)
+[CHANGED] `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test env hypotheses permanently untestable
+[CHANGED] `id.jtl-cloud.com` redirect_uri validation strict — 8 bypass variants all 400; exact-URI validation enforced
+[CHANGED] `auth.jtl-cloud.com` jwt-bearer + request_uri require valid client auth — SSRF/request_uri blocked by unknown-client 302
+[CHANGED] Bountyshop contact form SSTI rejected — payload reflected not executed; version unconfirmed; backend email trigger unobservable
+[PRIO] id.jtl-cloud.com/oauth/v2/device_authorization,9.50,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=9
+[PRIO] oauth2.api.jtl-software.com/token,9.25,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=10
+[PRIO] auth.jtl-cloud.com/oauth2/device/auth,8.75,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=8
 [PRIO] api.jtl-cloud.com/erp/v2/graphql,8.25,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
 [PRIO] ffn.api.jtl-software.com,8.00,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=5,cloud_surface=8,freshness=10
-[PRIO] bountyshop.jtl-software.com/Kontakt,7.65,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
-[HYP] FFN OAuth scope escalation + leaked credentials → FFN API merchant write access
-class: AUTH
-asset: oauth2.api.jtl-software.com/token + ffn.api.jtl-software.com
-confidence: 80
-reasoning: Valid FFN OAuth client_id `97170e64-d390-4696-ba46-d6fcef8207de` + client_secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) committed to public GitHub (kruegge82/jtl-ffn-php-sdk). Client registered for `ffn.merchant.read` obtains JWT containing `ffn.merchant.write` — server grants any `ffn.*` scope without validation. Silent scope degradation: unauthorized scopes (e.g., `ffn.admin.write`) return HTTP 200 + access_token with empty scopes `[]` instead of `invalid_scope` error. FFN API has 6 role groups × ~30 endpoints but requires additional API key from `/api/v1/merchant/credentials`.
-evidence_needed: Use leaked credentials to obtain token with escalated scopes; pair with API key from merchant credentials endpoint; access FFN API data endpoints (orders, fulfillments, products)
-verify_steps: POST https://oauth2.api.jtl-software.com/token -d "grant_type=client_credentials&client_id=97170e64-d390-4696-ba46-d6fcef8207de&client_secret=<leaked>&scope=ffn.merchant.read ffn.merchant.write" → observe token claims; POST https://ffn.api.jtl-software.com/api/v1/merchant/credentials with valid token → get API key; GET https://ffn.api.jtl-software.com/api/v1/orders -H "Authorization: Bearer <token>" -H "X-Api-Key: <key>"
-impact: FFN merchant data access (orders, fulfillments, products, returns) → financial/PII exposure — HIGH; scope escalation indicates fundamental OAuth authorization flaw
-testability: PASSIVE (credentials public), AUTH_HELPED (needs FFN portal account for API key)
+[PRIO] erp.jtl-cloud.com (env JSON),7.50,attack_surface=7,business_value=8,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=9
+[PRIO] bountyshop.jtl-software.com/Kontakt,6.50,attack_surface=6,business_value=8,tech_exposure=5,gate_ease=10,cloud_surface=5,freshness=7
 [HYP] Zitadel device flow public client token acquisition for ERP/Hub clients
 class: AUTH
 asset: id.jtl-cloud.com/oauth/v2/device_authorization
 confidence: 85
-reasoning: Zitadel OIDC instance live at id.jtl-cloud.com with device_authorization_endpoint. ERP client `383246859688230715` and Hub client `383246859839225659` are public (from erp.jtl-cloud.com env JSON leak). Device authorization accepts any requested scope (`urn:jtl:tenants`, `urn:jtl:tenant`, `offline_access`) without client authentication. No client_secret required for device_code grant. Redirect_uri validation is strict (8 bypass variants rejected 400) but device flow bypasses redirect_uri entirely.
+reasoning: Zitadel OIDC live at id.jtl-cloud.com with device_authorization_endpoint. ERP client 383246859688230715 and Hub client 383246859839225659 are public (from erp.jtl-cloud.com env JSON leak). Device authorization accepts elevated scopes urn:jtl:tenants, urn:jtl:tenant, offline_access without client authentication. No client_secret required for device_code grant. Redirect_uri validation strict but device flow bypasses redirect_uri entirely.
 evidence_needed: POST device_authorization with public client_id + elevated scopes → obtain device_code/user_code → poll token endpoint with grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=...&client_id=<public_client> (no client_secret) → observe access_token with tenant scopes
 verify_steps: POST https://id.jtl-cloud.com/oauth/v2/device_authorization -d "client_id=383246859688230715&scope=openid urn:jtl:tenants offline_access" → get device_code; POST https://id.jtl-cloud.com/oauth/v2/token -d "grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=<code>&client_id=383246859688230715" → observe access_token; repeat for Hub client 383246859839225659
 impact: OAuth token with tenant scopes → ERP GraphQL API access as arbitrary tenant via x-tenant-id header → cross-tenant PII/financial/inventory data compromise — CRITICAL
 testability: PASSIVE (public client_ids known from env leak), AUTH_HELPED (device flow requires user interaction simulation)
+[HYP] FFN OAuth scope escalation + leaked credentials → FFN API merchant write access
+class: AUTH
+asset: oauth2.api.jtl-software.com/token + ffn.api.jtl-software.com
+confidence: 80
+reasoning: Valid FFN OAuth client_id 97170e64-d390-4696-ba46-d6fcef8207de + client_secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) committed to public GitHub (kruegge82/jtl-ffn-php-sdk). Client registered for ffn.merchant.read obtains JWT containing ffn.merchant.write — server grants any ffn.* scope without validation. Silent scope degradation: unauthorized scopes (e.g., ffn.admin.write) return HTTP 200 + access_token with empty scopes [] instead of invalid_scope error. FFN API has 6 role groups × ~30 endpoints but requires additional API key from /api/v1/merchant/credentials.
+evidence_needed: Use leaked credentials to obtain token with escalated scopes; pair with API key from merchant credentials endpoint; access FFN API data endpoints (orders, fulfillments, products)
+verify_steps: POST https://oauth2.api.jtl-software.com/token -d "grant_type=client_credentials&client_id=97170e64-d390-4696-ba46-d6fcef8207de&client_secret=<leaked>&scope=ffn.merchant.read ffn.merchant.write" → observe token claims; POST https://ffn.api.jtl-software.com/api/v1/merchant/credentials with valid token → get API key; GET https://ffn.api.jtl-software.com/api/v1/orders -H "Authorization: Bearer <token>" -H "X-Api-Key: <key>"
+impact: FFN merchant data access (orders, fulfillments, products, returns) → financial/PII exposure — HIGH; scope escalation indicates fundamental OAuth authorization flaw
+testability: PASSIVE (credentials public), AUTH_HELPED (needs FFN portal account for API key)
 [HYP] Ory Hydra device flow public client token acquisition without client_secret
 class: AUTH
 asset: auth.jtl-cloud.com/oauth2/device/auth + /oauth2/token
@@ -50,22 +49,28 @@ impact: OAuth token theft → ERP GraphQL API access as arbitrary client → cro
 testability: PASSIVE (discovery done), AUTH_HELPED (needs valid public client_id enumeration)
 [PARKED] JTL-Shop v5.x contact form Smarty SSTI in backend email template: confidence 40 < 50 threshold; SSTI test reflected not executed; requires backend email rendering unobservable; shop version unconfirmed (NOVA v=5.0.0 is template version, not shop version); CVE is public — test shop likely patched; mutating test against live customer data prohibited
 [PARKED] All docker.jtl-software.de hypotheses: containers not internet-routable (TCP timeout on 31.172.91.250:80/443); wildcard DNS masks true attack surface; cannot validate passively
+[PARKED] Cross-tenant BOLA on api.jtl-cloud.com/erp/v2/graphql: blocked by JWT requirement — x-tenant-id only processed after valid auth (401 without JWT); needs valid token first via OAuth chain
+[PARKED] Zitadel redirect_uri bypass on id.jtl-cloud.com: 8 variants tested all 400; strict exact-URI validation confirmed — REJECTED AUTH class
+[PARKED] Ory Hydra jwt-bearer + request_uri SSRF on auth.jtl-cloud.com: requires valid client auth; unknown-client 302 blocks — REJECTED AUTH class
 [FINAL] 1. Zitadel device flow public client token acquisition for ERP/Hub clients (confidence 85)
 [FINAL] 2. FFN OAuth scope escalation + leaked credentials → FFN API merchant write access (confidence 80)
 [FINAL] 3. Ory Hydra device flow public client token acquisition without client_secret (confidence 75)
 [NEXT] PROBE: POST https://id.jtl-cloud.com/oauth/v2/device_authorization -d "client_id=383246859688230715&scope=openid urn:jtl:tenants offline_access" → obtain device_code for ERP public client; then POST https://id.jtl-cloud.com/oauth/v2/token -d "grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=<code>&client_id=383246859688230715" (no client_secret) → verify access_token with tenant scopes
-[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT. Server grants any `ffn.*` scope without validation.
-[LEARN] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README. Secret `sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` produces working tokens.
-[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible. API version 0.1-dev in production. Dual API instances live (ffn + ffn2).
-[LEARN] REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token. Additional API key layer present (from /api/v1/merchant/credentials). Full exploitation requires FFN portal account.
-[LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
-[LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
-[LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
-[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
-[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
 [LEARN] ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live (issuer, device_authorization, PKCE, jwks); distinct from Ory Hydra auth.jtl-cloud.com.
 [LEARN] ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts any requested scope (urn:jtl:tenants, offline_access) without client authentication.
-[LEARN] ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables this auth mapping.
+[LEARN] ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables auth mapping.
 [LEARN] REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation).
 [LEARN] REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT. Server grants any ffn.* scope without validation.
+[LEARN] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README. Secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e produces working tokens.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible. API version 0.1-dev in production. Dual API instances live (ffn + ffn2).
+[LEARN] REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token. Additional API key layer present (from /api/v1/merchant/credentials). Full exploitation requires FFN portal account.
+[LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface.
+[LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support.
+[LEARN] REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobservable.
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable.
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed.
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile).
+[LEARN] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql.
+[LEARN] ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth uses Ory non-standard paths (/oauth2/, /hydra/, /.ory/).
 [RISK] jtl: 90 — Critical attack surface confirmed: (1) FFN OAuth with leaked credentials + scope escalation + silent scope degradation on production API (oauth2.api.jtl-software.com + ffn.api.jtl-software.com); (2) dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client ("none") + implicit flow; (3) Zitadel identity provider (id.jtl-cloud.com) with public ERP/Hub clients accepting device flow with elevated tenant scopes without client auth; (4) production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; (5) official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft (device/implicit flow on Zitadel/Ory) OR leaked FFN credentials → GraphQL/FFN API access → cross-tenant BOLA via x-tenant-id → full ERP/FFN data compromise. Risk elevated by live endpoints, Ory Hydra/Zitadel misconfig patterns, public credential leak, env JSON secret exposure, and shared test profile amplification (37+29 instances).
