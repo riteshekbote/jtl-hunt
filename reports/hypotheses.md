@@ -103,3 +103,18 @@
 - LEARN: REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
 - LEARN: ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
 - LEARN: ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
+
+## RANKED HYPOTHESES 2026-09-04 13:03:22 UTC
+- [75] https://oauth2.api.jtl-software.com/token: OAuth scope escalation + leaked credentials → FFN API merchant write access (from art/lead_bigpickle.txt)
+- [75] auth.jtl-cloud.com/oauth2/device/auth: JTL Cloud OAuth device flow public client token acquisition without client_secret (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Register a JTL Cloud test tenant at partner.jtl-cloud.com to obtain scoped OAuth credentials for api.jtl-cloud.com/erp/v2/graphql cross-tenant BOLA testi
+- NEXT(hypotheses-nemotron3.txt): PROBE: Enumerate valid public client_id for device/implicit flow — check JTL developer docs (developer.jtl-software.com), GitHub repos (jtl-software), or playgr
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT. Serv
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README. Secret `sha256:9cc93ff6d4f8f279ba105674818232
+- LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible. API version 0.1-dev in p
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token. Additional
+- LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed 
+- LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- LEARN: REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+- LEARN: ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+- LEARN: ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)

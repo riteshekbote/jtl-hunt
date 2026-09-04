@@ -1,11 +1,11 @@
-## 2026-09-04 08:18:47 UTC [target] (model nemotron3)
-[NEW] OIDC discovery found at `https://auth.jtl-cloud.com/.well-known/openid-configuration` (HTTP 200) — separate auth server from API, uses Ory Hydra
+## 2026-09-04 12:59:23 UTC [target] (model nemotron3)
+[NEW] OIDC discovery live at `https://auth.jtl-cloud.com/.well-known/openid-configuration` (HTTP 200) — dedicated auth subdomain running Ory Hydra, separate from API
 [NEW] Device authorization endpoint confirmed: `https://auth.jtl-cloud.com/oauth2/device/auth` with `token_endpoint_auth_methods_supported` including `"none"` (public client support)
-[NEW] Implicit flow supported: `response_types_supported` includes `token`, `token id_token` — access tokens in fragment
+[NEW] Implicit flow supported: `response_types_supported` includes `token`, `token id_token` — access tokens returned in URL fragment
 [NEW] GraphQL playground is static (GitHub Pages), passes API URL via `?url=` param; requires JWT in Authorization header
 [NEW] bountyshop NOVA template version v=5.0.0 (CSS/JS); CVE-2026-54390 affects 5.2.0–5.7.1 — potentially below vulnerable range
 [CHANGED] OAuth/OIDC not on api.jtl-cloud.com standard paths — lives on dedicated auth.jtl-cloud.com subdomain
-[CHANGED] Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth)
+[CHANGED] Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth, 401 without JWT)
 [PRIO] auth.jtl-cloud.com,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=9
 [PRIO] api.jtl-cloud.com/erp/v2/graphql,8.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
 [PRIO] bountyshop.jtl-software.com/Kontakt,6.80,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
@@ -28,19 +28,20 @@ evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B
 verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
 impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL
 testability: AUTH_HELPED
-[HYP] JTL-Shop v5.x contact form Smarty SSTI in backend email template
-class: OTHER
-asset: bountyshop.jtl-software.com/Kontakt
-confidence: 40
-reasoning: Contact form POSTs nachricht field. JTL-Shop uses Smarty. CVE-2026-54390 affects 5.2.0–5.7.1 via unsanitized input to Smarty renderer in email. NOVA template v=5.0.0 observed (CSS/JS), shop version unconfirmed. Payload `{7*7}` reflected in form re-render but not executed — may only trigger in backend email template (not observable). Program prohibits mutating tests on live customer data.
-evidence_needed: POST to /Kontakt with Smarty payload `{${system('id')}}` in nachricht returns code execution indicators in email logs; or version fingerprint confirms JTL-Shop 5.2.0–5.7.1
-verify_steps: POST https://bountyshop.jtl-software.com/Kontakt -d "jtl_token=<token>&vorname=test&nachname=test&email=test@test.com&subject=1&nachricht={${system('id')}}" — read-only probe first to fingerprint version via headers/meta; then minimal SSTI test {7*7} in nachricht (already done, reflected not executed)
-impact: Unauthenticated RCE on official bug bounty test shop → full server compromise, DB creds, Blowfish key, lateral movement — CRITICAL
-testability: AUTH_HELPED (requires form submit, may need email trigger)
+[HYP] JTL Cloud OAuth implicit flow token leakage via permissive redirect_uri
+class: AUTH
+asset: auth.jtl-cloud.com/oauth2/auth
+confidence: 55
+reasoning: OIDC discovery shows response_types_supported includes "token" and "token id_token" (implicit flow). Access tokens returned in URL fragment. If redirect_uri validation is loose (historically confirmed in test/staging via 29-instance profile p-g-443d1d50), attacker can register redirect_uri=https://evil.com and steal tokens from victim authorization flows.
+evidence_needed: Valid public client_id + redirect_uri=https://attacker.com accepted by authorize endpoint; token returned in fragment #access_token=... after user consent
+verify_steps: GET https://auth.jtl-cloud.com/.well-known/openid-configuration (DONE); GET /oauth2/auth?response_type=token&client_id=<public_client>&redirect_uri=https://evil.com&scope=openid&state=x — observe if redirect_uri accepted and token in fragment
+impact: OAuth token theft via implicit flow fragment → ERP GraphQL access → cross-tenant BOLA — CRITICAL
+testability: PASSIVE (discovery), AUTH_HELPED (needs valid public client_id)
 [PARKED] JTL-Shop v5.x contact form Smarty SSTI in backend email template: confidence 40 < 50 threshold; SSTI test reflected not executed; requires backend email rendering unobservable; shop version unconfirmed (NOVA v=5.0.0 is template version, not shop version); CVE is public — test shop likely patched; mutating test against live customer data prohibited
 [FINAL] 1. JTL Cloud OAuth device flow public client token acquisition without client_secret (confidence 75)
 [FINAL] 2. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 65)
-[NEXT] PROBE: Enumerate valid public client_id for device flow — check JTL developer docs, GitHub repos, or playground network traffic for registered OAuth clients; then POST https://auth.jtl-cloud.com/oauth2/device/auth with client_id=<found> scope=openid offline_access
+[FINAL] 3. JTL Cloud OAuth implicit flow token leakage via permissive redirect_uri (confidence 55)
+[NEXT] PROBE: Enumerate valid public client_id for device/implicit flow — check JTL developer docs (developer.jtl-software.com), GitHub repos (jtl-software), or playground network traffic for registered OAuth clients; then POST https://auth.jtl-cloud.com/oauth2/device/auth with client_id=<found> scope=openid offline_access
 [LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
 [LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
 [LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable

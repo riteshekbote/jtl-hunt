@@ -288,3 +288,53 @@ testability: AUTH_HELPED (requires form submit, may need email trigger)
 [LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
 [LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
 [RISK] jtl: 85 — Critical attack surface confirmed: dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client support + implicit flow; production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft → GraphQL access → cross-tenant BOLA → full ERP data compromise. Risk elevated by live endpoints, Ory Hydra misconfig patterns, and shared test profile amplification.
+## 2026-09-04 12:59:23 UTC [target] (model nemotron3)
+[NEW] OIDC discovery live at `https://auth.jtl-cloud.com/.well-known/openid-configuration` (HTTP 200) — dedicated auth subdomain running Ory Hydra, separate from API
+[NEW] Device authorization endpoint confirmed: `https://auth.jtl-cloud.com/oauth2/device/auth` with `token_endpoint_auth_methods_supported` including `"none"` (public client support)
+[NEW] Implicit flow supported: `response_types_supported` includes `token`, `token id_token` — access tokens returned in URL fragment
+[NEW] GraphQL playground is static (GitHub Pages), passes API URL via `?url=` param; requires JWT in Authorization header
+[NEW] bountyshop NOVA template version v=5.0.0 (CSS/JS); CVE-2026-54390 affects 5.2.0–5.7.1 — potentially below vulnerable range
+[CHANGED] OAuth/OIDC not on api.jtl-cloud.com standard paths — lives on dedicated auth.jtl-cloud.com subdomain
+[CHANGED] Cross-tenant BOLA hypothesis now requires valid JWT first (x-tenant-id only processed after auth, 401 without JWT)
+[PRIO] auth.jtl-cloud.com,8.90,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=10,cloud_surface=9,freshness=9
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,8.40,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=9,freshness=8
+[PRIO] bountyshop.jtl-software.com/Kontakt,6.80,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=7
+[PRIO] jtl-software.github.io/devdocs-graphql-playground/,6.25,attack_surface=5,business_value=7,tech_exposure=5,gate_ease=10,cloud_surface=3,freshness=7
+[HYP] JTL Cloud OAuth device flow public client token acquisition without client_secret
+class: AUTH
+asset: auth.jtl-cloud.com/oauth2/device/auth + /oauth2/token
+confidence: 75
+reasoning: OIDC discovery shows device_authorization_endpoint + token_endpoint with token_endpoint_auth_methods_supported=["none"] — public clients can exchange device_code for tokens without client_secret. Implicit flow also supported (response_type=token returns access_token in fragment). Knowledge base: loose redirect_uri validation in test/staging (29-instance profile p-g-443d1d50).
+evidence_needed: Valid client_id for public client + device_code grant returns access_token without client_secret; or implicit flow with redirect_uri=https://attacker.com returns token in fragment
+verify_steps: GET https://auth.jtl-cloud.com/.well-known/openid-configuration (DONE); POST /oauth2/device/auth with valid public client_id → get device_code → POST /oauth2/token with grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=...&client_id=<public_client> (no client_secret) → observe access_token; GET /oauth2/auth?response_type=token&client_id=<public_client>&redirect_uri=https://evil.com&scope=openid → check fragment for token
+impact: OAuth token theft → ERP GraphQL API access as arbitrary client → cross-tenant data via x-tenant-id header — CRITICAL
+testability: PASSIVE (discovery done), AUTH_HELPED (needs valid public client_id)
+[HYP] JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header
+class: IDOR
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Production GraphQL ERP API requires JWT + x-tenant-id header for multi-tenancy. Developer docs confirm x-tenant-id is client-supplied. If tenant validation not enforced against JWT claims (sub/tenant_id), attacker with valid token for tenant A can query/mutate tenant B data. x-tenant-id only checked after JWT validation (401 without JWT).
+evidence_needed: Valid JWT for tenant A + x-tenant-id: tenant-B returns tenant-B data in GraphQL response (items, customers, orders); or introspection reveals tenant-scoped types with no ownership checks in resolvers
+verify_steps: POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token_A>" -H "x-tenant-id: <tenant_B>" -d '{"query":"{items{nodes{id name}}}"}' — requires valid token (AUTH_HELPED); passive: check if playground allows tenant switching without re-auth
+impact: Cross-tenant ERP data access → PII (customers), financial (orders), inventory manipulation — CRITICAL
+testability: AUTH_HELPED
+[HYP] JTL Cloud OAuth implicit flow token leakage via permissive redirect_uri
+class: AUTH
+asset: auth.jtl-cloud.com/oauth2/auth
+confidence: 55
+reasoning: OIDC discovery shows response_types_supported includes "token" and "token id_token" (implicit flow). Access tokens returned in URL fragment. If redirect_uri validation is loose (historically confirmed in test/staging via 29-instance profile p-g-443d1d50), attacker can register redirect_uri=https://evil.com and steal tokens from victim authorization flows.
+evidence_needed: Valid public client_id + redirect_uri=https://attacker.com accepted by authorize endpoint; token returned in fragment #access_token=... after user consent
+verify_steps: GET https://auth.jtl-cloud.com/.well-known/openid-configuration (DONE); GET /oauth2/auth?response_type=token&client_id=<public_client>&redirect_uri=https://evil.com&scope=openid&state=x — observe if redirect_uri accepted and token in fragment
+impact: OAuth token theft via implicit flow fragment → ERP GraphQL access → cross-tenant BOLA — CRITICAL
+testability: PASSIVE (discovery), AUTH_HELPED (needs valid public client_id)
+[PARKED] JTL-Shop v5.x contact form Smarty SSTI in backend email template: confidence 40 < 50 threshold; SSTI test reflected not executed; requires backend email rendering unobservable; shop version unconfirmed (NOVA v=5.0.0 is template version, not shop version); CVE is public — test shop likely patched; mutating test against live customer data prohibited
+[FINAL] 1. JTL Cloud OAuth device flow public client token acquisition without client_secret (confidence 75)
+[FINAL] 2. JTL Cloud ERP GraphQL cross-tenant BOLA via client-supplied x-tenant-id header (confidence 65)
+[FINAL] 3. JTL Cloud OAuth implicit flow token leakage via permissive redirect_uri (confidence 55)
+[NEXT] PROBE: Enumerate valid public client_id for device/implicit flow — check JTL developer docs (developer.jtl-software.com), GitHub repos (jtl-software), or playground network traffic for registered OAuth clients; then POST https://auth.jtl-cloud.com/oauth2/device/auth with client_id=<found> scope=openid offline_access
+[LEARN] ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — amplifies OAuth attack surface
+[LEARN] ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+[LEARN] REJECTED NETWORK @ docker.jtl-software.de: 300 containers unreachable (wildcard DNS, TCP timeout) — confirmed not internet-routable
+[LEARN] ACCEPTED MISCONFIG @ jtl-shop:a-b-4db87dad: Cross-platform shared test profiles (37 instances) systemic risk confirmed
+[LEARN] ACCEPTED AUTH @ jtl-shop:p-g-443d1d50: OAuth redirect_uri validation historically loose in test/staging (29-instance profile)
+[RISK] jtl: 85 — Critical attack surface confirmed: dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client support + implicit flow; production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft → GraphQL access → cross-tenant BOLA → full ERP data compromise. Risk elevated by live endpoints, Ory Hydra misconfig patterns, and shared test profile amplification.
