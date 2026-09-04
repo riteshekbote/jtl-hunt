@@ -412,3 +412,21 @@
 - NEW **FFN API requires dual auth layer** — Bearer token from OAuth2 accepted by token endpoint but 401 on all data endpoints; requires API key from `/api/v1/merchant/credentials` paired with token; full e
 - CHANGED Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) to device flow token acquisition (needs public client_id enumeration first) — nemotron3 confidence 75
 - CHANGED `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test environment hypotheses permanently untestable from internet
+
+## 2026-09-04 19:26:15 UTC
+- NEW ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: Embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
+- NEW ACCEPTED AUTH: OIDC discovery endpoints return 404 on api.jtl-cloud.com — OAuth uses Ory non-standard paths (/oauth2/, /hydra/, /.ory/)
+- NEW ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
+- NEW ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- NEW REJECTED OTHER @ bountyshop: SSTI via contact form nachricht field — payload reflected not executed; version unconfirmed; requires backend email trigger unobservable
+- NEW ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for `ffn.merchant.read` obtains `ffn.merchant.write` JWT; server grants any `ffn.*` scope without vali
+- NEW ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id/secret committed to public README; secret `sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` prod
+- NEW ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in production; dual API instances live (ffn 
+- NEW REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — 401 on all data endpoints despite valid OAuth token; additional API key layer present (from /api/v1/mer
+- NEW ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live (issuer, device_authorization, PKCE, jwks); distinct from Ory Hydra auth.jtl-cloud.com
+- NEW ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts any requested scope (urn:jtl:tenants, offline_access
+- NEW ACCEPTED MISCONFIG @ erp.jtl-cloud.com: env JSON vulns Zitadel client_id, Ory URL, Sentry DSN, PostHog token, account service URL publicly — enables auth mapping
+- NEW REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation)
+- NEW REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302
+- CHANGED Top hypothesis shifted from cross-tenant BOLA (blocked by JWT requirement) to device flow token acquisition (needs public client_id enumeration first) — nemotron3 confidence 75
+- CHANGED `docker.jtl-software.de` 300 containers confirmed unreachable (wildcard DNS, TCP timeout) — all test environment hypotheses permanently untestable from internet

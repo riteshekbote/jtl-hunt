@@ -648,3 +648,31 @@ testability: AUTH_HELPED
 [LEARN] REJECTED AUTH @ id.jtl-cloud.com: no redirect_uri bypass found (8 variants all 400; strict exact-URI validation).
 [LEARN] REJECTED AUTH @ auth.jtl-cloud.com: jwt-bearer + request_uri require valid client auth; SSRF/request_uri vector blocked by unknown-client 302.
 [RISK] JTL: 78 — Production Zitadel (id.jtl-cloud.com) runs public-client device flow with tenant-scope acceptance on 2 discovered clients; Ory (auth.jtl-cloud.com) adds separate OAuth surface. ERP GraphQL tenant isolation depends on client-supplied x-tenant-id with no JWT tenant binding (verified in official app samples), making cross-tenant BOLA plausible but proving it needs sanctioned test-tenant tokens. FFN scope escalation confirmed with leaked creds but data layer gated. Device-flow finding POC-limited to phishing/consent; BOLA token-blocked.
+## 2026-09-04 19:26:07 UTC [target] (model bigpickle)
+[HYP] FFN OAuth token theft via unvalidated redirect_uri + leaked client credentials
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/doauthorize + /token (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 65
+reasoning: Custom Laravel OAuth. README leaks secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z (sha256:9cc93f…). client_credentials grant live despite docs denying it; token minted 200, scopes [ffn.merchant.write] for read-registered client, sub empty. Both /authorize and /doauthorize accepted redirect_uri=http://evil.example/cb (302→/login) for a code client with registered localhost-only URIs.
+evidence_needed: after real login, code delivered to an unregistered redirect_uri and redeemable at /token with leaked creds.
+verify_steps: PASSIVE done (authorize+doauthorize 302, no 400). HUMAN: complete login/consent with test JTL customer-center account, capture code at attacker URI, POST /token grant_type=authorization_code + redirect_uri=<attacker uri> → 200 with victim-bound token (sub=<uid>, scopes=ffn.merchant.write).
+impact: OAuth phishing vs any FFN merchant/fulfiller — victim authorizes leaked escalated-scope client, attacker redeems code with leaked secret → victim FFN API data (orders, stock, returns, shipping). Severity: high.
+testability: AUTH_HELPED
+[HYP] Zitadel device-flow public-client token phishing on Hub client
+class: AUTH
+asset: https://id.jtl-cloud.com/oauth/v2/device_authorization (client 383246859839225659)
+confidence: 70
+reasoning: Hub client public (no secret); device_auth returns device_code and accepts urn:jtl:tenants/offline_access without validation; registered redirect https://hub.jtl-cloud.com/auth/callback confirmed (302). ERP client 383246859688230715 same pattern.
+evidence_needed: consent completion yielding access_token with victim tenant claims.
+verify_steps: HUMAN: open verification_uri_complete with a test account, poll /oauth/v2/token grant_type=device_code, then Bearer + x-tenant-id to api.jtl-cloud.com/erp/v2/graphql.
+impact: victim-consented tenant-scoped token for hub/ERP. Severity: medium/high (interaction required).
+testability: AUTH_HELPED
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Official samples issue JWTs with no tenant binding; tenant passed only via X-Tenant-ID. GraphQL trusting the header makes any valid JWT read any tenant.
+evidence_needed: two tenant-scoped tokens; swapped header → 200 vs 403.
+verify_steps: HUMAN: POST introspection/query with tenant-A token + tenant-B x-tenant-id.
+impact: cross-tenant ERP PII/financial dump. Severity: critical.
+testability: HUMAN_ONLY
