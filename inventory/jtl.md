@@ -360,3 +360,12 @@
 - NEW developer.jtl-software.com/cloud/api-reference/graphql-playground embeds playground iframe pointing to api.jtl-cloud.com/erp/v2/graphql
 - CHANGED docker.jtl-software.de 300 containers unreachable from internet (TCP 80/443 timeout on 31.172.91.250) — all prior hypotheses on test containers untestable passively
 - CHANGED Phase shifted from docker test envs to live production/bug-bounty assets (bountyshop, api.jtl-cloud.com, developer portal)
+
+## 2026-09-04 03:12:27 UTC
+- NEW PROBE: GET https://auth.jtl-cloud.com/.well-known/openid-configuration — OIDC discovery to enumerate endpoints, grants, device_flow support.
+- NEW bountyshop.jtl-software.com/Kontakt contact form confirmed with POST endpoint, fields: vorname, nachname, email, subject (dropdown), nachricht (textarea) — SSTI test `{7*7}` reflected but not executed
+- NEW api.jtl-cloud.com/.well-known/openid-configuration and /oauth/.well-known/openid-configuration return 404 — no standard OIDC discovery
+- NEW api.jtl-cloud.com/erp/v2/graphql requires JWT + x-tenant-id; introspection blocked without auth (401 "JWT not present")
+- NEW jtl-software.github.io/devdocs-graphql-playground/ is GraphiQL React app; developer.jtl-software.com embeds playground iframe targeting production API
+- CHANGED Previous hypothesis of SSTI via email template (CVE-2026-54390) — contact form nachricht field reflects payload but no execution observed; version fingerprint: NOVA template v=5.0.0 (CSS/JS), shop ver
+- CHANGED OAuth/OIDC discovery fails on standard endpoints — may use non-standard paths or Ory Kratos/Hydra admin APIs not exposed publicly

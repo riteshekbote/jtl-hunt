@@ -509,3 +509,41 @@ verify_steps: Sentry DSN projects normally require auth; not directly curlable. 
 impact: PII/stack-trace exposure from client-side telemetry. Severity: low/medium.
 testability: HUMAN_ONLY
 [NEXT] RAG: Check the JTL program (bugs.olivermaicher.eu) and Ory setup for whether sanctioned test tenants, OAuth test clients, or a test ERP instance are provided — both top survivors (x-tenant-id BOLA, jwt-bearer scope) require a valid scoped token to verify.
+## 2026-09-04 03:02:49 UTC [target] (model bigpickle)
+[NEW] PROBE: GET https://auth.jtl-cloud.com/.well-known/openid-configuration — OIDC discovery to enumerate endpoints, grants, device_flow support.
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,7.75,attack_surface=8 business_value=9 tech_exposure=9 gate_ease=3 cloud_surface=9 freshness=8
+[PRIO] auth.jtl-cloud.com,7.50,attack_surface=7 business_value=9 tech_exposure=9 gate_ease=3 cloud_surface=9 freshness=8
+[PRIO] erp.jtl-cloud.com,6.25,attack_surface=6 business_value=7 tech_exposure=6 gate_ease=4 cloud_surface=8 freshness=7
+[PRIO] bountyshop.jtl-software.com,6.00,attack_surface=7 business_value=5 tech_exposure=7 gate_ease=5 cloud_surface=4 freshness=8
+[HYP] Cross-tenant BOLA via client-supplied x-tenant-id on ERP GraphQL
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 60
+reasoning: Live probe confirms 401 "JWT not present" gate (no valid token). Multi-tenant cloud separates OAuth2 token from tenant scope via client-supplied x-tenant-id header (per GraphQL SDL). If tenant isolation relies on that header rather than JWT tenant claims, a token from tenant A with x-tenant-id: <victim> returns victim data.
+evidence_needed: 200/403 vs 40x difference sending a valid scoped token with a mismatched/unknown x-tenant-id; a test account on one tenant queried from another.
+verify_steps: passive confirmed graphiql/playground 401 (no unauth introspection). Full test requires a valid scoped token — route to HUMAN for sanctioned test-tenant/registration (AUTH_HELPED). No token===401; token+mismatched-tenant===200 would prove isolation-by-header only.
+impact: cross-tenant PII/ERP dump (customers, orders, bank accounts, invoices). Severity: high/critical.
+testability: AUTH_HELPED
+[HYP] Ory jwt-bearer client_assertion / permissive grant scope over-grant
+class: AUTH
+asset: https://auth.jtl-cloud.com/oauth2/token + https://api.jtl-cloud.com
+confidence: 50
+reasoning: Live OIDC advertises client_credentials, jwt-bearer, and device flow grants plus implicit token/id_token response_types. If jwt-bearer client_assertion accepts a loose issuer/aud or a self-minted JWT tied to a known public client_id, a caller can mint a token asserting system.all/all.read/application.runas and reach ERP data endpoints.
+evidence_needed: token endpoint returns a valid access_token for a forged/loose assertion carrying a power scope; that token reaches a data endpoint.
+verify_steps: cannot mint without an authorized client (AUTH_HELPED). Passive: read OIDC metadata + appregistration docs for scope descriptions. Route HUMAN for sanctioned test app.
+impact: full ERP read/write, mass assignment, runas impersonation. Severity: critical.
+testability: AUTH_HELPED
+[HYP] ERP env-config leak → Sentry/PostHog client-telemetry PII / internal service discovery
+class: MISCONFIG
+asset: https://erp.jtl-cloud.com/
+confidence: 55
+reasoning: Confirmed prod HTML ships jtl-cloud-env-variables JSON with active Sentry DSN, PostHog token, Zitadel client ID, ORY URL, and internal account/hub service URLs. Public client IDs are normal; exposure only if Sentry/PostHog project misconfigured for unauth event query or replay of PII-laden stack traces.
+evidence_needed: Sentry project/DSN publicly queryable or error events with PII fetchable.
+verify_steps: Sentry DSN projects normally require auth; not directly curlable. Route to HUMAN review of Sentry/PostHog project config.
+impact: PII/stack-trace exposure from client-side telemetry. Severity: low/medium.
+testability: HUMAN_ONLY
+[FINAL] 1. Cross-tenant BOLA via client-supplied x-tenant-id on ERP GraphQL (60)
+[FINAL] 2. Ory jwt-bearer client_assertion / permissive grant scope over-grant (50)
+[FINAL] 3. ERP env-config leak → Sentry/PostHog client-telemetry PII / internal service discovery (55)
+[NEXT] PROBE: GET https://auth.jtl-cloud.com/.well-known/openid-configuration — OIDC discovery to enumerate endpoints, grants, device_flow support.
+[RISK] JTL: 70 — Primary cloud surface (auth/erp/api) live and code-mounted with high-value ERP/tenant-boundary targets; the decisive tests require a sanctioned token which the program may not provide, so real attacks are unverified vs a real logic flaw; container test-farm adds systemic-supply-chain theoretical risk but is unreachable. All in-scope but POC-limited.
