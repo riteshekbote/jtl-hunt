@@ -299,3 +299,29 @@
 - LEARN: ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface.
 - LEARN: ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_3894606307357621
 - LEARN: REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.
+
+## RANKED HYPOTHESES 2026-09-05 20:48:04 UTC
+- [75] id.jtl-cloud.com/oauth/v2/authorize: Zitadel authorization_code+PKCE flow for public ERP client → ERP GraphQL API cross-tenant access (from art/lead_nemotron3.txt)
+- [70] https://api.jtl-cloud.com/erp/v2/graphql: ERP cross-tenant BOLA via header-only tenant enforcement (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: In the sanctioned sandbox only — register throwaway identity at account.jtl-cloud.com/self-service/registration/browser, log into https://fulfillment-san
+- NEXT(hypotheses-nemotron3.txt): PROBE: POST https://oauth2.api.jtl-software.com/token -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=client_credentials&client_id=97170e64-
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT via clien
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGd
+- LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in p
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; additional API key layer present (from 
+- LEARN: ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live with device_authorization, PKCE, JWKS; distinct from Ory Hydra auth.jtl-cloud.com
+- LEARN: ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated sco
+- LEARN: REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disable
+- LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
+- LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+- LEARN: ACCEPTED TARGET @ account.jtl-cloud.com: self-service/registration/browser HTTP 200 (Kratos SPA) - self-service identity mint confirmed open, making the HUMAN_O
+- LEARN: REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: hard 401 "JWT not present" without JWT - no anonymous GraphQL surface; x-tenant-id only processed post-auth
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to le
+- LEARN: REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (s
+- LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens AP
+- LEARN: ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README
+- LEARN: ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200
+- LEARN: ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface
+- LEARN: ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_3894606307357621
+- LEARN: REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged

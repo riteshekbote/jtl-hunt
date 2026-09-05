@@ -489,3 +489,17 @@
 - CHANGED Cross-tenant BOLA on ERP GraphQL fully dependent on JWT acquisition first (no anonymous x-tenant-id processing)
 
 ## 2026-09-05 18:43:25 UTC
+
+## 2026-09-05 20:48:04 UTC
+- NEW FFN OAuth client_secret now confirmed in plaintext: `f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z` (from GitHub README, previously only sha256 known)
+- NEW Zitadel device_code grant rejection confirmed with exact error: `unauthorized_client: grant_type not allowed` — client config disables device_code despite server advertising support
+- NEW account.jtl-cloud.com/self-service/registration/browser returns HTTP 200 (Kratos SPA shell) — self-service identity mint confirmed open, unblocks HUMAN_ONLY ERP BOLA chain via hub/ERP consent
+- NEW ffn.api.jtl-software.com/api-docs public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current
+- NEW fulfillment-sandbox.jtl-software.com FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README
+- NEW fulfillment.jtl-software.com FFN production portal HTTP 200
+- NEW kundencenter.jtl-software.de/oauth OAuth client self-service 302→/login — client registration surface
+- NEW id.jtl-cloud.com/oauth/v2/authorize Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping
+- CHANGED Phase POC active — moving from hypothesis to verification of top-3 chains; FFN OAuth chain now has plaintext secret for immediate client_credentials test
+- CHANGED Cross-tenant BOLA on ERP GraphQL fully dependent on JWT acquisition first (no anonymous x-tenant-id processing)
+- CHANGED erp.jtl-cloud.com root 200, hub.jtl-cloud.com 200 (incl /auth/callback), api.jtl-cloud.com/erp/v2/graphql hard 401 "JWT not present" without JWT — token gate holds
+- CHANGED REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (sub/acl), not separate API key
