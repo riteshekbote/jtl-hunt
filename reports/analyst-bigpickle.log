@@ -8114,3 +8114,204 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] jtl: 85 — Live-production OAuth defects remain independently reportable: (1) client_credentials accepted at /token contrary to published SDK policy, minting userless ffn.merchant.write JWTs with the leaked secret; (2) unvalidated redirect_uri on /authorize + /doauthorize enabling OAuth code theft to a victim-bound token; (3) plaintext client_secret in a public repo. All three lack a data-exposure component without victim consent, but together form a coherent OAuth ATO chain. ERP cross-tenant BOLA remains plausible and critical once a consent JWT exists; confirmation must use self-owned tenants only to stay within the program's data-protection exclusion. Active/exploitative steps against production and any foreign-tenant data reads are out of scope and require the program's confirmed authorization; recommend verification strictly on the sanctioned sandbox.
+===== ANALYST bigpickle 2026-09-05 22:40:54 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt 2>/dev/null; echo "---"; find /home/runner/work/jtl-hunt/jtl-hunt -maxdepth 2 -type f 2>/dev/null | head -50
+total 228
+drwxr-xr-x 12 runner runner  4096 Sep  5 22:38 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 22:38 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 22:38 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 22:38 .github
+-rw-r--r--  1 runner runner  1787 Sep  5 22:38 README.md
+-rw-r--r--  1 runner runner    32 Sep  5 22:38 analyst-out.txt
+-rw-r--r--  1 runner runner 72257 Sep  5 22:38 analyst-prompt.txt
+-rw-r--r--  1 runner runner 68408 Sep  5 22:38 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 leads
+-rw-r--r--  1 runner runner  1741 Sep  5 22:38 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 reposcan-raw
+-rw-r--r--  1 runner runner  3262 Sep  5 22:38 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 22:38 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 22:38 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 22:38 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 22:38 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 22:38 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 22:38 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 triage
+---
+/home/runner/work/jtl-hunt/jtl-hunt/.git/opencode
+/home/runner/work/jtl-hunt/jtl-hunt/.git/index
+/home/runner/work/jtl-hunt/jtl-hunt/.git/HEAD
+/home/runner/work/jtl-hunt/jtl-hunt/.git/config
+/home/runner/work/jtl-hunt/jtl-hunt/.git/config.worktree
+/home/runner/work/jtl-hunt/jtl-hunt/.git/FETCH_HEAD
+/home/runner/work/jtl-hunt/jtl-hunt/.git/shallow
+/home/runner/work/jtl-hunt/jtl-hunt/.git/description
+/home/runner/work/jtl-hunt/jtl-hunt/analyst-out.txt
+/home/runner/work/jtl-hunt/jtl-hunt/state_nemotron3.json
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-21-44.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-08-04.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-01-06.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-03-03.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-19-06.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-16-16.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-15-50.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-10-00.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/.gitkeep
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-11-42.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-20-43.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-01-25.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-02-21-37.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-19-18.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-23-48.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-21-34.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-03-06-28.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-02-23-33.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-13-23.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-18-23.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-12-46.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-05-05-50.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-23-18.md
+/home/runner/work/jtl-hunt/jtl-hunt/triage/run-2026-09-04-16-44.md
+/home/runner/work/jtl-hunt/jtl-hunt/state_ling3.json
+/home/runner/work/jtl-hunt/jtl-hunt/recon-notes/DEDICATED-DEEP.md
+/home/runner/work/jtl-hunt/jtl-hunt/state_longcat.json
+/home/runner/work/jtl-hunt/jtl-hunt/inventory/jtl.md
+/home/runner/work/jtl-hunt/jtl-hunt/knowledge/index.md
+/home/runner/work/jtl-hunt/jtl-hunt/analyst-prompt.txt
+/home/runner/work/jtl-hunt/jtl-hunt/state_bigpickle.json
+/home/runner/work/jtl-hunt/jtl-hunt/probe-results.md
+/home/runner/work/jtl-hunt/jtl-hunt/reports/analyst-longcat.log
+/home/runner/work/jtl-hunt/jtl-hunt/reports/hypotheses-ling3.txt
+/home/runner/work/jtl-hunt/jtl-hunt/reports/hypotheses-bigpickle.txt
+/home/runner/work/jtl-hunt/jtl-hunt/reports/analyst-laguna.log
+/home/runner/work/jtl-hunt/jtl-hunt/reports/hypotheses-longcat.txt
+/home/runner/work/jtl-hunt/jtl-hunt/reports/hypotheses-laguna.txt
+/home/runner/work/jtl-hunt/jtl-hunt/reports/analyst-nemotron3.log
+/home/runner/work/jtl-hunt/jtl-hunt/reports/analyst-bigpickle.log
+[0m
+[0m$ [0mfor h in account.jtl-cloud.com kundencenter.jtl-software.de auth.jtl-cloud.com id.jtl-cloud.com; do echo "== $h =="; dig +short $h A 2>/dev/null | head -3; done
+== account.jtl-cloud.com ==
+accountservice-prod-djh5ahdvhqdghcdb.a01.azurefd.net.
+mr-a01.tm-azurefd.net.
+150.171.110.209
+== kundencenter.jtl-software.de ==
+31.172.91.38
+== auth.jtl-cloud.com ==
+awesome-gates-gpjpk5r5ei.projects.oryapis.com.
+104.18.29.201
+104.18.28.201
+== id.jtl-cloud.com ==
+jtl-id-prod-gfrgax.eu1.zitadel.cloud.
+34.160.210.54
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/reports /home/runner/work/jtl-hunt/jtl-hunt/leads /home/runner/work/jtl-hunt/jtl-hunt/knowledge 2>/dev/null
+/home/runner/work/jtl-hunt/jtl-hunt/knowledge:
+total 24
+drwxr-xr-x  2 runner runner  4096 Sep  5 22:38 .
+drwxr-xr-x 12 runner runner  4096 Sep  5 22:38 ..
+-rw-r--r--  1 runner runner 13999 Sep  5 22:38 index.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/leads:
+total 344
+drwxr-xr-x  2 runner runner   4096 Sep  5 22:38 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 22:38 ..
+-rw-r--r--  1 runner runner 164219 Sep  5 22:38 lead-bigpickle.md
+-rw-r--r--  1 runner runner    918 Sep  5 22:38 lead-laguna.md
+-rw-r--r--  1 runner runner    900 Sep  5 22:38 lead-ling3.md
+-rw-r--r--  1 runner runner    936 Sep  5 22:38 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  5 22:38 lead-mimo.md
+-rw-r--r--  1 runner runner 151882 Sep  5 22:38 lead-nemotron3.md
+-rw-r--r--  1 runner runner   2266 Sep  5 22:38 reposcan-jtl.md
+
+/home/runner/work/jtl-hunt/jtl-hunt/reports:
+total 1360
+drwxr-xr-x  2 runner runner   4096 Sep  5 22:38 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 22:38 ..
+-rw-r--r--  1 runner runner 690517 Sep  5 22:38 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   3906 Sep  5 22:38 analyst-laguna.log
+-rw-r--r--  1 runner runner   3888 Sep  5 22:38 analyst-ling3.log
+-rw-r--r--  1 runner runner   3924 Sep  5 22:38 analyst-longcat.log
+-rw-r--r--  1 runner runner 592273 Sep  5 22:38 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   4713 Sep  5 22:38 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  5 22:38 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  5 22:38 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  5 22:38 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner  11515 Sep  5 22:38 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  46082 Sep  5 22:38 hypotheses.md
+-rw-r--r--  1 runner runner    861 Sep  5 22:38 valid-bugs.md
+[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m
+[0m$ [0mtail -c 3000 /home/runner/work/jtl-hunt/jtl-hunt/reports/analyst-bigpickle.log
+hant.read→write, userless): real in-token but exploitable only for a credentialed attacker; defensible as doc/behavior inconsistency, not standalone ATO (conf 50).
+- [FINAL] 1. FFN OAuth code theft via unvalidated redirect_uri + leaked secret → victim-bound merchant token (70, HUMAN_ONLY, sandbox-verifiable)
+- [FINAL] 2. ERP cross-tenant BOLA via header-only tenant enforcement (70, HUMAN_ONLY, self-owned tenants only)
+- [FINAL] 3. FFN shared API /api/v1/access/tokens mint after sandbox consent (60, HUMAN_ONLY)
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: In the sanctioned sandbox only — register throwaway identity at account.jtl-cloud.com/self-service/registration/browser, log into https://fulfillment-sandbox.jtl-software.com once (first login triggers FFN user creation per SDK README), complete authorization_code consent GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=http://localhost:53972/ffn/sso&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write, redeem at /token, then GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current and POST /api/v1/access/tokens — all against self-owned sandbox tenant; no foreign-tenant or production-customer data reads.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to leaked SDK README documenting it as unsupported/401.
+- [LEARN] REJECTED AUTH @ ffn(+ffn2,-sbx).api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not a separate API key.
+- [LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json expose shared API incl. AccessCreateApiToken and UsersGetCurrent.
+- [LEARN] ACCEPTED TARGET @ account.jtl-cloud.com: Kratos self-service registration open — completes ERP BOLA human precondition.
+- [LEARN] REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.
+
+STEP 7 — RISK
+[RISK] jtl: 85 — Live-production OAuth defects remain independently reportable: (1) client_credentials accepted at /token contrary to published SDK policy, minting userless ffn.merchant.write JWTs with the leaked secret; (2) unvalidated redirect_uri on /authorize + /doauthorize enabling OAuth code theft to a victim-bound token; (3) plaintext client_secret in a public repo. All three lack a data-exposure component without victim consent, but together form a coherent OAuth ATO chain. ERP cross-tenant BOLA remains plausible and critical once a consent JWT exists; confirmation must use self-owned tenants only to stay within the program's data-protection exclusion. Active/exploitative steps against production and any foreign-tenant data reads are out of scope and require the program's confirmed authorization; recommend verification strictly on the sanctioned sandbox.
+[0m
+[0m→ [0mRead triage/run-2026-09-05-20-43.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead state_bigpickle.json
+[0m
+[0m$ [0mtail -c 2500 /home/runner/work/jtl-hunt/jtl-hunt/knowledge/index.md
+d) confirmed
+- 2026-09-05 ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- 2026-09-05 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+- 2026-09-05 ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redirect_uri on client 97170e64-d390-4696-ba46-d6fcef8207de despite localhost-only registered URIs.
+- 2026-09-05 REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
+- 2026-09-05 ACCEPTED TARGET @ account.jtl-cloud.com: self-service/registration/browser HTTP 200 (Kratos SPA) - self-service identity mint confirmed open, making the HUMAN_ONLY ERP BOLA chain feasible.
+- 2026-09-05 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: hard 401 "JWT not present" without JWT - no anonymous GraphQL surface; x-tenant-id only processed post-auth.
+- 2026-09-05 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to leaked SDK README documenting client_credentials as unsupported/401 — live re-confirmed this cycle.
+- 2026-09-05 REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (sub/acl), not a separate API key.
+- 2026-09-05 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current.
+- 2026-09-05 ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README.
+- 2026-09-05 ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200.
+- 2026-09-05 ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface.
+- 2026-09-05 ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping.
+- 2026-09-05 REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.
+[0m
+[0m$ [0mcurl -s -m 20 -o /tmp/swagger-sbx.json -w "HTTP %{http_code} size %{size_download} type %{content_type}\n" "https://ffn-sbx.api.jtl-software.com/api-docs/swagger.json" 2>&1; sleep 1.2
+curl -s -m 20 -o /tmp/ffn-sbx-docs.html -w "HTTP %{http_code} size %{size_download} type %{content_type}\n" "https://ffn-sbx.api.jtl-software.com/api-docs" 2>&1; sleep 1.2
+curl -s -m 20 -o /tmp/ffn-sbx-root.json -w "HTTP %{http_code} size %{size_download} type %{content_type}\n" "https://ffn-sbx.api.jtl-software.com/" 2>&1
+HTTP 404 size 0 type 
+HTTP 301 size 0 type 
+HTTP 404 size 0 type
+[0m
+[0m$ [0mcurl -s -m 20 -D - -o /dev/null "https://ffn-sbx.api.jtl-software.com/api-docs" 2>&1 | grep -iE "^(HTTP|location)"; sleep 1.2
+curl -s -m 20 -o /tmp/sbx-2.json -w "HTTP %{http_code} type %{content_type}\n" "https://ffn-sbx.api.jtl-software.com/swagger/v1/swagger.json" 2>&1; sleep 1.2
+curl -s -m 20 -o /tmp/sbx-docfx.html -w "HTTP %{http_code} type %{content_type}\n" "https://ffn-sbx.api.jtl-software.com/api/index.html" 2>&1
+HTTP/2 301 
+location: api-docs/index.html
+HTTP 404 type 
+HTTP 404 type
+[0m
+[0m$ [0mcurl -s -m 20 -o /tmp/sbx-doc.html -w "HTTP %{http_code} size %{size_download} type %{content_type}\n" "https://ffn-sbx.api.jtl-software.com/api-docs/index.html" 2>&1; sleep 1.2
+curl -s -m 20 -o /tmp/kundencenter-oauth.html -w "HTTP %{http_code} size %{size_download} type %{content_type}\n" "https://kundencenter.jtl-software.de/oauth/clients" 2>&1; sleep 1.2
+curl -s -m 20 -o /tmp/fs-root.html -w "HTTP %{http_code} size %{size_download} type %{content_type}\n" "https://fulfillment-sandbox.jtl-software.com/" 2>&1
+HTTP 200 size 1395 type text/html
+HTTP 302 size 0 type text/html; charset=UTF-8
+HTTP 200 size 168189 type text/html; charset=utf-8
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mRead /tmp/sbx-doc.html failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
