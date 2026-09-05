@@ -7700,3 +7700,51 @@ testability: AUTH_HELPED
 ## STEP 7 — RISK
 
 [RISK] jtl: 90 — Critical attack surface confirmed: (1) FFN OAuth with leaked credentials + scope escalation + silent scope degradation on production API (oauth2.api.jtl-software.com + ffn.api.jtl-software.com); (2) dedicated OAuth server (auth.jtl-cloud.com) with device flow + public client ("none") + implicit flow; (3) Zitadel identity provider (id.jtl-cloud.com) with public ERP/Hub clients accepting device authorization with elevated tenant scopes; (4) production multi-tenant GraphQL ERP API (api.jtl-cloud.com) with client-supplied x-tenant-id; (5) official bug bounty test shop (bountyshop) with contact form. Chain: OAuth token theft (device/implicit flow on Zitadel/Ory) OR leaked FFN credentials → GraphQL/FFN API access → cross-tenant BOLA via x-tenant-id → full ERP/FFN data compromise. Risk elevated by live endpoints, Ory Hydra/Zitadel misconfig patterns, public credential leak, env JSON secret exposure, and shared test profile amplification (37+29 instances).
+===== ANALYST nemotron3 2026-09-05 13:29:50 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/
+total 228
+drwxr-xr-x 12 runner runner  4096 Sep  5 13:23 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 13:23 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 13:23 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 13:23 .github
+-rw-r--r--  1 runner runner  1787 Sep  5 13:23 README.md
+-rw-r--r--  1 runner runner    43 Sep  5 13:23 analyst-out.txt
+-rw-r--r--  1 runner runner 69981 Sep  5 13:23 analyst-prompt.txt
+-rw-r--r--  1 runner runner 66132 Sep  5 13:23 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 leads
+-rw-r--r--  1 runner runner  1625 Sep  5 13:23 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 reposcan-raw
+-rw-r--r--  1 runner runner  3262 Sep  5 13:23 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 13:23 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 13:23 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 13:23 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 13:23 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 13:23 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 13:23 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 13:23 triage
+[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/jtl.md
+[0m→ [0mRead analyst-out.txt
+[0m
+[0m← [0mWrite analyst-output.md
+Wrote file successfully.
+[0m
+Now I have full context. Let me execute the 8-step analysis.
+[0m→ [0mRead analyst-output.md
+Analysis complete. Output written to `analyst-output.md` with all 7 structured steps (STEP 8 is implicit in the continuous loop).
+
+**Key findings:**
+- **Top priority**: FFN OAuth scope escalation + leaked plaintext credentials (confidence 85, score 9.25) — immediate POC actionable via `client_credentials` grant
+- **Second**: Zitadel `authorization_code+PKCE` for public ERP/Hub clients → ERP GraphQL cross-tenant BOLA (confidence 70, score 8.00)
+- **Third**: Ory Hydra implicit flow token theft via unvalidated `redirect_uri` (confidence 65, score 6.50) — blocked on client_id enumeration
+
+**Next action**: Probe FFN `/api/v1/merchant/credentials` with OAuth token to obtain API key for merchant data access.

@@ -470,3 +470,5 @@
 - NEW Ory Hydra (auth.jtl-cloud.com) supports device/implicit flow with public client ("none") but no valid public client_id enumerated — enumeration needed via developer portal/GitHub/GraphQL playground tr
 - CHANGED docker.jtl-software.de 300 containers permanently unreachable (wildcard DNS, TCP timeout) — all test env hypotheses deprecated
 - CHANGED Cross-tenant BOLA on api.jtl-cloud.com/erp/v2/graphql now dependent on valid JWT acquisition first (x-tenant-id only processed post-auth)
+
+## 2026-09-05 13:29:50 UTC
