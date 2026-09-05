@@ -227,3 +227,21 @@
 - LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
 - LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
 - LEARN: REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+
+## RANKED HYPOTHESES 2026-09-05 10:05:52 UTC
+- [85] oauth2.api.jtl-software.com/token: FFN OAuth scope escalation + leaked credentials → FFN API merchant data access (from art/lead_nemotron3.txt)
+- [70] https://api.jtl-cloud.com/erp/v2/graphql: ERP cross-tenant BOLA via header-only tenant enforcement (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: On account.jtl-cloud.com run self-service/registration/browser with a throwaway email to mint a test identity (flow confirmed open, app v1.41.0); then op
+- NEXT(hypotheses-nemotron3.txt): PROBE: POST https://ffn.api.jtl-software.com/api/v1/merchant/credentials -H "Authorization: Bearer <ffn_token>" -H "Content-Type: application/json" → obtain API
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redire
+- LEARN: REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT via clien
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGd
+- LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in p
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; additional API key layer present (from 
+- LEARN: ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live with device_authorization, PKCE, JWKS; distinct from Ory Hydra auth.jtl-cloud.com
+- LEARN: ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated sco
+- LEARN: REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disable
+- LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
+- LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet

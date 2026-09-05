@@ -63,3 +63,5 @@
 - 2026-09-05 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
 - 2026-09-05 ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
 - 2026-09-05 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+- 2026-09-05 ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redirect_uri on client 97170e64-d390-4696-ba46-d6fcef8207de despite localhost-only registered URIs.
+- 2026-09-05 REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
