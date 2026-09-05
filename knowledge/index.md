@@ -65,3 +65,5 @@
 - 2026-09-05 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
 - 2026-09-05 ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redirect_uri on client 97170e64-d390-4696-ba46-d6fcef8207de despite localhost-only registered URIs.
 - 2026-09-05 REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
+- 2026-09-05 ACCEPTED TARGET @ account.jtl-cloud.com: self-service/registration/browser HTTP 200 (Kratos SPA) - self-service identity mint confirmed open, making the HUMAN_ONLY ERP BOLA chain feasible.
+- 2026-09-05 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: hard 401 "JWT not present" without JWT - no anonymous GraphQL surface; x-tenant-id only processed post-auth.

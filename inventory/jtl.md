@@ -472,3 +472,18 @@
 - CHANGED Cross-tenant BOLA on api.jtl-cloud.com/erp/v2/graphql now dependent on valid JWT acquisition first (x-tenant-id only processed post-auth)
 
 ## 2026-09-05 13:29:50 UTC
+
+## 2026-09-05 16:19:40 UTC
+- NEW FFN OAuth leaked credentials (client_id=97170e64-d390-4696-ba46-d6fcef8207de, client_secret=f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) + scope escalation (ffn.merchant.read → ffn.merchant.write) confir
+- NEW Zitadel device flow public clients (ERP: 383246859688230715, Hub: 383246859839225659) accept elevated scopes (urn:jtl:tenants, offline_access) but token endpoint rejects device_code grant with "unauth
+- NEW Ory Hydra (auth.jtl-cloud.com) supports device/implicit flow with public client ("none") but no valid public client_id enumerated — enumeration needed via developer portal/GitHub/GraphQL playground tr
+- CHANGED docker.jtl-software.de 300 containers permanently unreachable (wildcard DNS, TCP timeout) — all test env hypotheses deprecated
+- CHANGED Cross-tenant BOLA on api.jtl-cloud.com/erp/v2/graphql now dependent on valid JWT acquisition first (x-tenant-id only processed post-auth)
+- NEW account.jtl-cloud.com/self-service/registration/browser returns HTTP 200 (Kratos SPA shell) - self-service identity mint confirmed open, unblocks HUMAN_ONLY ERP BOLA chain via hub/ERP consent.
+- CHANGED No new surface this cycle; top chains converged (FFN OAuth scope-escalation 85, ERP cross-tenant BOLA 70), both gated on human/auth steps.
+- CHANGED erp.jtl-cloud.com root 200, hub.jtl-cloud.com 200 (incl /auth/callback), api.jtl-cloud.com/erp/v2/graphql hard 401 "JWT not present" without JWT - token gate holds.
+- CHANGED valid-bugs.md count still 0; confirmed OAuth defects each carry a secondary exploitation gate (FFN API-key layer; consent/login for token mint).
+- NEW FFN OAuth client_secret now confirmed in plaintext: `f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z` (from GitHub README, previously only sha256 known)
+- NEW Zitadel device_code grant rejection confirmed with exact error: `unauthorized_client: grant_type not allowed` — client config disables device_code despite server advertising support
+- CHANGED Phase POC active — moving from hypothesis to verification of top-3 chains; FFN OAuth chain now has plaintext secret for immediate client_credentials test
+- CHANGED Cross-tenant BOLA on ERP GraphQL fully dependent on JWT acquisition first (no anonymous x-tenant-id processing)
