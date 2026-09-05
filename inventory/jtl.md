@@ -456,3 +456,10 @@
 - NEW Ory Hydra (auth.jtl-cloud.com) supports device/implicit flow with public client ("none") but no valid public client_id enumerated — enumeration via developer portal/GitHub/GraphQL playground traffic n
 - CHANGED docker.jtl-software.de 300 containers permanently unreachable (wildcard DNS, TCP timeout) — all test env hypotheses deprecated
 - CHANGED Cross-tenant BOLA on api.jtl-cloud.com/erp/v2/graphql now dependent on valid JWT acquisition first (x-tenant-id only processed post-auth)
+
+## 2026-09-05 05:54:22 UTC
+- NEW FFN OAuth leaked credentials (client_id=97170e64-d390-4696-ba46-d6fcef8207de, secret=sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) + scope escalation confirmed actionable vi
+- NEW Zitadel device flow public clients (ERP: 383246859688230715, Hub: 383246859839225659) accept elevated scopes (urn:jtl:tenants, offline_access) but token endpoint rejects device_code grant — pivoting t
+- NEW Ory Hydra (auth.jtl-cloud.com) supports device/implicit flow with public client ("none") but no valid public client_id enumerated — enumeration via developer portal/GitHub/GraphQL playground traffic n
+- CHANGED docker.jtl-software.de 300 containers permanently unreachable (wildcard DNS, TCP timeout) — all test env hypotheses deprecated
+- CHANGED Cross-tenant BOLA on api.jtl-cloud.com/erp/v2/graphql now dependent on valid JWT acquisition first (x-tenant-id only processed post-auth)
