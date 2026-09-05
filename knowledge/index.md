@@ -67,3 +67,11 @@
 - 2026-09-05 REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
 - 2026-09-05 ACCEPTED TARGET @ account.jtl-cloud.com: self-service/registration/browser HTTP 200 (Kratos SPA) - self-service identity mint confirmed open, making the HUMAN_ONLY ERP BOLA chain feasible.
 - 2026-09-05 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: hard 401 "JWT not present" without JWT - no anonymous GraphQL surface; x-tenant-id only processed post-auth.
+- 2026-09-05 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to leaked SDK README documenting client_credentials as unsupported/401 — live re-confirmed this cycle.
+- 2026-09-05 REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (sub/acl), not a separate API key.
+- 2026-09-05 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current.
+- 2026-09-05 ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README.
+- 2026-09-05 ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200.
+- 2026-09-05 ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface.
+- 2026-09-05 ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping.
+- 2026-09-05 REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.

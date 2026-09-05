@@ -487,3 +487,5 @@
 - NEW Zitadel device_code grant rejection confirmed with exact error: `unauthorized_client: grant_type not allowed` — client config disables device_code despite server advertising support
 - CHANGED Phase POC active — moving from hypothesis to verification of top-3 chains; FFN OAuth chain now has plaintext secret for immediate client_credentials test
 - CHANGED Cross-tenant BOLA on ERP GraphQL fully dependent on JWT acquisition first (no anonymous x-tenant-id processing)
+
+## 2026-09-05 18:43:25 UTC

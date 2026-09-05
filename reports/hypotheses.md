@@ -287,3 +287,15 @@
 - LEARN: ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
 - LEARN: ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
 - LEARN: REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+
+## RANKED HYPOTHESES 2026-09-05 18:43:25 UTC
+- [70] https://oauth2.api.jtl-software.com/authorize: FFN OAuth code theft via unvalidated redirect_uri + leaked secret → victim-bound merchant token (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: On account.jtl-cloud.com run self-service/registration/browser with a throwaway email to mint a test identity (flow confirmed open, app v1.41.0); then op
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to le
+- LEARN: REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (s
+- LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens AP
+- LEARN: ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README.
+- LEARN: ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200.
+- LEARN: ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface.
+- LEARN: ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_3894606307357621
+- LEARN: REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.

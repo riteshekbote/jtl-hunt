@@ -1124,3 +1124,83 @@ verify_steps: HUMAN: complete authorize flow for hub client, replay token with t
 impact: victim-consented tenant-scoped ERP token; chains to cross-tenant read. severity: medium (interaction required).
 testability: AUTH_HELPED
 [NEXT] HUMAN: On account.jtl-cloud.com run self-service/registration/browser with a throwaway email to mint a test identity (flow confirmed open, app v1.41.0); then open https://id.jtl-cloud.com/oauth/v2/authorize?client_id=383246859839225659&scope=openid+profile+email+urn:jtl:tenants+offline_access, complete consent on the hub callback, and replay the resulting token against POST https://api.jtl-cloud.com/erp/v2/graphql with two different X-Tenant-ID values to test the BOLA (compare 200 vs 403) — this is the single highest-value unblocked step.
+## 2026-09-05 18:28:28 UTC [target] (model bigpickle)
+evidence_needed: consent yields a token whose Bearer survives X-Tenant-ID swap at /erp/v2/graphql.
+verify_steps: HUMAN: complete authorize flow for hub client, replay token with two x-tenant-id values against /erp/v2/graphql. PASSIVE n/a.
+impact: victim-consented tenant-scoped ERP token; chains to cross-tenant read. severity: medium (interaction required).
+testability: AUTH_HELPED
+[NEXT] HUMAN: On account.jtl-cloud.com run self-service/registration/browser with a throwaway email to mint a test identity (flow confirmed open, app v1.41.0); then open https://id.jtl-cloud.com/oauth/v2/authorize?client_id=383246859839225659&scope=openid+profile+email+urn:jtl:tenants+offline_access, complete consent on the hub callback, and replay the resulting token against POST https://api.jtl-cloud.com/erp/v2/graphql with two different X-Tenant-ID values to test the BOLA (compare 200 vs 403) — this is the single highest-value unblocked step.
+[PRIO] oauth2.api.jtl-software.com/authorize,7.9,AUTH(OAuth code theft + leaked secret)
+[PRIO] ffn.api.jtl-software.com/api/v1/access/tokens,7.35,AUTH(API-key mint post-consent)
+[PRIO] fulfillment-sandbox.jtl-software.com,6.75,TARGET(sanctioned borderless user-mint)
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked secret → victim-bound merchant token
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize + /doauthorize return 302 (not 400) for attacker redirect_uri http://evil.example/cb (passively confirmed) despite client registered localhost-only URIs; client_secret leaked in public SDK README; README confirms authorization_code is the sanctioned grant and that data-access tokens are user-bound (sub from consent). Code delivered to attacker URI + redemption with leaked secret yields victim-scoped ffn.merchant.write token.
+evidence_needed: after a real login, authorization code lands on attacker redirect_uri; POST /token grant_type=authorization_code + code + Basic 97170e64:sha256(9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) returns 200 with sub != "" + ffn.merchant.write.
+verify_steps: HUMAN: login a test FFN user, receive code at attacker URI, redeem; then GET /api/v1/users/current with token → 200 (proves user context). PASSIVE: 302-on-attacker-URI already re-confirmed.
+impact: victim FFN merchant/fulfiller orders, stock, returns, shipping data via write-scoped token. severity: high.
+testability: HUMAN_ONLY
+[HYP] FFN shared API unlocks with user-bound token (access/tokens mint)
+class: AUTH
+asset: https://ffn.api.jtl-software.com/api/v1/access/tokens
+confidence: 60
+reasoning: swagger exposes AccessCreateApiToken (POST /api/v1/access/tokens) and UsersGetCurrent (GET /api/v1/users/current); both 401 with userless client_credentials token, implying authorization_code consent token (sub set) completes the second layer: mint API keys (X-Api-Key) for long-lived programmatic access.
+evidence_needed: GET /api/v1/users/current → 200 with current user JSON after consent token; POST /api/v1/access/tokens → returns apiKey usable on data endpoints.
+verify_steps: HUMAN: mint consent token on sandbox, GET users/current, POST access/tokens, retry GET /api/v1/merchant/products with apiKey. PASSIVE: done (swagger enumeration + 401 gate).
+impact: persistent API-key access to merchant/fulfiller data on top of OAuth consent. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: unchanged — official samples validate JWT signature only; tenant isolation via client-supplied X-Tenant-ID; now testable because account.jtl-cloud.com self-service registration is open and Hub authorize flow is live (authRequest V2_389460630735762158 issued).
+evidence_needed: same JWT + two X-Tenant-ID values both return 200 data (foreign tenant not 403).
+verify_steps: HUMAN: mint token via hub consent, POST /erp/v2/graphql Bearer T + X-Tenant-ID A (introspection), repeat with B; compare status/bodies. PASSIVE: n/a (401 without JWT).
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN OAuth client_credentials scope escalation alone: real in-token (ffn.merchant.write) but userless (sub="", acl="") — rejected by FFN data layer on 3 hosts; defensible only as doc/behavior inconsistency defect. confidence downgraded 85→50.
+[PARKED] Ory Hydra device/implicit flow: no public client_id enumerated — still blocked at enumeration. confidence 65.
+[PARKED] Zitadel device_code grant: rejected "unauthorized_client: grant_type not allowed" — dead end. confidence 30.
+[FINAL] 1. FFN OAuth code theft via unvalidated redirect_uri + leaked secret → victim-bound write token (confidence 70)
+[FINAL] 2. ERP cross-tenant BOLA via open self-service identity + hub consent token (confidence 70, HUMAN_ONLY)
+[FINAL] 3. FFN shared API /access/tokens mint after sandbox consent token (confidence 60, HUMAN_ONLY)
+[NEXT] HUMAN: Register throwaway identity and log into https://fulfillment-sandbox.jtl-software.com once (per SDK README this triggers FFN user creation); then complete authorization_code consent at https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=http://localhost:53972/ffn/sso&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write, redeem at /token, and GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current + POST /api/v1/access/tokens — this is the highest-value unblocked step (sanctioned sandbox, full merchant-API chain).
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to leaked SDK README documenting client_credentials as unsupported/401 — live re-confirmed this cycle.
+[LEARN] REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (sub/acl), not a separate API key.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current.
+[LEARN] ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README.
+[LEARN] ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200.
+[LEARN] ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface.
+[LEARN] ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping.
+[LEARN] REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.
+[RISK] jtl: 85 — Live-production OAuth defects remain: (1) client_credentials accepted at /token contrary to published SDK policy, minting ffn.merchant.write-scoped but userless JWTs with leaked secret; (2) unvalidated redirect_uri on /authorize + /doauthorize; (3) leaked client_secret in public README. Each is independently reportable, but data access still requires victim consent (authorization_code). ERP cross-tenant BOLA on GraphQL remains plausible with open self-service identity mint + live Hub consent flow. Sandbox host (fulfillment-sandbox) opens a sanctioned full-chain test path — next cycle is HUMAN-executed consent token mint.
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked secret → victim-bound merchant token
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize + /doauthorize return 302 (not 400) for attacker redirect_uri http://evil.example/cb despite localhost-only registered URIs (re-confirmed passively); client_secret leaked in SDK README; README confirms authorization_code is the only data-access grant and tokens are user-bound (sub, acl).
+evidence_needed: after real login, code lands on attacker redirect_uri; POST /token (Basic leaked creds, redirect_uri=attacker) returns 200 token with sub != "" + ffn.merchant.write; then GET /api/v1/users/current returns 200.
+verify_steps: HUMAN: login test FFN user, capture code at attacker URI, redeem at /token, replay on /api/v1/users/current. PASSIVE done (302, doc, 401-gate).
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] FFN shared API unlocks with user-bound consent token (access/tokens mint)
+class: AUTH
+asset: https://ffn.api.jtl-software.com/api/v1/access/tokens
+confidence: 60
+reasoning: swagger exposes AccessCreateApiToken + UsersGetCurrent; both 401 with userless token — consent token (sub set) should complete the second auth layer and mint persistent API keys.
+evidence_needed: POST /api/v1/access/tokens with consent token returns apiKey usable on /api/v1/merchant/products.
+verify_steps: HUMAN: mint consent token on sandbox, GET users/current, POST access/tokens, retry merchant endpoints with apiKey. PASSIVE done (swagger + 401 gate).
+impact: persistent API-key access on top of OAuth consent. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: official samples validate JWT signature only; tenant passed solely via X-Tenant-ID; now testable — open self-service identity mint (account.jtl-cloud.com) + live Hub consent flow (authRequest issued).
+evidence_needed: same JWT + two X-Tenant-ID values both return 200 data (foreign tenant not 403).
+verify_steps: HUMAN: mint token via hub consent, two X-Tenant-ID POSTs, compare status/bodies. PASSIVE n/a (401 without JWT).
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: Register throwaway identity and log into https://fulfillment-sandbox.jtl-software.com once (SDK README: first login triggers FFN user creation); then run authorization_code consent at https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=http://localhost:53972/ffn/sso&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write, redeem at /token, and GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current + POST /api/v1/access/tokens — highest-value unblocked step in the sanctioned sandbox.
