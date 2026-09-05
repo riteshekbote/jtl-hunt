@@ -53,3 +53,13 @@
 - 2026-09-04 ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated scopes (urn:jtl:tenants, offline_access) without client authentication
 - 2026-09-04 REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disables device_code despite server support
 - 2026-09-04 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+- 2026-09-05 ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT via client_credentials grant with leaked credentials
+- 2026-09-05 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README
+- 2026-09-05 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in production; dual API instances live (ffn + ffn2)
+- 2026-09-05 REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; additional API key layer present (from /api/v1/merchant/credentials)
+- 2026-09-05 ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live with device_authorization, PKCE, JWKS; distinct from Ory Hydra auth.jtl-cloud.com
+- 2026-09-05 ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated scopes (urn:jtl:tenants, offline_access) without client authentication
+- 2026-09-05 REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disables device_code despite server support
+- 2026-09-05 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
+- 2026-09-05 ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- 2026-09-05 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet

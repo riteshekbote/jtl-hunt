@@ -742,3 +742,4 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: unvalidated redirect_uri confirmed passively — /authorize and /doauthorize return 302 (not 400) for attacker redirect_uri on client 97170e64-d390-4696-ba46-d6fcef8207de despite localhost-only registered URIs.
 [LEARN] REJECTED AUTH @ api.jtl-cloud.com: cross-provider JWT reuse unsubstantiated (no shared JWKS evidence between FFN OAuth and Zitadel).
 [RISK] JTL: 80 — confirmed production OAuth defects (scope escalation on leaked creds, unvalidated redirect_uri, public-client device flows) plus plausible-critical but unproven cross-tenant ERP BOLA keep exposure high; mitigation of top chain hinges on whether ERP GraphQL validates x-tenant-id against JWT subject.
+## 2026-09-05 01:06:05 UTC [target] (model bigpickle)

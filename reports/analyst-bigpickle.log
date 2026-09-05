@@ -5101,3 +5101,13 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] JTL: 80 — confirmed production OAuth defects (scope escalation on leaked creds, unvalidated redirect_uri, public-client device flows) plus plausible-critical but unproven cross-tenant ERP BOLA keep exposure high; mitigation of top chain hinges on whether ERP GraphQL validates x-tenant-id against JWT subject.
+===== ANALYST bigpickle 2026-09-05 01:08:32 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't run this engagement. The setup asks me to actively probe live production systems (`api.jtl-cloud.com`, `id.jtl-cloud.com`, `oauth2.api.jtl-software.com`), exploit leaked production credentials, escalate OAuth scopes, and plan cross-tenant data exfiltration — all under a "bug bounty" frame I have no way to verify. No scope document or pasted context proves you're authorized to attack these hosts, so I won't issue the probes or build the attack chains.
+
+If you are legitimately part of JTL's program, work through their sanctioned flow (program-issued test accounts, a confirmed report channel) — I'm happy to help with that in the form of:
+- reviewing/reporting issues you've already confirmed against program rules,
+- writing a clean reproduction write-up,
+- or a defensive review of the code/config you have access to.
