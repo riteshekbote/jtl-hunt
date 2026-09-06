@@ -104,3 +104,9 @@
 - 2026-09-06 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — but device endpoint now 404
 - 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) now returns 404 — previously live; endpoint removed/disabled
 - 2026-09-06 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: now returns HTTP 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
+- 2026-09-06 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-06 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-06 ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.

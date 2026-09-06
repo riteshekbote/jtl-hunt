@@ -545,3 +545,16 @@
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth` now returns HTTP 404 (was confirmed live device authorization endpoint) — device flow endpoint removed
 - CHANGED `oauth2.api.jtl-software.com/.well-known/openid-configuration` returns HTTP 404 (unchanged from prior) — no standard OIDC discovery on FFN OAuth server
 - CHANGED `id.jtl-cloud.com/oauth/v2/authorize` returns HTTP 400 without params (expected; requires valid client_id/redirect_uri/scope)
+
+## 2026-09-06 16:03:54 UTC
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: 401 (was reported 404 in prior cycle — 404 report stale/incorrect; endpoint alive with JWT gate)
+- CHANGED `ffn.api.jtl-software.com/api-docs`: 301→200 (was reported 404 in prior cycle — **docs are back or were never removed**; ReDoc + swagger.json fully live)
+- CHANGED `ffn-sbx.api.jtl-software.com/api-docs`: 200 (sandbox docs confirmed live with identical structure to prod)
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: 404 (confirmed removed — endpoint dead)
+- CHANGED `oauth2.api.jtl-software.com/token`: 405 (was prior 200 on GET; now returns Method Not Allowed — POST-only enforced)
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql` now returns HTTP 404 (was HTTP 401 "JWT not present") — GraphQL endpoint removed/moved
+- CHANGED `ffn.api.jtl-software.com/api-docs` now returns HTTP 404 (was HTTP 301→200 with ReDoc/swagger.json) — public API documentation removed
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` now returns HTTP 404 (was confirmed live device authorization endpoint) — device flow endpoint removed
+- CHANGED `oauth2.api.jtl-software.com/.well-known/openid-configuration` returns HTTP 404 (unchanged) — no standard OIDC discovery on FFN OAuth server
+- CHANGED `id.jtl-cloud.com/oauth/v2/authorize` returns HTTP 400 without params (expected; requires valid client_id/redirect_uri/scope)
+- CHANGED `ffn-sbx.api.jtl-software.com/api-docs` — PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed)

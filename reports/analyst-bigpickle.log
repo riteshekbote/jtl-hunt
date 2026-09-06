@@ -9302,3 +9302,340 @@ testability: HUMAN_ONLY
 
 **STEP 7 — RISK**
 - [RISK] jtl: 85 — No degradation. Pending ffn-sbx spec-divergence lead closed negative (single GET batch, ≤4 rps momentarily, all read-only docs, no auth). Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain; ERP cross-tenant BOLA critical-if-confirmed but gated on a human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants per program data-protection exclusion. No active or exploitative actions against production.
+===== ANALYST bigpickle 2026-09-06 16:03:54 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m• [0mExplore workspace structure[90m Explore Agent[0m
+[0m✓ [0mExplore workspace structure[90m Explore Agent[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead triage/run-2026-09-06-12-55.md
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://api.jtl-cloud.com/erp/v2/graphql" 2>/dev/null
+401
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://oauth2.api.jtl-software.com/token" 2>/dev/null
+405
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs" 2>/dev/null
+301
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs" 2>/dev/null
+301
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://auth.jtl-cloud.com/.well-known/openid-configuration" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://id.jtl-cloud.com/.well-known/openid-configuration" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://account.jtl-cloud.com/self-service/registration/browser" 2>/dev/null
+200
+[0m
+Now let me perform the live probes to verify current endpoint status before writing the analysis.
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://fulfillment-sandbox.jtl-software.com/" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs" 2>/dev/null
+301 https://ffn.api.jtl-software.com/api-docs/index.html
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs" 2>/dev/null
+301 https://ffn-sbx.api.jtl-software.com/api-docs/index.html
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://api.jtl-cloud.com/erp/v2/graphql" -H "Content-Type: application/json" -X POST -d '{"query":"{__typename}"}' 2>/dev/null
+401
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs" -L 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://bountyshop.jtl-software.com/" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://kundencenter.jtl-software.de/oauth" 2>/dev/null
+302
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/index.html" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s --max-time 10 "https://ffn.api.jtl-software.com/api-docs/index.html" 2>/dev/null | head -c 2000
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JTL-Fulfillment Network API</title>
+    <!-- needed for adaptive design -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+    <!--
+    ReDoc doesn't change outer page styles
+    -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <link href='styles/ffn.css' rel='stylesheet' media='screen' type='text/css' />
+
+</head>
+<body>
+    <nav id="navigation">
+        <ul id="links_container">
+            <li id="logo_container">
+                <img src="img/logoFfn.svg" />
+            </li>
+        </ul>
+        <div id="top_spacer"></div>
+    </nav>
+
+    <redoc  id="redoc-container" scroll-y-offset="body > nav"></redoc >
+<script src="scripts/redoc.standalone.js"></script>
+<script type="text/javascript">
+    var apis = [
+        {
+            id: "fulfiller",
+            name: 'Fulfiller API'
+        },
+        {
+            id: "merchant",
+            name: 'Merchant API'
+        },
+        {
+            id: "any",
+            name: 'Shared API'
+        }
+    ];
+</script>
+    
+<script src="config.js"></script>
+<script src="scripts/init.js"></script>
+</body>
+</html>
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://auth.jtl-cloud.com/oauth2/device/auth" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs/swagger.json" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/swagger.json" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://oauth2.api.jtl-software.com/authorize" 2>/dev/null
+302
+[0m
+[0m$ [0mcurl -s --max-time 10 "https://ffn.api.jtl-software.com/api-docs/config.js" 2>/dev/null
+window.apiVersions = ["current","v1"];
+[0m
+[0m$ [0mcurl -s --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/config.js" 2>/dev/null
+window.apiVersions = ["current","v1"];
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://developer.jtl-software.com/cloud/api-reference/graphql-playground" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://erp.jtl-cloud.com/" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://hub.jtl-cloud.com/" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s --max-time 10 "https://ffn.api.jtl-software.com/api-docs/scripts/init.js" 2>/dev/null | head -c 3000
+function getUrlParam(parameter, defaultvalue) {
+    var params = this.window.location.search.replace('?', '').split('&');
+    var param = params.find(function(param) {
+        return param.split('=')[0] === parameter;
+    });
+    if (param === undefined || param === '') {
+        return defaultvalue;
+    }
+    var value = param.split("=")[1];
+    return value === undefined ? defaultvalue : decodeURIComponent(value);
+}
+
+function normalizeVersion(version) {
+    if (!version) {
+        return null;
+    }
+    var lowered = version.toLowerCase();
+    if (lowered === "current") {
+        return "current";
+    }
+    if (lowered.startsWith("v")) {
+        return version;
+    }
+    return "v" + version;
+}
+
+function getAvailableVersions() {
+    if (typeof apiVersions === "undefined" || !Array.isArray(apiVersions) || apiVersions.length === 0) {
+        return ["v1"];
+    }
+    return apiVersions.map(normalizeVersion).filter(function(v) { return v; });
+}
+
+function getAvailableApis() {
+    if (typeof apis !== "undefined" && Array.isArray(apis) && apis.length > 0) {
+        return apis;
+    }
+    return [
+        { id: "fulfiller", name: "Fulfiller API" },
+        { id: "merchant", name: "Merchant API" },
+        { id: "any", name: "Shared API" }
+    ];
+}
+
+function getContextUrl(id, version) {
+    return '/api-docs/' + id + '-' + version + '/swagger.json'
+}
+function jump(h){
+    var url = location.href;
+    location.href = "#"+h;
+    history.replaceState(null,null,url);
+}
+
+function afterInit(){
+    if(document.location.hash !== undefined && document.location.hash !== null && document.location.hash !== ""){
+        var anchor = Array.from(document.getElementsByTagName("li")).filter(function(l){return l.getAttribute("data-item-id") === document.location.hash.replace('#','')}).length;
+        if(anchor === 0){
+            location.href = "#section/Endpoints";
+        }
+    }
+    
+    function setBetaClass(element,index,array){
+        let id = element.dataset.sectionId;
+        let child = document.querySelectorAll('[data-item-id="' + id + '"]')[0].firstChild.firstChild;
+        child.className += " beta_tag";
+    }
+    Array.from(document.getElementsByClassName("beta_summary")).forEach(setBetaClass)    
+}
+// initially render first API
+var redocOptions = JSON.parse('{"untrustedSpec":false,"hideHostname":true,"hideDownloadButton":false,"expandResponses":"","requiredPropsFirst":true,"noAutoAuth":false,"pathInMiddlePanel":false,"nativeScrollbars":true,"disableSearch":false,"onlyRequiredInSamples":false,"sortPropsAlphabetically":false}');
+var redocContainer = document.getElementById('redoc-container');
+
+
+
+function buildUrl(role, version) {
+    return window.location.origin
+        + window.location.pathname
+        + "?role=" + encodeURIComponent(role)
+        + "&version=" + encodeURIComponent(version)
+        + window.location.hash;
+}
+
+function onClick() {
+    var contextId = thi
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs/current/swagger.json" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/current/swagger.json" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs/v1/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/v1/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs/any-current/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/any-current/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn.api.jtl-software.com/api-docs/fulfiller-current/swagger.json" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://ffn-sbx.api.jtl-software.com/api-docs/fulfiller-current/swagger.json" 2>/dev/null
+200
+[0m
+Now I have complete probe data. Let me write the full structured analysis.
+
+---
+
+**STEP 1 — DELTA**
+
+[CHANGED] `api.jtl-cloud.com/erp/v2/graphql`: 401 (was reported 404 in prior cycle — 404 report stale/incorrect; endpoint alive with JWT gate)
+[CHANGED] `ffn.api.jtl-software.com/api-docs`: 301→200 (was reported 404 in prior cycle — **docs are back or were never removed**; ReDoc + swagger.json fully live)
+[CHANGED] `ffn-sbx.api.jtl-software.com/api-docs`: 200 (sandbox docs confirmed live with identical structure to prod)
+[CHANGED] `auth.jtl-cloud.com/oauth2/device/auth`: 404 (confirmed removed — endpoint dead)
+[CHANGED] `oauth2.api.jtl-software.com/token`: 405 (was prior 200 on GET; now returns Method Not Allowed — POST-only enforced)
+
+**STEP 2 — PRIORITIZE**
+
+[PRIO] ffn.api.jtl-software.com/api-docs, 9.0, a=9 b=9 t=10 g=1 c=7 f=9 — full API surface exposed incl. /api/v1/access/tokens key-mint, /api/v1/users/current; identical sandbox mirror enables diff
+[PRIO] ffn-sbx.api.jtl-software.com/api-docs, 8.5, a=9 b=5 t=10 g=1 c=7 f=9 — sandbox mirror; sanctioned test path; diff vs prod reveals spec divergence
+[PRIO] oauth2.api.jtl-software.com/authorize, 7.0, a=7 b=8 t=8 g=4 c=7 f=9 — redirect_uri acceptance confirmed 302; leaked creds + scope escalation validated
+[PRIO] api.jtl-cloud.com/erp/v2/graphql, 6.5, a=7 b=9 t=8 g=2 c=7 f=9 — alive 401; cross-tenant BOLA critical-if-confirmed but JWT gate blocks passive
+[PRIO] id.jtl-cloud.com/oauth/v2/authorize, 5.0, a=5 b=8 t=6 g=3 c=7 f=9 — Zitadel PKCE flow possible but strict redirect_uri blocks bypass
+
+**STEP 3 — HYPOTHESES**
+
+[HYP] FFN API spec divergence between prod and sandbox exposing test-only key-mint shortcuts
+class: MISCONFIG
+asset: https://ffn-sbx.api.jtl-software.com/api-docs
+confidence: 65
+reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Swagger specs confirmed at `/api-docs/merchant-current/swagger.json` (200) on both. Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never actually probed sandbox spec content — only assumed divergence without diff.
+evidence_needed: GET sandbox swagger.json content differs from prod (seed-user grants, extra key-mint params, relaxed schemas, test-only endpoints like /api/v1/access/tokens with lower auth).
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec confirms authorization_code is only data grant; tokens user-bound (sub, acl). This cycle: /token returns 405 (POST-only) — no change to exploitability.
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+
+**STEP 4 — SELF-CRITIQUE**
+
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+
+**STEP 5 — NEXT ACTION**
+
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+
+**STEP 6 — LEARNING**
+
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+[LEARN] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+
+**STEP 7 — RISK**
+
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
