@@ -350,3 +350,7 @@
 - LEARN: ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface
 - LEARN: ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_3894606307357621
 - LEARN: REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged
+
+## RANKED HYPOTHESES 2026-09-06 00:15:23 UTC
+- [70] https://api.jtl-cloud.com/erp/v2/graphql: ERP cross-tenant BOLA via header-only tenant enforcement (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: GET https://ffn-sbx.api.jtl-software.com/api-docs (Accept: text/html) → if 200/302, extract the linked swagger.json path and GET it, then diff against ht

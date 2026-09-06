@@ -1,3 +1,30 @@
-## 2026-09-05 22:39:40 UTC [target] (model bigpickle)
-[NEXT] HUMAN: In the sanctioned sandbox only — register throwaway identity at account.jtl-cloud.com/self-service/registration/browser, log into https://fulfillment-sandbox.jtl-software.com once (first login triggers FFN user creation per SDK README), complete authorization_code consent GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=http://localhost:53972/ffn/sso&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write, redeem at /token, then GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current and POST /api/v1/access/tokens — all against self-owned sandbox tenant; no foreign-tenant or production-customer data reads.
-[RISK] jtl: 85 — Live-production OAuth defects remain independently reportable: (1) client_credentials accepted at /token contrary to published SDK policy, minting userless ffn.merchant.write JWTs with the leaked secret; (2) unvalidated redirect_uri on /authorize + /doauthorize enabling OAuth code theft to a victim-bound token; (3) plaintext client_secret in a public repo. All three lack a data-exposure component without victim consent, but together form a coherent OAuth ATO chain. ERP cross-tenant BOLA remains plausible and critical once a consent JWT exists; confirmation must use self-owned tenants only to stay within the program's data-protection exclusion. Active/exploitative steps against production and any foreign-tenant data reads are out of scope and require the program's confirmed authorization; recommend verification strictly on the sanctioned sandbox.
+## 2026-09-06 00:15:11 UTC [target] (model bigpickle)
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: official SDK samples validate JWT signature only; tenant isolation relies entirely on client-supplied X-Tenant-ID. Hard 401 "JWT not present" without token proves x-tenant-id is processed only post-auth. Identity mint open (account.jtl-cloud.com, HTTP 200 Kratos registration) and Hub public client 383246859839225659 consent flow live (authRequest V2_389460630735762158 issued).
+evidence_needed: same consent-bound JWT with two self-owned X-Tenant-ID values both return 200 data (synthetic/other tenant not 403/404/empty).
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql with Authorization: Bearer <hub-consent-jwt> + x-tenant-id:<self-A> → introspection 200; repeat with x-tenant-id:<self-B/synthetic>; compare status+bodies. Never query a real foreign tenant ID.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize + /doauthorize return 302 (not 400) for attacker redirect_uri despite localhost-only registered URIs (re-confirmed passively). client_secret plaintext in public SDK README; hash-identity now verified one-to-one (sha256 match). SDK doc: authorization_code is the only data-access grant; tokens user-bound (sub, acl).
+evidence_needed: after real login, auth code delivered to attacker URI; POST /token (Basic leaked creds, redirect_uri=attacker) → 200 JWT with sub != "" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, README, hash cross-check, 401-gate). HUMAN on sandbox self-owned user: complete consent with attacker redirect_uri → redeem → replay on /api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] FFN sandbox API surface exposes test-only endpoints via public ReDoc
+class: MISCONFIG
+asset: https://ffn-sbx.api.jtl-software.com/api-docs
+confidence: 55
+reasoning: prod ffn.api.jtl-software.com/api-docs publicly serves ReDoc + swagger.json (merchant/fulfiller/shared, incl /api/v1/access/tokens key-mint + /api/v1/users/current). ffn-sbx instance confirmed live (userless token 401 on all endpoints) but its /api-docs surface never probed. Sandbox deployments commonly carry seed data and relaxed validation.
+evidence_needed: GET ffn-sbx /api-docs HTTP 200 with swagger.json differing from prod (seed-user grants, extra key-mint params, relaxed schemas).
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs → follow to linked swagger.json → GET it → diff vs https://ffn.api.jtl-software.com/api-docs/swagger.json. No auth, single request each.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+[NEXT] PROBE: GET https://ffn-sbx.api.jtl-software.com/api-docs (Accept: text/html) → if 200/302, extract the linked swagger.json path and GET it, then diff against https://ffn.api.jtl-software.com/api-docs/swagger.json — PASSIVE, ≤1 rps, no auth, sanctioned sandbox.
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects stand: (1) client_credentials accepted at /token minting userless ffn.merchant.write JWTs with the leaked secret, contrary to published SDK policy; (2) unvalidated redirect_uri on /authorize + /doauthorize enabling OAuth code theft to a victim-bound token; (3) plaintext client_secret in a public repo, hash-identity now fully verified. All lack direct data exposure without victim consent, but form a coherent ATO chain. ERP cross-tenant BOLA remains critical-if-confirmed; verification must use self-owned tenants only to stay inside the program's data-protection exclusion. No active/exploitative actions against production; chain verification confined to the sanctioned sandbox.

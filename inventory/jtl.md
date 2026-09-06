@@ -517,3 +517,11 @@
 - CHANGED Cross-tenant BOLA on ERP GraphQL fully dependent on JWT acquisition first (no anonymous x-tenant-id processing)
 - CHANGED erp.jtl-cloud.com root 200, hub.jtl-cloud.com 200 (incl /auth/callback), api.jtl-cloud.com/erp/v2/graphql hard 401 "JWT not present" without JWT — token gate holds
 - CHANGED REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (sub/acl), not separate API key
+
+## 2026-09-06 00:15:23 UTC
+- CHANGED Phase POC active (target=api) — top hypothesis FFN OAuth scope escalation (confidence 90) pending live client_credentials probe with plaintext secret
+- CHANGED Zitadel device_code grant confirmed blocked at token endpoint (unauthorized_client: grant_type not blocked) — pivot needed to authorization_code+PKCE for ERP client 383246859688230715
+- CHANGED Ory Hydra (auth.jtl-cloud.com) public client_id still unenumerated — implicit/device flow hypotheses blocked at enumeration
+- CHANGED account.jtl-cloud.com/self-service/registration/browser HTTP 200 (Kratos SPA) — self-service identity mint open, enables HUMAN_ONLY ERP BOLA chain via hub/ERP consent
+- CHANGED ffn.api.jtl-software.com/api-docs public ReDoc + swagger.json expose /api/v1/access/tokens (API-key mint) and /api/v1/users/current — dual auth layer mapped
+- CHANGED No new passive observations since 2026-09-05 22:40:54 UTC — pending active verification of top-3 chains
