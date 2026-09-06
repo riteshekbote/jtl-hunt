@@ -121,3 +121,11 @@
 - 2026-09-06 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
 - 2026-09-06 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
 - 2026-09-06 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) live at 200 both sandbox+prod; shared spec (any-current) exposes /api/v1/access/tokens key-mint with attacker-controlled scopes array + plaintext token return, /api/v1/users/current, /api/pictures/{id}.
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: sandbox docs live, identical structure to prod (only base URL differs).
+- 2026-09-06 REJECTED IDOR @ /api/pictures/{id}: no path-traversal file read — nginx blocks %2e%2e%2f (400); raw ../ normalized away. Empty-200 on deep traversal is nginx path normalization, not file fetch.
+- 2026-09-06 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate) reconfirmed this cycle.
+- 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 (removed).
+- 2026-09-06 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token 405 on GET (POST-only), no exploitability change.
+- 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri (https://evil.example.com/cb) and registered localhost uri produce identical 302 -> /doauthorize.
+- 2026-09-06 ACCEPTED AUTH @ ffn-sbx/api/v1/access/tokens POST: userless client_credentials token -> 401 on key-mint too; user+tenant gate covers both data-plane AND key-mint.

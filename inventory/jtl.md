@@ -583,3 +583,5 @@
 - NEW `account.jtl-cloud.com/self-service/registration/browser` — HTTP 200, Kratos SPA shell — self-service identity mint open
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — confirmed 404 (endpoint removed)
 - CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no exploitability change
+
+## 2026-09-06 22:27:53 UTC
