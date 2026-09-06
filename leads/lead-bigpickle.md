@@ -1413,3 +1413,41 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
 [LEARN] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
 [RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+## 2026-09-06 18:13:37 UTC [target] (model bigpickle)
+[HYP] FFN API spec divergence between prod and sandbox exposing test-only key-mint shortcuts
+class: MISCONFIG
+asset: https://ffn-sbx.api.jtl-software.com/api-docs
+confidence: 65
+reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never probed sandbox spec content — only assumed divergence without diff.
+evidence_needed: GET sandbox swagger.json content differs from prod (seed-user grants, extra key-mint params, relaxed schemas, test-only endpoints like /api/v1/access/tokens with lower auth).
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec confirms authorization_code is only data grant; tokens user-bound (sub, acl). This cycle: /token returns 405 (POST-only) — no change to exploitability.
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.

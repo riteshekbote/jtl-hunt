@@ -558,3 +558,12 @@
 - CHANGED `oauth2.api.jtl-software.com/.well-known/openid-configuration` returns HTTP 404 (unchanged) — no standard OIDC discovery on FFN OAuth server
 - CHANGED `id.jtl-cloud.com/oauth/v2/authorize` returns HTTP 400 without params (expected; requires valid client_id/redirect_uri/scope)
 - CHANGED `ffn-sbx.api.jtl-software.com/api-docs` — PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed)
+
+## 2026-09-06 18:30:33 UTC
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql` — returns HTTP 401 (not 404); GraphQL endpoint alive with JWT gate, prior cycle's 404 report was stale
+- CHANGED `ffn.api.jtl-software.com/api-docs` — returns HTTP 200 (not 404); public ReDoc + swagger.json fully live, prior cycle's 404 report was incorrect
+- CHANGED `ffn-sbx.api.jtl-software.com/api-docs` — returns HTTP 200; sandbox API docs confirmed live with identical structure to prod
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — returns HTTP 404; device authorization endpoint confirmed removed/disabled
+- CHANGED `oauth2.api.jtl-software.com/token` — returns HTTP 405 on GET, 400 on POST without creds; POST-only enforcement confirmed
+- CHANGED `auth.jtl-cloud.com/.well-known/openid-configuration` — returns HTTP 200; OIDC discovery live with device/implicit flow + public client ("none") support
+- CHANGED `id.jtl-cloud.com/.well-known/openid-configuration` — returns HTTP 200; Zitadel OIDC discovery live with PKCE, device_authorization, JWKS

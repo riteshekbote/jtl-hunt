@@ -110,3 +110,8 @@
 - 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
 - 2026-09-06 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
 - 2026-09-06 ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+- 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+- 2026-09-06 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale

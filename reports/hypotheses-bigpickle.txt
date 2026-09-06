@@ -1,19 +1,9 @@
-## 2026-09-06 16:01:13 UTC [target] (model bigpickle)
-[CHANGED] `api.jtl-cloud.com/erp/v2/graphql`: 401 (was reported 404 in prior cycle — 404 report stale/incorrect; endpoint alive with JWT gate)
-[CHANGED] `ffn.api.jtl-software.com/api-docs`: 301→200 (was reported 404 in prior cycle — **docs are back or were never removed**; ReDoc + swagger.json fully live)
-[CHANGED] `ffn-sbx.api.jtl-software.com/api-docs`: 200 (sandbox docs confirmed live with identical structure to prod)
-[CHANGED] `auth.jtl-cloud.com/oauth2/device/auth`: 404 (confirmed removed — endpoint dead)
-[CHANGED] `oauth2.api.jtl-software.com/token`: 405 (was prior 200 on GET; now returns Method Not Allowed — POST-only enforced)
-[PRIO] ffn.api.jtl-software.com/api-docs, 9.0, a=9 b=9 t=10 g=1 c=7 f=9 — full API surface exposed incl. /api/v1/access/tokens key-mint, /api/v1/users/current; identical sandbox mirror enables diff
-[PRIO] ffn-sbx.api.jtl-software.com/api-docs, 8.5, a=9 b=5 t=10 g=1 c=7 f=9 — sandbox mirror; sanctioned test path; diff vs prod reveals spec divergence
-[PRIO] oauth2.api.jtl-software.com/authorize, 7.0, a=7 b=8 t=8 g=4 c=7 f=9 — redirect_uri acceptance confirmed 302; leaked creds + scope escalation validated
-[PRIO] api.jtl-cloud.com/erp/v2/graphql, 6.5, a=7 b=9 t=8 g=2 c=7 f=9 — alive 401; cross-tenant BOLA critical-if-confirmed but JWT gate blocks passive
-[PRIO] id.jtl-cloud.com/oauth/v2/authorize, 5.0, a=5 b=8 t=6 g=3 c=7 f=9 — Zitadel PKCE flow possible but strict redirect_uri blocks bypass
+## 2026-09-06 18:13:37 UTC [target] (model bigpickle)
 [HYP] FFN API spec divergence between prod and sandbox exposing test-only key-mint shortcuts
 class: MISCONFIG
 asset: https://ffn-sbx.api.jtl-software.com/api-docs
 confidence: 65
-reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Swagger specs confirmed at `/api-docs/merchant-current/swagger.json` (200) on both. Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never actually probed sandbox spec content — only assumed divergence without diff.
+reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never probed sandbox spec content — only assumed divergence without diff.
 evidence_needed: GET sandbox swagger.json content differs from prod (seed-user grants, extra key-mint params, relaxed schemas, test-only endpoints like /api/v1/access/tokens with lower auth).
 verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
 impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
@@ -40,10 +30,9 @@ testability: HUMAN_ONLY
 [PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
 [FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
 [NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
-[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
-[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
-[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
-[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
-[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
-[LEARN] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
 [RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
