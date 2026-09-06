@@ -95,3 +95,5 @@
 - 2026-09-06 ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface
 - 2026-09-06 ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping
 - 2026-09-06 REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged
+- 2026-09-06 ACCEPTED TARGET @ ffn-sbx.api.jtl-software.com/api-docs: PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed).
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current — prod baseline for diff.

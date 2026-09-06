@@ -534,3 +534,6 @@
 - CHANGED ffn.api.jtl-software.com/api-docs public ReDoc + swagger.json expose /api/v1/access/tokens (API-key mint) and /api/v1/users/current — dual auth layer mapped
 - CHANGED No new passive observations since 2026-09-05 22:40:54 UTC — pending active verification of top-3 chains
 - NEW Current timestamp 2026-09-06 04:48:07 UTC — 4.5h since last recon cycle; live endpoints unchanged per knowledge base
+
+## 2026-09-06 09:19:03 UTC
+- NEW No surface changes since last recon cycle (2026-09-06 04:48:07 UTC, ~4.5h ago) — all priority endpoints confirmed live with same responses: auth.jtl-cloud.com OIDC 200, id.jtl-cloud.com OIDC 200, oaut
