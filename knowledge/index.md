@@ -75,3 +75,23 @@
 - 2026-09-05 ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface.
 - 2026-09-05 ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping.
 - 2026-09-05 REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged.
+- 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com: OAuth scope escalation confirmed — client registered for ffn.merchant.read obtains ffn.merchant.write JWT via client_credentials grant with leaked credentials
+- 2026-09-06 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com: Full API documentation (docfx) and self-describing endpoint listing publicly accessible; API version 0.1-dev in production; dual API instances live (ffn + ffn2)
+- 2026-09-06 REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; additional API key layer present (from /api/v1/merchant/credentials)
+- 2026-09-06 ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live with device_authorization, PKCE, JWKS; distinct from Ory Hydra auth.jtl-cloud.com
+- 2026-09-06 ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated scopes (urn:jtl:tenants, offline_access) without client authentication
+- 2026-09-06 REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disables device_code despite server support
+- 2026-09-06 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed
+- 2026-09-06 ACCEPTED TARGET @ auth.jtl-cloud.com/oauth2/device/auth: Device authorization endpoint confirmed live with public client support
+- 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: No valid public client_id enumerated for Ory Hydra instance yet
+- 2026-09-06 ACCEPTED TARGET @ account.jtl-cloud.com: self-service/registration/browser HTTP 200 (Kratos SPA) - self-service identity mint confirmed open, making the HUMAN_ONLY ERP BOLA chain feasible
+- 2026-09-06 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: hard 401 "JWT not present" without JWT - no anonymous GraphQL surface; x-tenant-id only processed post-auth
+- 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") contrary to leaked SDK README documenting client_credentials as unsupported/401 — live re-confirmed this cycle
+- 2026-09-06 REJECTED AUTH @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints (ffn/ffn2/ffn-sbx) — gate is user+tenant context (sub/acl), not a separate API key
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current
+- 2026-09-06 ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README
+- 2026-09-06 ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200
+- 2026-09-06 ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface
+- 2026-09-06 ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping
+- 2026-09-06 REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged

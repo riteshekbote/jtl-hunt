@@ -1267,3 +1267,33 @@ impact: endpoint diff shortens the sanctioned human chain; no direct production 
 testability: PASSIVE
 [NEXT] PROBE: GET https://ffn-sbx.api.jtl-software.com/api-docs (Accept: text/html) → if 200/302, extract the linked swagger.json path and GET it, then diff against https://ffn.api.jtl-software.com/api-docs/swagger.json — PASSIVE, ≤1 rps, no auth, sanctioned sandbox.
 [RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects stand: (1) client_credentials accepted at /token minting userless ffn.merchant.write JWTs with the leaked secret, contrary to published SDK policy; (2) unvalidated redirect_uri on /authorize + /doauthorize enabling OAuth code theft to a victim-bound token; (3) plaintext client_secret in a public repo, hash-identity now fully verified. All lack direct data exposure without victim consent, but form a coherent ATO chain. ERP cross-tenant BOLA remains critical-if-confirmed; verification must use self-owned tenants only to stay inside the program's data-protection exclusion. No active/exploitative actions against production; chain verification confined to the sanctioned sandbox.
+## 2026-09-06 04:51:30 UTC [target] (model bigpickle)
+[HYP] FFN merchant Amazon SFP credential IDOR via consent token
+class: IDOR
+asset: https://ffn-sbx.api.jtl-software.com/api/v1/merchant/credentials/amazonSfp/{credentialId}
+confidence: 55
+reasoning: prod merchant swagger (public ReDoc) exposes credential store for Amazon Seller Fulfilled Prime; credentialId is a simple GUID path param; API's only enforcement is user+tenant context from the OAuth sub/acl claims; no object-level ownership check tested yet. Sandbox mirror identical spec — safe test path.
+evidence_needed: with user-bound token T (tenant A): GET .../credentials/amazonSfp/{self-created-credId} → 200; same token + synthetic/other tenant credId → 200 + Amazon creds fields (not 403/404-empty).
+verify_steps: sandbox, self-owned tenant only: consent token (see NEXT) → POST /api/v1/merchant/credentials/amazonSfp create self cred → GET it → GET with a second self-owned/synthetic credentialId; never a real foreign tenant's credId. PASSIVE complete (docs + 401-gate + identical sbx spec).
+impact: attacker with any consent token reads merchants' Amazon SFP API credentials + order data across FFN (returns, stocks, outbounds). severity: high-crit.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: official SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client 383246859839225659 consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies. Never query a real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize + /doauthorize return 302 (not 400) for attacker redirect_uri on a client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e); docs confirm authorization_code is the only data grant.
+evidence_needed: real login → code delivered to attacker URI; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302, README secret, 401-gate). HUMAN on sandbox self-owned user only.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: In the sanctioned sandbox only — register throwaway identity at account.jtl-cloud.com/self-service/registration/browser, log in once at https://fulfillment-sandbox.jtl-software.com (triggers FFN user creation), complete authorization_code consent via `GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=http://localhost:53972/ffn/sso&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write`, redeem at /token (Basic leaked creds), then verify `GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current` → 200, mint `POST /api/v1/access/tokens`, and test amazonSfp credential IDOR with self-created credentialIds only.
+[RISK] jtl: 85 — No degradation. Pending probe closed cheaply; specs show no new exposure. Three independently reportable production OAuth defects stand (leaked plaintext client_secret, scope escalation, unvalidated redirect_uri) plus critical-if-confirmed ERP cross-tenant BOLA. All chain confirmations require a human consent step and are confined to the sanctioned sandbox / self-owned tenants per the program's data-protection exclusion. No active/exploitative production actions; risk steady at 85.

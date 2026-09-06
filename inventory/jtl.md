@@ -525,3 +525,12 @@
 - CHANGED account.jtl-cloud.com/self-service/registration/browser HTTP 200 (Kratos SPA) — self-service identity mint open, enables HUMAN_ONLY ERP BOLA chain via hub/ERP consent
 - CHANGED ffn.api.jtl-software.com/api-docs public ReDoc + swagger.json expose /api/v1/access/tokens (API-key mint) and /api/v1/users/current — dual auth layer mapped
 - CHANGED No new passive observations since 2026-09-05 22:40:54 UTC — pending active verification of top-3 chains
+
+## 2026-09-06 04:51:42 UTC
+- CHANGED Phase POC active (target=api) — top hypothesis FFN OAuth scope escalation (confidence 90) pending live client_credentials probe with plaintext secret
+- CHANGED Zitadel device_code grant confirmed blocked at token endpoint (unauthorized_client: grant_type not allowed) — pivot needed to authorization_code+PKCE for ERP client 383246859688230715
+- CHANGED Ory Hydra (auth.jtl-cloud.com) public client_id still unenumerated — implicit/device flow hypotheses blocked at enumeration
+- CHANGED account.jtl-cloud.com/self-service/registration/browser HTTP 200 (Kratos SPA) — self-service identity mint open, enables HUMAN_ONLY ERP BOLA chain via hub/ERP consent
+- CHANGED ffn.api.jtl-software.com/api-docs public ReDoc + swagger.json expose /api/v1/access/tokens (API-key mint) and /api/v1/users/current — dual auth layer mapped
+- CHANGED No new passive observations since 2026-09-05 22:40:54 UTC — pending active verification of top-3 chains
+- NEW Current timestamp 2026-09-06 04:48:07 UTC — 4.5h since last recon cycle; live endpoints unchanged per knowledge base
