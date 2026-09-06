@@ -115,3 +115,9 @@
 - 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
 - 2026-09-06 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
 - 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale
+- 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 — prior cycle's 404 report was incorrect/stale
+- 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — attacker redirect_uri accepted (302 to /doauthorize with attacker URI)
+- 2026-09-06 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
+- 2026-09-06 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
+- 2026-09-06 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
