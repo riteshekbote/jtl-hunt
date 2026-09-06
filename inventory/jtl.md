@@ -537,3 +537,11 @@
 
 ## 2026-09-06 09:19:03 UTC
 - NEW No surface changes since last recon cycle (2026-09-06 04:48:07 UTC, ~4.5h ago) — all priority endpoints confirmed live with same responses: auth.jtl-cloud.com OIDC 200, id.jtl-cloud.com OIDC 200, oaut
+
+## 2026-09-06 13:12:48 UTC
+- NEW No new assets discovered since last recon cycle
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql` now returns HTTP 404 (was HTTP 401 "JWT not present") — GraphQL endpoint appears removed/moved
+- CHANGED `ffn.api.jtl-software.com/api-docs` now returns HTTP 404 (was HTTP 301→200 with ReDoc/swagger.json) — public API documentation removed
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` now returns HTTP 404 (was confirmed live device authorization endpoint) — device flow endpoint removed
+- CHANGED `oauth2.api.jtl-software.com/.well-known/openid-configuration` returns HTTP 404 (unchanged from prior) — no standard OIDC discovery on FFN OAuth server
+- CHANGED `id.jtl-cloud.com/oauth/v2/authorize` returns HTTP 400 without params (expected; requires valid client_id/redirect_uri/scope)

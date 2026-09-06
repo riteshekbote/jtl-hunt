@@ -97,3 +97,10 @@
 - 2026-09-06 REJECTED NETWORK @ bountyshop store-api/graphql: HTML response — not a GraphQL endpoint; JTL-Shop surface unchanged
 - 2026-09-06 ACCEPTED TARGET @ ffn-sbx.api.jtl-software.com/api-docs: PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed).
 - 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current — prod baseline for diff.
+- 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed prior cycles; scope escalation + silent degradation pattern persistent
+- 2026-09-06 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+- 2026-09-06 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json now return 404 — documentation removed; reduces attack surface visibility but sandbox remains
+- 2026-09-06 REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; gate is user+tenant context (sub/acl), not separate API key
+- 2026-09-06 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — but device endpoint now 404
+- 2026-09-06 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) now returns 404 — previously live; endpoint removed/disabled
+- 2026-09-06 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: now returns HTTP 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked

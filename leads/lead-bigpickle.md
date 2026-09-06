@@ -1335,3 +1335,32 @@ testability: PASSIVE
 [LEARN] ACCEPTED TARGET @ ffn-sbx.api.jtl-software.com/api-docs: PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed).
 [LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current — prod baseline for diff.
 [RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+## 2026-09-06 12:59:13 UTC [target] (model bigpickle)
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize + /doauthorize return 302 (not 400) for attacker redirect_uri on a client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec (this cycle) reconfirms authorization_code is the only data grant and tokens are user-bound (sub, scopes).
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec reconfirm). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com (triggers FFN user creation), authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client 383246859839225659 consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>. Never query a real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[HYP] FFN API-key mint + cross-resource IDOR under consented token
+class: IDOR
+asset: https://ffn-sbx.api.jtl-software.com/api/v1/access/tokens
+confidence: 50
+reasoning: shared API spec (this cycle) confirms /api/v1/access/tokens API-key mint + /api/v1/users/current present and identical in sandbox/prod; docs step 4 confirms ffn-sbx data-plane base for the sanctioned chain; with a user-bound token the access/tokens mint may accept or return foreign credential IDs.
+evidence_needed: consented token → POST /api/v1/access/tokens returns API key minted for self-created credentialIds only; no foreign-id escalation observed (documented negative-control requirement).
+verify_steps: HUMAN on ffn-sbx self-owned: after code-grant token + portal login, mint key, then IDOR-test only with credential IDs created in own tenant. Never touch production data.
+impact: attacker with any consent token reads merchants' Amazon SFP credentials + order data across FFN. severity: high.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: In sanctioned sandbox only — register throwaway identity at account.jtl-cloud.com/self-service/registration/browser, login once at https://fulfillment-sandbox.jtl-software.com (triggers FFN user creation), complete authorization_code consent via `GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=<attacker>&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write`, redeem at /token (Basic leaked creds), then verify `GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current` → 200 and test amazonSfp credential IDOR only with self-created credentialIds.
