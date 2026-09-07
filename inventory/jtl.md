@@ -648,3 +648,6 @@
 - CHANGED valid-bugs.md exists with 3 VALID findings (lines 11-13) but no coordinated narrative
 - CHANGED reports/valid-bugs.md count header says "running count 0" but 10 leads marked VALID
 - NEW KBASE latest (2026-09-07 10:07 UTC) re-confirms all passive findings unchanged; no new endpoints probed since prior cycle
+
+## 2026-09-07 19:30:57 UTC
+- CHANGED reports/valid-bugs.md internally inconsistent — header "running count 0" vs 3 VALID findings (lines 11-13) + 10 VALID lead markers (line 3); coordinated ATO narrative from prior cycle's NEXT never wri

@@ -226,3 +226,9 @@
 - 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 → /doauthorize
 - 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.read, ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
 - 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 -> /doauthorize
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation persistent.
+- 2026-09-07 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match the exact plaintext string — KBASE records internally consistent.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 → /doauthorize.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod.
+- 2026-09-07 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key.
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); 404 reports in prior cycles were stale.
