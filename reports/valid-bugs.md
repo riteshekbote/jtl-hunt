@@ -26,3 +26,17 @@
   - | 1 | FFN OAuth scope escalation | **VALID** | 8.1 | bugs.olivermaicher.eu |
   - | 2 | FFN OAuth leaked credentials | **VALID** | 7.5 | bugs.olivermaicher.eu |
   - | 3 | FFN OAuth redirect_uri bypass | **VALID** | 6.8 | bugs.olivermaicher.eu |
+
+- 12 lead(s) marked VALID at 2026-09-07 22:16:37 UTC
+  - | Q2 Attacker reachable? | **YES** — Public GitHub repo `kruegge82/jtl-ffn-php-sdk` leaks valid `client_id`+`client_secret`; token endpoint is public internet |
+  - | Q7 Reasonable triager accept? | **YES** — Confirmed working PoC: leaked creds produce valid tokens with unauthorized scopes. Fundamental OAuth authorization flaw |
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q7 Reasonable triager accept? | **YES** — Production API docs exposing `0.1-dev` version, internal endpoint structure, and token minting endpoints is a valid misconfig finding |
+  - **Verdict: VALID** (low severity)
+  - | Q4 Provable non-invasively? | **NO** — Requires valid JWT from tenant A, then swap `x-tenant-id` to tenant B. Token acquisition requires HUMAN interaction (consent/login). All models mark this AUTH_
+  - | Q4 Provable non-invasively? | **NO** — No valid public client_id enumerated for this Ory instance. All attempts to find one failed |
+  - | Q7 Reasonable triager accept? | **NO** — Cannot demonstrate any exploit without a valid client_id. Discovery alone is not a vulnerability |
+  - | 1 | FFN OAuth scope escalation + leaked creds | **VALID** | 8.1 | Confirmed: leaked creds produce escalated JWT |
+  - | 2 | FFN OAuth redirect_uri bypass | **VALID** | 7.4 | Confirmed: /doauthorize accepts attacker redirect_uri |
+  - | 3 | FFN API public documentation | **VALID** (low) | 5.3 | Production API docs + 0.1-dev version exposed |
