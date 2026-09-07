@@ -617,3 +617,17 @@
 - NEW `account.jtl-cloud.com/self-service/registration/browser` — HTTP 200, Kratos SPA shell — self-service identity mint open
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — confirmed 404 (endpoint removed)
 - CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no exploitability change
+
+## 2026-09-07 04:54:14 UTC
+- NEW `oauth2.api.jtl-software.com/authorize` — unvalidated redirect_uri confirmed passively: attacker-controlled redirect_uri (https://evil.com/callback) accepted, returns 302 to /doauthorize with attacker
+- NEW `oauth2.api.jtl-software.com/token` — client_credentials grant returns 200 + RS256 JWT with scopes=[ffn.merchant.read, ffn.merchant.write] despite client registered for ffn.merchant.read only; silent 
+- NEW `ffn-sbx.api.jtl-software.com/api/v1/users.current` and `ffn.api.jtl-software.com/api/v1/users.current` — both return 401 with client_credentials token (sub="", acl="") — FFN API requires user+tenant 
+- NEW `auth.jtl-cloud.com/.well-known/openid-configuration` — OIDC discovery live: implicit flow (response_type=token), public client ("none" auth method), device endpoint listed but returns 404
+- NEW `id.jtl-cloud.com/.well-known/openid-configuration` — Zitadel OIDC live: authorization_code+PKCE, device_code grant advertised but token endpoint rejects with "unauthorized_client: grant_type not allo
+- NEW `api.jtl-cloud.com/erp/v2/graphql` — returns 401 (JWT required), confirmed alive; prior 404 report was stale
+- NEW `account.jtl-cloud.com/self-service/registration/browser` — HTTP 200, Kratos SPA shell — self-service identity mint open
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — confirmed 404 (endpoint removed)
+- CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no exploitability change
+- CHANGED `ffn.api.jtl-software.com/api-docs` — flapping between 200/404; now confirmed LIVE at 200 with full API surface (merchant/fulfiller/shared) including /api/v1/access/tokens key-mint with attacker-contr
+- CHANGED `ffn-sbx.api.jtl-software.com/api-docs` — confirmed LIVE with identical structure to prod
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql` — flapping 401/404; now confirmed 401 (alive with JWT gate)
