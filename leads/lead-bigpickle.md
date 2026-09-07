@@ -1747,3 +1747,395 @@ impact: cross-tenant ERP PII + financial dump. severity: critical.
 testability: HUMAN_ONLY
 [NEXT] RAG: Draft final report combining (a) doc-vs-server OAuth scope escalation with vendor-published plaintext client_secret (fully passive, POC is the live 200 vs documented 401), and (b) unvalidated redirect_uri on /authorize (302 for attacker URI, identical to registered) — as a single coherent ATO chain for bugs.olivermaicher.eu. Both defects reconfirmed this cycle with fresh captures; no further probing required.
 [RISK] jtl: 85 — No degradation. One high-confidence fully-passive report is deliverable now (documented-vs-actual OAuth scope escalation with the live client_secret published in vendor swagger; unvalidated redirect_uri as the ATO chain extension). ERP BOLA (critical-if-confirmed) and authorization_code theft (high) remain gated on a single human consent step, confined to sanctioned sandbox / self-owned tenants. All probes this cycle read-only GET/HEAD on scoped assets; the one POST attempt (key-mint with userless token) returned 401 and mutated nothing. No active or exploitative action against production data.
+## 2026-09-07 00:10:01 UTC [target] (model bigpickle)
+[HYP] <title>
+class: <IDOR|SSRF|AUTH|XSS|BUSLOGIC|MISCONFIG|OATH|OTHER>
+asset: <host/endpoint>
+confidence: <0-100>
+reasoning: <facts only>
+evidence_needed: <what proves it>
+verify_steps: <passive-first concrete HTTP requests>
+impact: <what attacker gets + severity>
+testability: <PASSIVE|AUTH_HELPED|HUMAN_ONLY>
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+[LEARN] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+[HYP] FFN API spec divergence between prod and sandbox exposing test-only key-mint shortcuts
+class: MISCONFIG
+asset: https://ffn-sbx.api.jtl-software.com/api-docs
+confidence: 65
+reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never probed sandbox spec content — only assumed divergence without diff.
+evidence_needed: GET sandbox swagger.json content differs from prod (seed-user grants, extra key-mint params, relaxed schemas, test-only endpoints like /api/v1/access/tokens with lower auth).
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec confirms authorization_code is only data grant; tokens user-bound (sub, acl). This cycle: /token returns 405 (POST-only) — no change to exploitability.
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+[NEXT] PROBE: GET https://ffn-sbx.api.jtl-software.com/api-docs (Accept: text/html) → if 200/302 extract linked swagger.json path → GET swagger.json → diff vs https://ffn.api.jtl-software.com/api-docs/swagger.json — PASSIVE, ≤1 rps, no auth, sanctioned sandbox.
+[LEARN] ACCEPTED TARGET @ ffn-sbx.api.jtl-software.com/api-docs: PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed).
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current — prod baseline for diff.
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize + /doauthorize return 302 (not 400) for attacker redirect_uri on a client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec (this cycle) reconfirms authorization_code is the only data grant and tokens are user-bound (sub, scopes).
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec reconfirm). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com (triggers FFN user creation), authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client 383246859839225659 consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>. Never query a real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[HYP] FFN API-key mint + cross-resource IDOR under consented token
+class: IDOR
+asset: https://ffn-sbx.api.jtl-software.com/api/v1/access/tokens
+confidence: 50
+reasoning: shared API spec (this cycle) confirms /api/v1/access/tokens API-key mint + /api/v1/users/current present and identical in sandbox/prod; docs step 4 confirms ffn-sbx data-plane base for the sanctioned chain; with a user-bound token the access/tokens mint may accept or return foreign credential IDs.
+evidence_needed: consented token → POST /api/v1/access/tokens returns API key minted for self-created credentialIds only; no foreign-id escalation observed (documented negative-control requirement).
+verify_steps: HUMAN on ffn-sbx self-owned: after code-grant token + portal login, mint key, then IDOR-test only with credential IDs created in own tenant. Never touch production data.
+impact: attacker with any consent token reads merchants' Amazon SFP credentials + order data across FFN. severity: high.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: In sanctioned sandbox only — register throwaway identity at account.jtl-cloud.com/self-service/registration/browser, login once at https://fulfillment-sandbox.jtl-software.com (triggers FFN user creation), complete authorization_code consent via `GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=<attacker>&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write`, redeem at /token (Basic leaked creds), then verify `GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current` → 200 and test amazonSfp credential IDOR only with self-created credentialIds.
+[CHANGED] `api.jtl-cloud.com/erp/v2/graphql`: 401 (was reported 404 in prior cycle — 404 report stale/incorrect; endpoint alive with JWT gate)
+[CHANGED] `ffn.api.jtl-software.com/api-docs`: 301→200 (was reported 404 in prior cycle — **docs are back or were never removed**; ReDoc + swagger.json fully live)
+[CHANGED] `ffn-sbx.api.jtl-software.com/api-docs`: 200 (sandbox docs confirmed live with identical structure to prod)
+[CHANGED] `auth.jtl-cloud.com/oauth2/device/auth`: 404 (confirmed removed — endpoint dead)
+[CHANGED] `oauth2.api.jtl-software.com/token`: 405 (was prior 200 on GET; now returns Method Not Allowed — POST-only enforced)
+[PRIO] ffn.api.jtl-software.com/api-docs, 9.0, a=9 b=9 t=10 g=1 c=7 f=9 — full API surface exposed incl. /api/v1/access/tokens key-mint, /api/v1/users/current; identical sandbox mirror enables diff
+[PRIO] ffn-sbx.api.jtl-software.com/api-docs, 8.5, a=9 b=5 t=10 g=1 c=7 f=9 — sandbox mirror; sanctioned test path; diff vs prod reveals spec divergence
+[PRIO] oauth2.api.jtl-software.com/authorize, 7.0, a=7 b=8 t=8 g=4 c=7 f=9 — redirect_uri acceptance confirmed 302; leaked creds + scope escalation validated
+[PRIO] api.jtl-cloud.com/erp/v2/graphql, 6.5, a=7 b=9 t=8 g=2 c=7 f=9 — alive 401; cross-tenant BOLA critical-if-confirmed but JWT gate blocks passive
+[PRIO] id.jtl-cloud.com/oauth/v2/authorize, 5.0, a=5 b=8 t=6 g=3 c=7 f=9 — Zitadel PKCE flow possible but strict redirect_uri blocks bypass
+[HYP] FFN API spec divergence between prod and sandbox exposing test-only key-mint shortcuts
+class: MISCONFIG
+asset: https://ffn-sbx.api.jtl-software.com/api-docs
+confidence: 65
+reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Swagger specs confirmed at `/api-docs/merchant-current/swagger.json` (200) on both. Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never actually probed sandbox spec content — only assumed divergence without diff.
+evidence_needed: GET sandbox swagger.json content differs from prod (seed-user grants, extra key-mint params, relaxed schemas, test-only endpoints like /api/v1/access/tokens with lower auth).
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec confirms authorization_code is only data grant; tokens user-bound (sub, acl). This cycle: /token returns 405 (POST-only) — no change to exploitability.
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+[LEARN] ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+[HYP] FFN API spec divergence between prod and sandbox exposing test-only key-mint shortcuts
+class: MISCONFIG
+asset: https://ffn-sbx.api.jtl-software.com/api-docs
+confidence: 65
+reasoning: Prod and sandbox both serve identical ReDoc pages with `window.apiVersions = ["current","v1"]` and 3 API groups (fulfiller/merchant/shared). Sandbox commonly carries seed data, extra endpoints, or relaxed validation. Prior cycle never probed sandbox spec content — only assumed divergence without diff.
+evidence_needed: GET sandbox swagger.json content differs from prod (seed-user grants, extra key-mint params, relaxed schemas, test-only endpoints like /api/v1/access/tokens with lower auth).
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec confirms authorization_code is only data grant; tokens user-bound (sub, acl). This cycle: /token returns 405 (POST-only) — no change to exploitability.
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+[HYP] FFN OAuth doc-vs-server divergence: scope escalation + published live client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/token
+confidence: 90
+reasoning: Vendor docs in this cycle's fetched swagger explicitly state "we do not support the Oauth method client_credentials grant" (401), yet live /token with the docs-embedded client_id+secret grants HTTP 200 RS256 JWT with scopes=[ffn.merchant.write], sub="". Same docs publish the plaintext secret in Step 3/5 examples. Prior cycles confirmed scope escalation (registered read → granted write) and silent degradation (empty scopes instead of invalid_scope).
+evidence_needed: already gathered passively (docs text + live 200 token). For write-up: one live POST capture showing 200 while docs claim 401.
+verify_steps: PASSIVE complete. Reconfirm (chain only, not required): POST /token grant_type=client_credentials + Basic leaked creds → 200 scopes=[ffn.merchant.write]. No data-plane call needed.
+impact: scope/privilege escalation on OAuth server; forces follow-on user-consent requirement; token useless at data-plane without user context. severity: medium-high.
+testability: PASSIVE
+[HYP] FFN OAuth authorization_code theft via unvalidated redirect_uri
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on a client whose registered URIs are localhost-only; docs demand redirect_uri "must match callback_uri"; leaked secret + scope escalation validated. This cycle's docs reconfirm code-grant is the only path to user-bound tokens (sub!=""), so theft → signed-in victim's merchant orders/data.
+evidence_needed: real login → code delivered to attacker URI; redeem at /token (Basic leaked creds) → 200 sub!="" + ffn.merchant.write; GET /ffn-sbx/api/v1/users/current → 200.
+verify_steps: HUMAN on sanctioned sandbox: register throwaway at account.jtl-cloud.com, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem, GET ffn-sbx /api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: endpoint alive 401 "JWT not present"; SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID processed post-auth only; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200; + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only, compare status+bodies. Never touch real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: In sanctioned sandbox only — register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at https://fulfillment-sandbox.jtl-software.com, complete authorization_code consent via `GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=<attacker>&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write`, redeem at /token (Basic leaked creds), then `GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current` → expect 200.
+[RISK] jtl: 85 — No degradation. One high-confidence, self-contained, fully-passive report now available (documented-vs-actual OAuth scope escalation + live secret published in vendor docs). Two human-gated chains (authorization_code theft, ERP BOLA) ready on sanctioned sandbox/self-owned tenants only. No active or exploitative actions against production data.
+verify_steps: PASSIVE GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON → GET same on prod → diff. ≤1 rps, no auth.
+impact: endpoint diff shortens the sanctioned human chain; no direct production data impact. severity: low.
+testability: PASSIVE
+[HYP] FFN OAuth code theft via unvalidated redirect_uri + leaked plaintext client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on client whose only registered URIs are localhost; plaintext client_secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in public SDK README; Spec confirms authorization_code is only data grant; tokens user-bound (sub, acl). This cycle: /token returns 405 (POST-only) — no change to exploitability.
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /api/v1/users/current → 200.
+verify_steps: PASSIVE complete (302 behavior, plaintext secret, 401-gate, spec). HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, verify GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: This cycle confirms endpoint alive at 401 (not 404 as prior cycle claimed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID; hard 401 "JWT not present" proves header processed only post-auth; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection data; same JWT + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only: POST /erp/v2/graphql Authorization:Bearer <hub-consent-jwt> x-tenant-id:<self-A> introspection 200; repeat x-tenant-id:<self-B>; compare status+bodies.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[PARKED] FFN API spec divergence (65): severity low; productive only as chain-accelerator for authorization_code theft hypothesis. Not independently reportable.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; but gated on JWT acquisition + self-owned tenant testing only. Cannot advance passively.
+[FINAL] FFN OAuth code theft via unvalidated redirect_uri + leaked secret (70): strongest passive evidence set (302 confirmation + plaintext secret + scope escalation). Pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json → full JSON body → diff against https://ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json. ≤1 rps, no auth. Checks for sandbox-only seed endpoints, relaxed schemas, or test key-mint shortcuts that would accelerate the authorization_code theft chain.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+[RISK] jtl: 85 — No degradation. Three independently reportable production OAuth defects remain (leaked plaintext client_secret, scope escalation at /token, unvalidated redirect_uri on /authorize) forming a coherent ATO chain. FFN API docs publicly expose full attack surface including key-mint endpoints. ERP cross-tenant BOLA critical-if-confirmed but gated on human consent step. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production.
+[HYP] FFN OAuth doc-vs-server divergence: scope escalation + published live client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/token
+confidence: 90
+reasoning: Vendor docs in this cycle's fetched swagger explicitly state "we do not support the Oauth method client_credentials grant" (401), yet live /token with the docs-embedded client_id+secret grants HTTP 200 RS256 JWT with scopes=[ffn.merchant.write], sub="". Same docs publish the plaintext secret in Step 3/5 examples. Prior cycles confirmed scope escalation (registered read → granted write) and silent degradation (empty scopes instead of invalid_scope).
+evidence_needed: already gathered passively (docs text + live 200 token). For write-up: one live POST capture showing 200 while docs claim 401.
+verify_steps: PASSIVE complete. Reconfirm (chain only, not required): POST /token grant_type=client_credentials + Basic leaked creds → 200 scopes=[ffn.merchant.write]. No data-plane call needed.
+impact: scope/privilege escalation on OAuth server; forces follow-on user-consent requirement; token useless at data-plane without user context. severity: medium-high.
+testability: PASSIVE
+[HYP] FFN OAuth authorization_code theft via unvalidated redirect_uri
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri on a client whose registered URIs are localhost-only; docs demand redirect_uri "must match callback_uri"; leaked secret + scope escalation validated. This cycle's docs reconfirm code-grant is the only path to user-bound tokens (sub!=""), so theft → signed-in victim's merchant orders/data.
+evidence_needed: real login → code delivered to attacker URI; redeem at /token (Basic leaked creds) → 200 sub!="" + ffn.merchant.write; GET /ffn-sbx/api/v1/users/current → 200.
+verify_steps: HUMAN on sanctioned sandbox: register throwaway at account.jtl-cloud.com, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem, GET ffn-sbx /api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: endpoint alive 401 "JWT not present"; SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID processed post-auth only; identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200; + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only, compare status+bodies. Never touch real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[NEXT] HUMAN: In sanctioned sandbox only — register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at https://fulfillment-sandbox.jtl-software.com, complete authorization_code consent via `GET https://oauth2.api.jtl-software.com/authorize?response_type=code&redirect_uri=<attacker>&client_id=97170e64-d390-4696-ba46-d6fcef8207de&scope=ffn.merchant.read%20ffn.merchant.write`, redeem at /token (Basic leaked creds), then `GET https://ffn-sbx.api.jtl-software.com/api/v1/users/current` → expect 200.
+[RISK] jtl: 85 — No degradation. One high-confidence, self-contained, fully-passive report now available (documented-vs-actual OAuth scope escalation + live secret published in vendor docs). Two human-gated chains (authorization_code theft, ERP BOLA) ready on sanctioned sandbox/self-owned tenants only. No active or exploitative actions against production data.
+[HYP] FFN OAuth doc-vs-server divergence: scope escalation + published live client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/token
+confidence: 90
+reasoning: Vendor swagger (this cycle, both sandbox+prod) states "we do not support the Oauth method client_credentials grant" (401), yet live /token grants 200 RS256 JWT scopes=[ffn.merchant.write] sub="" with the docs-embedded client_id+secret. Docs publish plaintext secret f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z in Step 3/5 examples. Scope escalation (registered read -> granted write) + silent degradation reconfirmed.
+evidence_needed: gathered passively (docs text + live 200 + plaintext secret). One live POST capture shows 200 while docs claim 401.
+verify_steps: PASSIVE complete. POST /token grant_type=client_credentials + Basic leaked creds -> 200 scopes=[ffn.merchant.write].
+impact: scope/privilege escalation on OAuth server; token stays userless (sub="") so data-plane still gated. severity: medium.
+testability: PASSIVE
+[HYP] FFN OAuth authorization_code theft via unvalidated redirect_uri
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri https://evil.example.com/cb AND for localhost URI — identical response, no validation difference pre-login. Docs require redirect_uri "must match callback_uri". Leaked secret + scope escalation validated. Code-grant is only user-bound path (sub!=""). This cycle reconfirmed: both URIs -> identical 302 to /doauthorize.
+evidence_needed: real login -> code delivered to attacker URI; redeem at /token -> 200 sub!="" + ffn.merchant.write; GET /api/v1/users/current -> 200.
+verify_steps: HUMAN on sanctioned ffn-sbx: register throwaway at account.jtl-cloud.com, login at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem, GET ffn-sbx /api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping. severity: high.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: endpoint alive 401 "JWT not present" (this cycle reconfirmed). SDK validates JWT signature only; tenant isolation via client-supplied X-Tenant-ID processed post-auth only. Identity mint open + Hub public client consent live.
+evidence_needed: same consent JWT + X-Tenant-ID A -> 200; + B (self-owned) -> 200 instead of 403/404.
+verify_steps: HUMAN, self-owned tenants only, compare status+bodies. Never touch foreign tenants.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[HYP] Unauth file-fetch IDOR at shared API /api/pictures/{id}
+class: IDOR
+asset: https://ffn-sbx.api.jtl-software.com/api/pictures/{id} (+ prod ffn)
+confidence: 50
+reasoning: This route is NOT bearer-gated — GET without any token returns 404 Shared_FileNotFound (JSON echo of Filename), while every other shared API endpoint returns 401 pre-auth. Spec: id is "public url of the picture"; 200 response schema empty. Traversal (/%2e%2e%2f) blocked by nginx 400; raw ../ normalized — no path-traversal file read observed. If picture ids/paths are derivable or leak via other endpoints, cross-tenant file fetch without auth is possible. Needs a valid picture id to confirm 200.
+evidence_needed: one valid picture id (from jfsku/product context or known public URL) -> GET returns 200 with picture bytes without Authorization.
+verify_steps: PASSIVE partial (bug confirmed: no 401 gate). HUMAN: fetch a picture via authenticated session to obtain id, then GET /api/pictures/{id} unauthenticated -> expect 200.
+impact: unauth read of stored product/merchant documents IF ids predictable; currently id-space opaque. severity: low-medium.
+testability: HUMAN_ONLY
+[PARKED] FFN spec divergence sandbox-vs-prod (65) -> RESOLVED this cycle: merchant/fulfiller/shared swaggers structurally identical on sandbox+prod (only base URL differs). No functional divergence; hypothesis exhausted.
+[PARKED] ERP cross-tenant BOLA (70): critical-if-confirmed; gated on JWT acquisition + self-owned tenant testing. Cannot advance passively.
+[FINAL] FFN OAuth scope escalation + leaked plaintext secret (90): strongest passive evidence set; self-contained, reportable now.
+[FINAL] authorization_code theft via unvalidated redirect_uri (70): pending single human consent step on sanctioned sandbox.
+[NEXT] PASSIVE: GET https://ffn.api.jtl-software.com/api/pictures/{id} variants already probed (404 unauth, 401 on auth-gated routes). Cluster: probe jfsku-style id formats (e.g. known SKU patterns) on sandbox to determine if id-space is derivable; if not, submit report focusing on (a) doc-vs-server scope escalation + plaintext secret, (b) unvalidated redirect_uri.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) live at 200 both sandbox+prod; shared spec (any-current) exposes /api/v1/access/tokens key-mint with attacker-controlled scopes array + plaintext token return, /api/v1/users/current, /api/pictures/{id}.
+[LEARN] ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: sandbox docs live, identical structure to prod (only base URL differs).
+[LEARN] REJECTED IDOR @ /api/pictures/{id}: no path-traversal file read — nginx blocks %2e%2e%2f (400); raw ../ normalized away. Empty-200 on deep traversal is nginx path normalization, not file fetch.
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate) reconfirmed this cycle.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 (removed).
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token 405 on GET (POST-only), no exploitability change.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri (https://evil.example.com/cb) and registered localhost uri produce identical 302 -> /doauthorize.
+[LEARN] ACCEPTED AUTH @ ffn-sbx/api/v1/access/tokens POST: userless client_credentials token -> 401 on key-mint too; user+tenant gate covers both data-plane AND key-mint.
+[RISK] jtl: 85 — No degradation. Two independently reportable production OAuth defects (leaked plaintext secret in vendor swagger + scope escalation vs documented 401, unvalidated redirect_uri) form a coherent ATO chain; one is fully passive and self-contained. ERP BOLA critical-if-confirmed gated on human consent step. New unauth /api/pictures/{id} file-fetch route anomalously missing bearer gate but id-space opaque. All chain verification confined to sanctioned sandbox / self-owned tenants. No active or exploitative actions against production data.
+[HYP] FFN OAuth doc-vs-server divergence: scope escalation + published live client_secret
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/token
+confidence: 90
+reasoning: Vendor swagger (re-fetched this cycle on sandbox+prod) explicitly states "we do not support the Oauth method client_credentials grant" (expected 401), yet live `/token` returns 200 RS256 JWT `scopes=[ffn.merchant.write]`, `sub=""`, `acl=""` using the client_id+client_secret `f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z` (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) embedded plaintext in the swagger's Step 3/5 examples. Registered scope is `ffn.merchant.read`; granted is write — unchecked `ffn.*` grant reconfirmed.
+evidence_needed: gathered passively (docs text + live 200 + plaintext secret + scope claim check). Write-up needs one live POST capture showing 200 against docs' stated 401.
+verify_steps: PASSIVE complete. POST /token grant_type=client_credentials + Basic leaked creds → 200 scopes=[ffn.merchant.write]. No data-plane call.
+impact: OAuth scope/privilege escalation; token remains userless (sub="") so data-plane still gated on user context. severity: medium-high.
+testability: PASSIVE
+[HYP] FFN OAuth authorization_code theft via unvalidated redirect_uri
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 70
+reasoning: /authorize returns 302 (not 400) for attacker redirect_uri `https://evil.example.com/cb` AND for the registered localhost URI — identical 302→/doauthorize with attacker URI preserved. Docs state redirect_uri "must match callback_uri". Leaked secret + scope escalation validated. Spec confirms authorization_code is the only grant yielding user-bound tokens (sub!="").
+evidence_needed: real login → code delivered to attacker redirect_uri; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" + ffn.merchant.write; GET /ffn-sbx/api/v1/users/current → 200.
+verify_steps: HUMAN on sanctioned ffn-sbx only: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem at /token, GET ffn-sbx /api/v1/users/current.
+impact: victim merchant/fulfiller orders, stock, returns, shipping via write token. severity: high.
+testability: HUMAN_ONLY
+[HYP] Unauth file-fetch IDOR at shared API /api/pictures/{id}
+class: IDOR
+asset: https://ffn-sbx.api.jtl-software.com/api/pictures/{id} (+ prod ffn/ffn2)
+confidence: 50
+reasoning: This route alone in the shared API responds 404 `Shared_FileNotFound` (not 401) with zero auth headers — reproducible on sandbox and prod. Spec decribes id as "public url of the picture" with an empty 200 schema. Traversal tested: nginx blocks `%2e%2e%2f` (400); raw `../` normalized away, deep traversal yields empty 200 text/html (router normalization, not file fetch). Impact turns on whether a real picture id can be derived from jfsku/merchant context elsewhere in the API.
+evidence_needed: one valid picture id → GET /api/pictures/{id} unauthenticated returns 200 bytes.
+verify_steps: PASSIVE complete for the no-auth-gate defect. HUMAN: obtain a picture id via an authenticated session/list, then repeat the GET without Authorization → observe 200.
+impact: unauthenticated cross-tenant read of stored product/merchant documents IF id-space is derivable; currently opaque. severity: low-medium.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Endpoint alive from this cycle (401 "JWT not present"). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID processed strictly post-auth. Identity mint (account.jtl-cloud.com) + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200 introspection; + X-Tenant-ID B (self-owned/synthetic) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only, compare status+bodies. Never touch real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[NEXT] RAG: Draft final report combining (a) doc-vs-server OAuth scope escalation with vendor-published plaintext client_secret (fully passive, POC is the live 200 vs documented 401), and (b) unvalidated redirect_uri on /authorize (302 for attacker URI, identical to registered) — as a single coherent ATO chain for bugs.olivermaicher.eu. Both defects reconfirmed this cycle with fresh captures; no further probing required.
+[RISK] jtl: 85 — No degradation. One high-confidence fully-passive report is deliverable now (documented-vs-actual OAuth scope escalation with the live client_secret published in vendor swagger; unvalidated redirect_uri as the ATO chain extension). ERP BOLA (critical-if-confirmed) and authorization_code theft (high) remain gated on a single human consent step, confined to sanctioned sandbox / self-owned tenants. All probes this cycle read-only GET/HEAD on scoped assets; the one POST attempt (key-mint with userless token) returned 401 and mutated nothing. No active or exploitative action against production data.
+[HYP] FFN OAuth authorization_code theft via unvalidated redirect_uri
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/authorize (client 97170e64-d390-4696-ba46-d6fcef8207de)
+confidence: 75
+reasoning: Fresh this cycle: attacker redirect_uri returns HTTP 302 → /doauthorize preserving `redirect_uri=https://evil.example.com/cb`; byte-identical structure to the registered localhost URI. Vendor swagger (same fetch) requires redirect_uri "must match callback_uri"; registered URIs are localhost-only. Leaked client_secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) is valid at /token.
+evidence_needed: code delivered to attacker redirect_uri after real login; POST /token (Basic leaked creds + attacker redirect_uri) → 200 JWT sub!="" scopes=[ffn.merchant.read, ffn.merchant.write]; GET ffn-sbx /api/v1/users/current → 200.
+verify_steps: HUMAN on ffn-sbx: register throwaway at account.jtl-cloud.com/self-service/registration/browser, login once at fulfillment-sandbox.jtl-software.com, authorize with attacker redirect_uri, redeem, GET /api/v1/users/current.
+impact: victim merchant/fulfiller orders, returns, outbounds, stock, Amazon-SFP credentials via write-scope token. severity: high.
+testability: HUMAN_ONLY
+[HYP] FFN OAuth doc-vs-server divergence: client_credentials granted despite documented 401 + live secret in vendor docs
+class: AUTH
+asset: https://oauth2.api.jtl-software.com/token
+confidence: 92
+reasoning: Vendor swagger (fetched fresh this cycle, sandbox+prod) states "we do not support the Oauth method authorization client_credentials grant" and documents 401 as the expected response; the SAME doc's Step 3/5 examples embed the real client_id+client_secret. Prior live capture: POST /token grant_type=client_credentials + Basic leaked creds → 200 RS256 JWT scopes=[ffn.merchant.write], sub="", acl="" (registered scope is read) — unchecked ffn.* grant. Token stays userless (sub=""), so data-plane remains gated on user context.
+evidence_needed: gathered passively (doc text + prior live 200 + secret in docs). Report cites one live POST capture vs documented 401.
+verify_steps: PASSIVE complete. POST /token grant_type=client_credentials + Basic leaked creds → 200. No data-plane call.
+impact: OAuth scope/privilege escalation against documented contract; enables the redirect_uri chain's token redemption step. severity: medium-high.
+testability: PASSIVE
+[HYP] ERP cross-tenant BOLA via header-only tenant enforcement
+class: IDOR
+asset: https://api.jtl-cloud.com/erp/v2/graphql
+confidence: 70
+reasoning: Endpoint alive (401 "JWT not present" this cycle reconfirmed). SDK validates JWT signature only; tenant isolation relies on client-supplied X-Tenant-ID processed post-auth. Identity mint + Hub public client consent flow live.
+evidence_needed: same consent JWT + X-Tenant-ID A → 200; + X-Tenant-ID B (self-owned) → 200 instead of 403/404/empty.
+verify_steps: HUMAN, self-owned tenants only; compare status+bodies. Never touch real foreign tenant.
+impact: cross-tenant ERP PII + financial dump. severity: critical.
+testability: HUMAN_ONLY
+[NEXT] RAG: Write the final coordinated report into reports/valid-bugs.md — one ATO chain combining (1) doc-vs-server client_credentials grant 200-vs-401 with the live client_secret published in JTL's own swagger + GitHub SDK, and (2) unvalidated redirect_uri at /authorize (302 for attacker URI, identical to registered) → authorization_code theft → user-bound ffn.merchant.write token → FFN merchant API data access. Cite fresh captures; target bugs.olivermaicher.eu; no further probing required.
+[RISK] jtl: 85 — No degradation. Fresh evidence this cycle (vendor's own swagger embeds the live client_secret + documents 401 for a grant that returns 200; /authorize 302 re-confirmed for attacker URI) hardens the already-reportable FFN OAuth ATO chain. Pictures IDOR and spec-divergence hypotheses conclusively exhausted (no wasted reports). ERP BOLA remains critical-if-confirmed, gated on one human consent step confined to sanctioned sandbox / self-owned tenants. All probes read-only GET on scoped docs endpoints; zero mutation, no production data touched.

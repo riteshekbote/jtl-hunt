@@ -585,3 +585,35 @@
 - CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no exploitability change
 
 ## 2026-09-06 22:27:53 UTC
+
+## 2026-09-07 00:10:09 UTC
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: 401 (was reported 404 in prior cycle — 404 report stale/incorrect; endpoint alive with JWT gate)
+- CHANGED `ffn.api.jtl-software.com/api-docs`: 301→200 (was reported 404 in prior cycle — **docs are back or were never removed**; ReDoc + swagger.json fully live)
+- CHANGED `ffn-sbx.api.jtl-software.com/api-docs`: 200 (sandbox docs confirmed live with identical structure to prod)
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: 404 (confirmed removed — endpoint dead)
+- CHANGED `oauth2.api.jtl-software.com/token`: 405 (was prior 200 on GET; now returns Method Not Allowed — POST-only enforced)
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql` — returns HTTP 401 (not 404); GraphQL endpoint alive with JWT gate, prior cycle's 404 report was stale
+- CHANGED `ffn.api.jtl-software.com/api-docs` — returns HTTP 200 (not 404); public ReDoc + swagger.json fully live, prior cycle's 404 report was incorrect
+- CHANGED `ffn-sbx.api.jtl-software.com/api-docs` — returns HTTP 200; sandbox API docs confirmed live with identical structure to prod
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — returns HTTP 404; device authorization endpoint confirmed removed/disabled
+- CHANGED `oauth2.api.jtl-software.com/token` — returns HTTP 405 on GET, 400 on POST without creds; POST-only enforcement confirmed
+- CHANGED `auth.jtl-cloud.com/.well-known/openid-configuration` — returns HTTP 200; OIDC discovery live with device/implicit flow + public client ("none") support
+- CHANGED `id.jtl-cloud.com/.well-known/openid-configuration` — returns HTTP 200; Zitadel OIDC discovery live with PKCE, device_authorization, JWKS
+- NEW `oauth2.api.jtl-software.com/token` — client_credentials grant returns 200 + RS256 JWT with scopes=[ffn.merchant.read, ffn.merchant.write] despite client registered for ffn.merchant.read only; silent 
+- NEW `oauth2.api.jtl-software.com/authorize` — unvalidated redirect_uri: attacker-controlled redirect_uri (https://evil.com/callback) accepted, returns 302 to /doauthorize with attacker URI preserved
+- NEW `ffn-sbx.api.jtl-software.com/api/v1/users.current` and `ffn.api.jtl-software.com/api/v1/users.current` — both return 401 with client_credentials token (sub="", acl="") — FFN API requires user+tenant 
+- NEW `auth.jtl-cloud.com/.well-known/openid-configuration` — OIDC discovery live: implicit flow (response_type=token), public client ("none" auth method), device endpoint listed but returns 404
+- NEW `id.jtl-cloud.com/.well-known/openid-configuration` — Zitadel OIDC live: authorization_code+PKCE, device_code grant advertised but token endpoint rejects with "unauthorized_client: grant_type not allo
+- NEW `api.jtl-cloud.com/erp/v2/graphql` — returns 401 (JWT required), confirmed alive; prior 404 report was stale
+- NEW `account.jtl-cloud.com/self-service/registration/browser` — HTTP 200, Kratos SPA shell — self-service identity mint open
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — confirmed 404 (endpoint removed)
+- CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no exploitability change
+- NEW `oauth2.api.jtl-software.com/authorize` — unvalidated redirect_uri confirmed passively: attacker-controlled redirect_uri (https://evil.com/callback) accepted, returns 302 to /doauthorize with attacker
+- NEW `oauth2.api.jtl-software.com/token` — client_credentials grant returns 200 + RS256 JWT with scopes=[ffn.merchant.read, ffn.merchant.write] despite client registered for ffn.merchant.read only; silent 
+- NEW `ffn-sbx.api.jtl-software.com/api/v1/users.current` and `ffn.api.jtl-software.com/api/v1/users.current` — both return 401 with client_credentials token (sub="", acl="") — FFN API requires user+tenant 
+- NEW `auth.jtl-cloud.com/.well-known/openid-configuration` — OIDC discovery live: implicit flow (response_type=token), public client ("none" auth method), device endpoint listed but returns 404
+- NEW `id.jtl-cloud.com/.well-known/openid-configuration` — Zitadel OIDC live: authorization_code+PKCE, device_code grant advertised but token endpoint rejects with "unauthorized_client: grant_type not allo
+- NEW `api.jtl-cloud.com/erp/v2/graphql` — returns 401 (JWT required), confirmed alive; prior 404 report was stale
+- NEW `account.jtl-cloud.com/self-service/registration/browser` — HTTP 200, Kratos SPA shell — self-service identity mint open
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — confirmed 404 (endpoint removed)
+- CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no exploitability change

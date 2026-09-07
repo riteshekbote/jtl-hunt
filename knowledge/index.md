@@ -129,3 +129,96 @@
 - 2026-09-06 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token 405 on GET (POST-only), no exploitability change.
 - 2026-09-06 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri (https://evil.example.com/cb) and registered localhost uri produce identical 302 -> /doauthorize.
 - 2026-09-06 ACCEPTED AUTH @ ffn-sbx/api/v1/access/tokens POST: userless client_credentials token -> 401 on key-mint too; user+tenant gate covers both data-plane AND key-mint.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-07 ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+- 2026-09-07 ACCEPTED TARGET @ ffn-sbx.api.jtl-software.com/api-docs: PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed).
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) expose shared API incl. /api/v1/access/tokens API-key mint and /api/v1/users/current — prod baseline for diff.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale. Full API surface including /api/v1/access/tokens and /api/v1/users/current exposed.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200).
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-07 ACCEPTED TARGET @ developer.jtl-software.com/cloud/api-reference/graphql-playground: 200 — developer portal playground still live.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: Public ReDoc + swagger.json confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod.
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (POST-only enforcement confirmed; no change to exploitability).
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) live at 200 both sandbox+prod; shared spec (any-current) exposes /api/v1/access/tokens key-mint with attacker-controlled scopes array + plaintext token return, /api/v1/users/current, /api/pictures/{id}.
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: sandbox docs live, identical structure to prod (only base URL differs).
+- 2026-09-07 REJECTED IDOR @ /api/pictures/{id}: no path-traversal file read — nginx blocks %2e%2e%2f (400); raw ../ normalized away. Empty-200 on deep traversal is nginx path normalization, not file fetch.
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate) reconfirmed this cycle.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 (removed).
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token 405 on GET (POST-only), no exploitability change.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri (https://evil.example.com/cb) and registered localhost uri produce identical 302 -> /doauthorize.
+- 2026-09-07 ACCEPTED AUTH @ ffn-sbx/api/v1/access/tokens POST: userless client_credentials token -> 401 on key-mint too; user+tenant gate covers both data-plane AND key-mint.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed prior cycles; scope escalation + silent degradation pattern persistent
+- 2026-09-07 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json now return 404 — documentation removed; reduces attack surface visibility but sandbox remains
+- 2026-09-07 REJECTED OTHER @ ffn.api.jtl-software.com: Bearer token alone insufficient for API data access — endpoints timeout/hang; gate is user+tenant context (sub/acl), not separate API key
+- 2026-09-07 ACCEPTED TARGET @ id.jtl-cloud.com: Zitadel OIDC instance confirmed live with device_authorization, PKCE, JWKS; distinct from Ory Hydra auth.jtl-cloud.com
+- 2026-09-07 ACCEPTED AUTH @ id.jtl-cloud.com: ERP Zitadel client 383246859688230715 and Hub client 383246859839225659 are public — device authorization accepts elevated scopes (urn:jtl:tenants, offline_access) without client authentication
+- 2026-09-07 REJECTED AUTH @ id.jtl-cloud.com: device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config likely disables device_code despite server support
+- 2026-09-07 ACCEPTED AUTH @ auth.jtl-cloud.com: OIDC discovery live on dedicated auth subdomain; device flow + implicit flow + public client ("none" auth method) confirmed — but device endpoint now 404
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) now returns 404 — previously live; endpoint removed/disabled
+- 2026-09-07 ACCEPTED TARGET @ account.jtl-cloud.com: self-service/registration/browser HTTP 200 (Kratos SPA) - self-service identity mint confirmed open, making the HUMAN_ONLY ERP BOLA chain feasible
+- 2026-09-07 REJECTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: now returns HTTP 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+- 2026-09-07 ACCEPTED TARGET @ fulfillment-sandbox.jtl-software.com: FFN sandbox portal HTTP 200 — sanctioned full-chain test path per SDK README
+- 2026-09-07 ACCEPTED TARGET @ fulfillment.jtl-software.com: FFN production portal HTTP 200
+- 2026-09-07 ACCEPTED TARGET @ kundencenter.jtl-software.de/oauth: OAuth client self-service 302→/login — client registration surface
+- 2026-09-07 ACCEPTED AUTH @ id.jtl-cloud.com/oauth/v2/authorize: Hub public client 383246859839225659 redirect 302→login.jtl-cloud.com/login?authRequest=V2_389460630735762158 — consent flow alive for HUMAN ERP BOLA bootstrapping
+- 2026-09-07 ACCEPTED TARGET @ ffn-sbx.api.jtl-software.com/api-docs: PASSIVE probe surface confirmed pending (sandbox live per prior cycle; only docs endpoint unprobed)
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed prior cycles; scope escalation + silent degradation pattern persistent
+- 2026-09-07 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 this cycle — prior cycle's 404 report was incorrect/stale
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200)
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
+- 2026-09-07 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 — prior cycle's 404 report was incorrect/stale
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200)
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — attacker redirect_uri accepted (302 to /doauthorize with attacker URI)
+- 2026-09-07 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
+- 2026-09-07 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
+- 2026-09-07 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
+- 2026-09-07 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 — prior cycle's 404 report was incorrect/stale
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200)
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — attacker redirect_uri accepted (302 to /doauthorize with attacker URI)
+- 2026-09-07 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
+- 2026-09-07 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
+- 2026-09-07 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
+- 2026-09-07 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: public ReDoc + swagger.json (merchant/fulfiller/shared) confirmed LIVE at 200 — prior cycle's 404 report was incorrect/stale
+- 2026-09-07 ACCEPTED MISCONFIG @ ffn-sbx.api.jtl-software.com/api-docs: Sandbox API docs confirmed LIVE with identical structure to prod — swagger specs accessible at /api-docs/merchant-current/swagger.json (200)
+- 2026-09-07 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: Endpoint returns 401 (not 404) — confirmed alive with JWT gate. Prior cycle's 404 report was stale.
+- 2026-09-07 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled.
+- 2026-09-07 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — attacker redirect_uri accepted (302 to /doauthorize with attacker URI)
+- 2026-09-07 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
+- 2026-09-07 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
+- 2026-09-07 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
