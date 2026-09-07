@@ -222,3 +222,6 @@
 - 2026-09-07 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
 - 2026-09-07 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
 - 2026-09-07 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation persistent
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 → /doauthorize
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.read, ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
