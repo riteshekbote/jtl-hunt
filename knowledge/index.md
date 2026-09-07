@@ -225,3 +225,4 @@
 - 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation persistent
 - 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 → /doauthorize
 - 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.read, ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
+- 2026-09-07 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 -> /doauthorize

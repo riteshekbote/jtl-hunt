@@ -643,3 +643,8 @@
 - NEW `account.jtl-cloud.com/self-service/registration/browser` — HTTP 200, Kratos SPA shell — self-service identity mint confirmed open (reconfirmed 2026-09-07)
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth` — confirmed 404 (endpoint removed/disabled, was live 2026-09-04)
 - CHANGED `oauth2.api.jtl-software.com/token` — POST-only enforcement (405 on GET), no [0m
+
+## 2026-09-07 15:43:51 UTC
+- CHANGED valid-bugs.md exists with 3 VALID findings (lines 11-13) but no coordinated narrative
+- CHANGED reports/valid-bugs.md count header says "running count 0" but 10 leads marked VALID
+- NEW KBASE latest (2026-09-07 10:07 UTC) re-confirms all passive findings unchanged; no new endpoints probed since prior cycle
