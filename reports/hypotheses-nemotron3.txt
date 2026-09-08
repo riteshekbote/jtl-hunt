@@ -1,4 +1,4 @@
-## 2026-09-08 20:58:38 UTC [target] (model nemotron3)
+## 2026-09-08 23:15:46 UTC [target] (model nemotron3)
 [NEW] `oauth2.api.jtl-software.com/token`: `client_credentials` grant now returns `scopes=["ffn.merchant.read","ffn.merchant.write"]` (previously only `ffn.merchant.write`) — scope escalation confirmed with both read+write in single token  
 [NEW] `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod; shared spec (any-current) exposes `/api/v1/access/tokens` key-mint with attacker-controlled scopes array + plaintext token return  
 [CHANGED] `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)  
@@ -8,8 +8,8 @@
 [CHANGED] `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain  
 [PRIO] oauth2.api.jtl-software.com/token,9.5,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=8,freshness=10  
 [PRIO] oauth2.api.jtl-software.com/authorize,9.3,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=8,cloud_surface=8,freshness=10  
-[PRIO] ffn.api.jtl-software.com/api/v1/access/tokens (shared spec any-current),7.8,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9  
 [PRIO] api.jtl-cloud.com/erp/v2/graphql,7.9,attack_surface=7,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=10,freshness=8  
+[PRIO] ffn.api.jtl-software.com/api/v1/access/tokens (shared spec any-current),7.8,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9  
 [PRIO] id.jtl-cloud.com/oauth/v2/authorize,7.3,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=4,cloud_surface=8,freshness=7  
 [PRIO] account.jtl-cloud.com/self-service/registration/browser,6.8,attack_surface=6,business_value=7,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8  
 [PRIO] ffn-sbx.api.jtl-software.com/api-docs,6.1,attack_surface=4,business_value=5,tech_exposure=5,gate_ease=10,cloud_surface=5,freshness=8  
@@ -46,7 +46,7 @@ testability: HUMAN_ONLY
 [FINAL] 1. oauth2.api.jtl-software.com/token: FFN OAuth scope escalation via client_credentials with leaked creds (confidence 95) — PASSIVE, standalone, immediately submittable  
 [FINAL] 2. oauth2.api.jtl-software.com/authorize + /token: FFN OAuth full ATO chain via authorization_code + unvalidated redirect_uri (confidence 92) — HUMAN_ONLY, requires one consent on sandbox  
 [FINAL] 3. id.jtl-cloud.com/oauth/v2/authorize: Zitadel ERP cross-tenant BOLA via authorization_code+PKCE (confidence 65) — HUMAN_ONLY, gated on token acquisition + x-tenant-id validation  
-[NEXT] RAG: Rewrite `reports/valid-bugs.md` — fix header running count to 2 standalone VALID findings (Find-01: OAuth scope escalation with leaked credentials; Find-02: unvalidated redirect_uri enabling ATO chain), add coordinated narrative linking the two as a combined OAuth compromise chain, remove stale/corrupted validation entries, and reference the inventory + findings attribution.
+[NEXT] HUMAN: In the sanctioned sandbox (ffn-sbx.api.jtl-software.com + oauth2.api.jtl-software.com), with a self-owned identity, complete the single login/consent for the authorization_code flow to demonstrate the full ATO chain (Find-02)  
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH  
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_code flow); HUMAN_ONLY gate  
 [LEARN] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent  
