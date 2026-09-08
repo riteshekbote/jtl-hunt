@@ -693,3 +693,10 @@
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
 - CHANGED `api.jtl-cloud.com/erp/v2/graphql`: Confirmed HTTP 401 (alive with JWT gate) — prior 404 reports were stale/flapping
 - CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
+
+## 2026-09-08 18:02:05 UTC
+- NEW `oauth2.api.jtl-software.com/token`: `client_credentials` grant returns `scopes=[ffn.merchant.read, ffn.merchant.write]` (previously only `ffn.merchant.write`) — scope escalation confirmed with both r
+- NEW `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod; 
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: Confirmed HTTP 401 (alive with JWT gate) — prior 404 reports were stale/flapping
+- CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support

@@ -1,4 +1,4 @@
-## 2026-09-08 14:10:07 UTC [target] (model bigpickle)
+## 2026-09-08 17:59:18 UTC [target] (model bigpickle)
 [PRIO] oauth2.api.jtl-software.com/authorize+token,9.3,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=8,cloud_surface=8,freshness=10
 [PRIO] ffn-sbx.api.jtl-software.com/api-docs,6.1,attack_surface=4,business_value=5,tech_exposure=5,gate_ease=10,cloud_surface=5,freshness=8
 [PRIO] api.jtl-cloud.com/erp/v2/graphql,7.9,attack_surface=7,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=10,freshness=8
@@ -32,6 +32,7 @@ evidence_needed: authorization code via PKCE exchange; access_token carrying urn
 verify_steps: GET https://id.jtl-cloud.com/oauth/v2/authorize?response_type=code&client_id=383246859688230715&redirect_uri=https://erp.jtl-cloud.com/auth/callback&scope=openid%20urn:jtl:tenants%20offline_access&code_challenge=<S256>&code_challenge_method=S256 → capture code; POST https://id.jtl-cloud.com/oauth/v2/token -d "grant_type=authorization_code&code=<code>&client_id=383246859688230715&code_verifier=<verifier>&redirect_uri=https://erp.jtl-cloud.com/auth/callback"; POST https://api.jtl-cloud.com/erp/v2/graphql -H "Authorization: Bearer <token>" -H "x-tenant-id: <arbitrary>"
 impact: urn:jtl:tenants token + x-tenant-id → cross-tenant ERP PII/financial/inventory access. CRITICAL-if-confirmed.
 testability: HUMAN_ONLY (self-owned identity/tenant only; no live customer data)
+[PARKED] FFN API public documentation as standalone finding: subsumed into the combined OAuth compromise narrative — docs exposure is informational context for the scope escalation and ATO chains, not a standalone reportable finding.
 [FINAL] 1. FFN OAuth scope escalation via client_credentials with leaked creds (confidence 95) — PASSIVE, standalone, immediately submittable
 [FINAL] 2. FFN OAuth full ATO chain via authorization_code + unvalidated redirect_uri (confidence 92) — HUMAN_ONLY, requires one consent on sandbox
 [FINAL] 3. Zitadel ERP cross-tenant BOLA via authorization_code+PKCE (confidence 65) — HUMAN_ONLY, gated on token acquisition + x-tenant-id validation

@@ -830,3 +830,20 @@
 - LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
 - LEARN: ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
 - LEARN: ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disabl
+
+## RANKED HYPOTHESES 2026-09-08 18:02:05 UTC
+- [95] oauth2.api.jtl-software.com/token: FFN OAuth scope escalation via client_credentials (leaked creds) — standalone, submittable finding (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-bigpickle.txt): RAG: Rewrite `reports/valid-bugs.md` — fix header running count to 2 standalone VALID findings (Find-01: OAuth scope escalation with leaked credentials; Find-02
+- NEXT(hypotheses-nemotron3.txt): RAG: Rewrite `reports/valid-bugs.md` — fix header running count to 2 standalone VALID findings (Find-01: OAuth scope escalation with leaked credentials; Find-02
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single 
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_cod
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93f... verified locally to match exact plaintext — KBASE records interna
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separ
+- LEARN: ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); all prior 404 reports stale
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single 
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_cod
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93f... verified locally to match exact plaintext — KBASE records interna
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separ
+- LEARN: ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); all prior 404 reports stale
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
