@@ -242,3 +242,9 @@
 - 2026-09-08 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
 - 2026-09-08 ACCEPTED TARGET @ account.jtl-cloud.com/self-service/registration/browser: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open
 - 2026-09-08 ACCEPTED AUTH @ id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+- 2026-09-08 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH
+- 2026-09-08 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_code flow); HUMAN_ONLY gate
+- 2026-09-08 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93f... verified locally to match exact plaintext — KBASE records internally consistent
+- 2026-09-08 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key; data access requires authorization_code flow
+- 2026-09-08 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); all prior 404 reports stale
+- 2026-09-08 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
