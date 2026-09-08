@@ -2436,3 +2436,40 @@ impact: urn:jtl:tenants token + x-tenant-id -> cross-tenant ERP PII/financial/in
 testability: HUMAN_ONLY (self-owned identity/tenant only; no live customer data)
 [NEXT] RAG: Rewrite reports/valid-bugs.md — fix header miscount to 2 VALID findings, write coordinated ATO narrative (Find-01: doc-vs-server client_credentials scope escalation + leaked secret sha256:9cc93f...; Find-02: unvalidated redirect_uri + leaked-credential code-theft chain leading to user-bound token on ffn-sbx), reference inventory + findings inventory for attribution.
 [RISK] jtl: 88 — Steady-state. Two evidence-backed findings ready for submission via disclosed channel (Find-01 doc-vs-server scope escalation, passive; Find-02 redirect_uri + leaked-credential ATO chain, passively confirmed at authorization-server stage; severity HIGH). ERP BOLA critical-if-confirmed, gated on one self-owned-tenant/sandbox consent. All probes read-only, <=1 rps, single self-issued POST to /token, zero mutation on live customer data, no degradation observed.
+## 2026-09-08 05:12:38 UTC [target] (model bigpickle)
+[HYP] FFN OAuth full ATO chain — consolidated, report finalized
+class: AUTH
+asset: oauth2.api.jtl-software.com (authorize + token) + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: plaintext secret sha256:9cc93f... verified; /token client_credentials → 200 RS256 scopes=[ffn.merchant.write] vs README-documented 401 (scope escalation); /authorize attacker URI → 302 /doauthorize identical to registered localhost URI (unvalidated redirect_uri); userless token 401 on all data-plane/key-mint → data requires user-context token (HUMAN gate).
+evidence_needed: gathered passively; remaining = one human consent on self-owned sandbox identity.
+verify_steps: PASSIVE complete. HUMAN: authorize with attacker redirect_uri → consent → redeem code at /token → GET ffn-sbx /api/v1/merchant/orders.
+impact: authz-code theft + leaked creds + scope escalation → user-bound ffn.merchant.write JWT → orders/returns/stock/Amazon-SFP + /api/v1/access/tokens key-mint. HIGH.
+testability: HUMAN_ONLY (sanctioned sandbox, self-owned tenant)
+[HYP] Zitadel authorization_code+PKCE for ERP public client → ERP GraphQL cross-tenant
+class: AUTH
+asset: id.jtl-cloud.com/oauth/v2/authorize + /oauth/v2/token + api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Zitadel OIDC live with PKCE; ERP client 383246859688230715 public (erp.jtl-cloud.com env JSON); device_code grant blocked at token endpoint but authorization_code may work for public clients; GraphQL alive at 401; Kratos self-registration open enables identity mint.
+evidence_needed: authorization code via PKCE exchange; access_token with urn:jtl:tenants; GraphQL 200 with arbitrary x-tenant-id.
+verify_steps: GET authorize?response_type=code&client_id=383246859688230715&redirect_uri=https://erp.jtl-cloud.com/auth/callback&scope=openid%20urn:jtl:tenants&code_challenge=<S256>&code_challenge_method=S256 → capture code; POST /oauth/v2/token grant_type=authorization_code+PKCE; POST /erp/v2/graphql with Bearer + x-tenant-id.
+impact: urn:jtl:tenants token + x-tenant-id → cross-tenant ERP PII/financial/inventory. CRITICAL-if-confirmed.
+testability: HUMAN_ONLY (self-owned identity/tenant only; no live customer data)
+[HYP] FFN OAuth full ATO chain — consolidated, report finalized
+class: AUTH
+asset: oauth2.api.jtl-software.com (authorize + token) + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: plaintext secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified; /token client_credentials → 200 RS256 scopes=[ffn.merchant.write] vs README-documented 401 (scope escalation); /authorize attacker URI → 302 /doauthorize identical to registered localhost URI (unvalidated redirect_uri); userless token 401 on all data-plane/key-mint → data needs user-context token.
+evidence_needed: gathered passively; remaining = one human consent on self-owned sandbox identity.
+verify_steps: PASSIVE complete. HUMAN: authorize with attacker redirect_uri → consent → redeem code at /token → GET ffn-sbx /api/v1/merchant/orders.
+impact: authz-code theft + leaked creds + scope escalation → user-bound ffn.merchant.write JWT → orders/returns/stock/Amazon-SFP + /api/v1/access/tokens key-mint. HIGH.
+testability: HUMAN_ONLY (sanctioned sandbox, self-owned tenant)
+[HYP] Zitadel authorization_code+PKCE for ERP public client → ERP GraphQL cross-tenant
+class: AUTH
+asset: id.jtl-cloud.com/oauth/v2/authorize + /oauth/v2/token + api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Zitadel OIDC live with PKCE; ERP client 383246859688230715 public (erp.jtl-cloud.com env JSON); device_code grant blocked at token endpoint but authorization_code may work for public clients; GraphQL alive at 401; Kratos self-registration open enables identity mint.
+evidence_needed: authorization code via PKCE exchange; access_token with urn:jtl:tenants; GraphQL 200 with arbitrary x-tenant-id.
+verify_steps: GET authorize?response_type=code&client_id=383246859688230715&redirect_uri=https://erp.jtl-cloud.com/auth/callback&scope=openid%20urn:jtl:tenants&code_challenge=<S256>&code_challenge_method=S256 → capture code; POST /oauth/v2/token grant_type=authorization_code+PKCE; POST /erp/v2/graphql with Bearer + x-tenant-id.
+impact: urn:jtl:tenants token + x-tenant-id → cross-tenant ERP PII/financial/inventory. CRITICAL-if-confirmed.
+testability: HUMAN_ONLY (self-owned identity/tenant only; no live customer data)

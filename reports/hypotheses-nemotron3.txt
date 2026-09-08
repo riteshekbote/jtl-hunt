@@ -1,7 +1,7 @@
-## 2026-09-08 00:35:49 UTC [target] (model nemotron3)
-[NEW] `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod — prior 404 reports were incorrect/stale; shared spec (any-current) exposes `/api/v1/access/tokens` key-mint with attacker-controlled scopes array + plaintext token return, `/api/v1/users/current`, `/api/pictures/{id}`
-[NEW] `oauth2.api.jtl-software.com/authorize`: Unvalidated `redirect_uri` reconfirmed — attacker URI (`https://evil.example.com/cb`) and registered localhost URI produce identical 302 → `/doauthorize` with attacker URI preserved
-[NEW] `oauth2.api.jtl-software.com/token`: `client_credentials` grant returns 200 + RS256 JWT with `scopes=[ffn.merchant.read, ffn.merchant.write]` despite client registered for `ffn.merchant.read` only; silent scope degradation pattern persistent (unauthorized scopes return `[]`)
+## 2026-09-08 05:21:59 UTC [target] (model nemotron3)
+[NEW] `oauth2.api.jtl-software.com/authorize`: unvalidated `redirect_uri` reconfirmed — attacker URI (`https://evil.example.com/cb`) and registered localhost URI produce identical 302 → `/doauthorize` with attacker URI preserved
+[NEW] `oauth2.api.jtl-software.com/token`: `client_credentials` grant returns 200 + RS256 JWT with `scopes=[ffn.merchant.read, ffn.merchant.write]` despite client registered for `ffn.merchant.read` only; silent scope degradation persistent (unauthorized scopes return `[]`)
+[NEW] `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod; shared spec (any-current) exposes `/api/v1/access/tokens` key-mint with attacker-controlled scopes array + plaintext token return, `/api/v1/users/current`, `/api/pictures/{id}`
 [CHANGED] `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint removed/disabled (was live 2026-09-04)
 [CHANGED] `api.jtl-cloud.com/erp/v2/graphql`: Confirmed HTTP 401 (alive with JWT gate) — prior 404 reports were stale
 [CHANGED] `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain
