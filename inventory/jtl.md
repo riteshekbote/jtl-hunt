@@ -783,3 +783,11 @@
 - CHANGED `api.jtl-cloud.com/erp/v2/graphql`: stable 401 (JWT gate), prior 404 reports were stale/flapping
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: stable 404 (endpoint removed)
 - CHANGED `account.jtl-cloud.com/self-service/registration/browser`: stable 200 (Kratos SPA), self-service identity mint open
+
+## 2026-09-09 21:31:43 UTC
+- CHANGED `oauth2.api.jtl-software.com/token`: client_credentials grant now returns `scopes=["ffn.merchant.read","ffn.merchant.write"]` when requesting both (previously only write confirmed in isolation)
+- CHANGED `oauth2.api.jtl-software.com/authorize`: attacker-controlled `redirect_uri=https://evil.example.com/cb` produces identical 302→`/doauthorize` as registered localhost URI — unvalidated redirect_uri byt
+- CHANGED `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: both return 301→200 with full ReDoc/swagger.json for merchant/fulfiller/shared APIs live at 200
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: stable 401 (JWT gate), prior 404 reports were stale/flapping
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: stable 404 (endpoint removed)
+- CHANGED `account.jtl-cloud.com/self-service/registration/browser`: stable 200 (Kratos SPA), self-service identity mint open

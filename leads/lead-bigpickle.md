@@ -2845,3 +2845,31 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED NETWORK @ oauth2.api.jtl-software.com/token: live-stable 405 on GET (POST-only), skippable from routine re-probes.
 [LEARN] ACCEPTED NETWORK @ ffn-sbx.api.jtl-software.com/api-docs/: live-stable 301 (ReDoc live), unchanged.
 [RISK] jtl: 88 — Steady-state, evidence-backed. Find-01 (scope escalation) is PASSIVE and immediately submittable via bugs.olivermaicher.eu now that valid-bugs.md is rewritten. Find-02 (ATO chain) and Find-03 (ERP BOLA) remain HUMAN-gated on one self-owned sandbox consent. All probes read-only, <=1 rps, zero mutation on live customer data, no degradation.
+## 2026-09-09 21:31:00 UTC [target] (model bigpickle)
+[HYP] FFN OAuth write-scope escalation is submittable as standalone proof (post-rewrite re-check)
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: leaked creds; client registered read-only; single POST client_credentials → 200 RS256 JWT scopes=[ffn.merchant.read, ffn.merchant.write]; ffn.admin.write → 200 empty scopes (no invalid_scope). Stable across 8+ cycles. Now cited verbatim in valid-bugs.md Find-01 with repro.
+evidence_needed: gathered — reproduced repeated cycles; artifact on disk count-3.
+verify_steps: PASSIVE complete; no further live POSTs needed; next is submission.
+impact: write-scoped FFN token mint without user account. MEDIUM-HIGH.
+testability: PASSIVE
+[HYP] Find-02 redirect_uri ATO chain completes with one ffn-sbx sandbox consent
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: attacker redirect_uri and registered localhost URI produce byte-identical 302→/doauthorize; leaked secret enables code exchange; userless token 401 on data plane → user bound sub/acl is the missing leg.
+evidence_needed: ONE HUMAN consent on sanctioned ffn-sbx → code at attacker origin → exchange → HTTP 200 on /api/v1/merchant/orders.
+verify_steps: HUMAN_ONLY per in-scope sandbox policy; document, then iterate.
+impact: user-context FFN write + key-mint. HIGH.
+testability: HUMAN_ONLY
+[HYP] ERP BOLA (urn:jtl:tenants + x-tenant-id) — architecture confirmed, PKCE+consent gate
+class: AUTH
+asset: id.jtl-cloud.com/oauth/v2 + api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Zitadel public ERP client 383246859688230715 (env JSON); device_code blocked; Kratos self-service open; GraphQL 401 JWT gate.
+evidence_needed: authz code via PKCE → token with urn:jtl:tenants → GraphQL 200 with varied x-tenant-id.
+verify_steps: HUMAN_ONLY — dedicated session; lowest priority of survivors.
+impact: cross-tenant ERP PII/financial/inventory. CRITICAL-if-confirmed.
+testability: HUMAN_ONLY
