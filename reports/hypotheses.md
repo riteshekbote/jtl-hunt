@@ -1008,3 +1008,6 @@
 - LEARN: REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
 - LEARN: ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox iden
 - LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
+
+## RANKED HYPOTHESES 2026-09-09 23:34:18 UTC
+- [95] oauth2.api.jtl-software.com/token: FFN OAuth write-scope escalation — standalone submittable (Find-01) (from art/lead_bigpickle.txt)

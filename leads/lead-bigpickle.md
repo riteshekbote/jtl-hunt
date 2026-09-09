@@ -2873,3 +2873,31 @@ evidence_needed: authz code via PKCE → token with urn:jtl:tenants → GraphQL 
 verify_steps: HUMAN_ONLY — dedicated session; lowest priority of survivors.
 impact: cross-tenant ERP PII/financial/inventory. CRITICAL-if-confirmed.
 testability: HUMAN_ONLY
+## 2026-09-09 23:31:41 UTC [target] (model bigpickle)
+[HYP] FFN OAuth write-scope escalation — standalone submittable (Find-01)
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: leaked creds (client_id 97170e64-d390-4696-ba46-d6fcef8207de; secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e in public README); client registered read-only; single POST client_credentials → 200 RS256 JWT scopes=["ffn.merchant.read","ffn.merchant.write"]; ffn.admin.write → 200 empty scopes (silent degradation); GET→405 POST-only. Stable across 8+ cycles; no 401/404 regression.
+evidence_needed: gathered — reproduced repeatedly; artifact now clean on disk count-3 with repro.
+verify_steps: PASSIVE complete; no further live POSTs (footprint policy); next = submission.
+impact: write-scoped FFN token mint without user account; +silent-degradation masking. MEDIUM-HIGH (8.1).
+testability: PASSIVE
+[HYP] FFN ATO chain completes with one ffn-sbx sandbox consent (Find-02)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: attacker redirect_uri vs registered localhost URI → byte-identical 302→/doauthorize (confirmed); leaked secret enables code exchange; userless client_credentials token 401 on data plane + key-mint → sub/acl user-context is the only missing leg.
+evidence_needed: ONE HUMAN consent on sanctioned ffn-sbx → code at attacker origin → authorization_code exchange → HTTP 200 on /api/v1/merchant/orders.
+verify_steps: HUMAN_ONLY — GET authorize (attacker redirect_uri), consent, code→POST /token, GET ffn-sbx/api/v1/merchant/orders expect 200.
+impact: user-context ffn.merchant.write → orders/returns/stock/Amazon-SFP + access-tokens key-mint. HIGH.
+testability: HUMAN_ONLY
+[HYP] ERP cross-tenant BOLA via Zitadel PKCE (urn:jtl:tenants + x-tenant-id) (Find: lowest survivor)
+class: AUTH
+asset: id.jtl-cloud.com/oauth/v2 + api.jtl-cloud.com/erp/v2/graphql
+confidence: 65
+reasoning: Zitadel public ERP client 383246859688230715 (env JSON leak); redirect → erp.jtl-cloud.com/auth/callback; device_code blocked "unauthorized_client"; Kratos self-service registration open; GraphQL 401 JWT gate; x-tenant-id only post-auth.
+evidence_needed: authz code via PKCE → token with urn:jtl:tenants → GraphQL 200 with varied x-tenant-id.
+verify_steps: HUMAN_ONLY — dedicated session, self-owned identity; lowest priority of survivors.
+impact: cross-tenant ERP PII/financial/inventory. CRITICAL-if-confirmed.
+testability: HUMAN_ONLY

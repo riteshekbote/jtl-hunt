@@ -791,3 +791,5 @@
 - CHANGED `api.jtl-cloud.com/erp/v2/graphql`: stable 401 (JWT gate), prior 404 reports were stale/flapping
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: stable 404 (endpoint removed)
 - CHANGED `account.jtl-cloud.com/self-service/registration/browser`: stable 200 (Kratos SPA), self-service identity mint open
+
+## 2026-09-09 23:34:18 UTC

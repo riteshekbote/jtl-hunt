@@ -2927,3 +2927,4 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
 [LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
 [RISK] jtl: 88 — Steady-state. Two evidence-backed findings ready for submission via disclosed channel (Find-01: doc-vs-server client_credentials scope escalation + leaked secret; Find-02: redirect_uri + leaked-credential code-theft chain leading to user-bound token on ffn-sbx). ERP BOLA critical-if-confirmed, gated on one self-owned-tenant/sandbox consent. All probes read-only, <=1 rps, single self-issued POST to /token, zero mutation on live customer data, no degradation observed.
+## 2026-09-09 23:34:08 UTC [target] (model nemotron3)
