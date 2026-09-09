@@ -249,3 +249,22 @@
 - 2026-09-08 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); all prior 404 reports stale
 - 2026-09-08 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
 - 2026-09-08 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent
+- 2026-09-09 ACCEPTED RAG @ reports/valid-bugs.md: file was still corrupted despite prior "complete" claim — running count 0 header, 3 orphaned block sets, no chain narrative; rewritten to 2 standalone VALID findings + coordinated OAuth narrative + attribution; hypothesis claims must be re-verified against artifacts, not assumed complete.
+- 2026-09-09 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: scope escalation + silent degradation reconfirmed stable across all cycles; SANDBOX-only re-probe policy adopted to preserve low footprint.
+- 2026-09-09 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical for attacker vs registered URI — ATO chain leg confirmed; high value rests on one HUMAN consent.
+- 2026-09-09 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH
+- 2026-09-09 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_code flow); HUMAN_ONLY gate
+- 2026-09-09 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent
+- 2026-09-09 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key; data access requires authorization_code flow
+- 2026-09-09 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); all prior 404 reports stale
+- 2026-09-09 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
+- 2026-09-09 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
+- 2026-09-09 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
+- 2026-09-09 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH
+- 2026-09-09 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_code flow); HUMAN_ONLY gate
+- 2026-09-09 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent
+- 2026-09-09 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key; data access requires authorization_code flow
+- 2026-09-09 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); all prior 404 reports stale
+- 2026-09-09 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
+- 2026-09-09 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
+- 2026-09-09 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability

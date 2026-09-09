@@ -718,3 +718,19 @@
 - CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
 - CHANGED `oauth2.api.jtl-software.com/token`: POST-only enforcement (405 on GET) confirmed; no exploitability change
 - CHANGED `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain
+
+## 2026-09-09 01:29:58 UTC
+- NEW `oauth2.api.jtl-software.com/token`: `client_credentials` grant returns `scopes=["ffn.merchant.read","ffn.merchant.write"]` (both read+write in single token; previously only write confirmed)
+- NEW `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod; 
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: Confirmed HTTP 401 (alive with JWT gate) — prior 404 reports were stale/flapping
+- CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
+- CHANGED `oauth2.api.jtl-software.com/token`: POST-only enforcement (405 on GET) confirmed; no exploitability change
+- CHANGED `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain
+- NEW `oauth2.api.jtl-software.com/token`: `client_credentials` grant returns `scopes=["ffn.merchant.read","ffn.merchant.write"]` (both read+write in single token; previously only write confirmed)
+- NEW `ffn.api.jtl-software.com/api-docs` + `ffn-sbx.api.jtl-software.com/api-docs`: Public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod; 
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: Confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: Confirmed HTTP 401 (alive with JWT gate) — prior 404 reports were stale/flapping
+- CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
+- CHANGED `oauth2.api.jtl-software.com/token`: POST-only enforcement (405 on GET) confirmed; no exploitability change
+- CHANGED `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain
