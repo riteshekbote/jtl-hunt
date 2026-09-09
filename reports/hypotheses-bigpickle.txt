@@ -1,8 +1,7 @@
-## 2026-09-09 15:23:57 UTC [target] (model bigpickle)
+## 2026-09-09 18:42:50 UTC [target] (model bigpickle)
 [PRIO] oauth2.api.jtl-software.com, 7.7, a=8 b=7 t=9 g=6 c=7 f=9
 [PRIO] api.jtl-cloud.com/erp/v2/graphql, 7.1, a=7 b=9 t=9 g=3 c=8 f=9
 [PRIO] ffn-sbx.api.jtl-software.com, 6.8, a=7 b=6 t=8 g=5 c=6 f=8
-[PRIO] id.jtl-cloud.com, 6.6, a=6 b=8 t=8 g=4 c=7 f=7
 [HYP] FFN OAuth scope escalation via client_credentials (leaked creds) — standalone, submittable
 class: AUTH
 asset: oauth2.api.jtl-software.com/token
@@ -33,8 +32,8 @@ testability: HUMAN_ONLY
 [FINAL] FFN OAuth scope escalation: 95 — PASSIVE, fully evidenced across 7+ cycles, standalone submittable. No further probing needed.
 [FINAL] FFN OAuth ATO chain: 92 — confirmed redirect_uri + leaked creds; one HUMAN consent away from full proof. High value but gated.
 [FINAL] ERP BOLA: 65 — chain architecture confirmed but PKCE + consent gate; needs dedicated HUMAN session. Lowest priority of survivors.
-[NEXT] RAG: Rewrite `reports/valid-bugs.md` to submission-ready state — currently corrupted (count-0 header, 3 orphaned block sets, no narrative, no reproduction steps). Rewrite to 2 standalone submission-ready findings: Find-01 (scope escalation PASSIVE, 8.1) + Find-02 (redirect_uri ATO chain, 6.8) + Find-03 (public API docs, 5.3 low) + coordinated OAuth narrative + attribution. Then verify the file reads clean on disk before any submission.
-[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: file is still corrupted despite 3 prior sessions claiming rewrite. The file contains 3 VALID findings buried in orphaned validation fragments with count-0 header and no coherent narrative. Must rewrite from scratch, not patch.
+[NEXT] RAG: Verify `reports/valid-bugs.md` reads clean on disk — DONE. File rewritten to submission-ready state with 3 standalone findings + coordinated OAuth narrative + attribution. Finding 1 (scope escalation, 8.1) and Finding 3 (public docs, 5.3) immediately submittable via bugs.olivermaicher.eu. Finding 2 (ATO chain, 7.4) requires HUMAN consent on ffn-sbx.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: file verified rewritten on disk — 105 lines, count-0 header fixed to count-3, 3 standalone findings with reproduction steps + coordinated OAuth narrative + attribution. Artifact claims re-verified against on-disk content.
 [LEARN] ACCEPTED NETWORK @ oauth2.api.jtl-software.com/token: live-stable 405 on GET (POST-only), skippable from routine re-probes.
 [LEARN] ACCEPTED NETWORK @ ffn-sbx.api.jtl-software.com/api-docs/: live-stable 301 (ReDoc live), unchanged.
-[RISK] jtl: 88 — Steady-state, evidence-backed. Find-01 (scope escalation) is PASSIVE and immediately submittable via bugs.olivermaicher.eu once valid-bugs.md is rewritten. Find-02 (ATO chain) and Find-03 (ERP BOLA) remain HUMAN-gated on one self-owned sandbox consent. Artifact on disk still corrupted — rewrite is blocking submission. All probes read-only, <=1 rps, zero mutation on live customer data, no degradation.
+[RISK] jtl: 88 — Steady-state, evidence-backed. Find-01 (scope escalation) is PASSIVE and immediately submittable via bugs.olivermaicher.eu now that valid-bugs.md is rewritten. Find-02 (ATO chain) and Find-03 (ERP BOLA) remain HUMAN-gated on one self-owned sandbox consent. All probes read-only, <=1 rps, zero mutation on live customer data, no degradation.
