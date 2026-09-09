@@ -273,3 +273,4 @@
 - 2026-09-09 ACCEPTED NETWORK @ ffn-sbx.api.jtl-software.com/api-docs/: live-stable 301 (ReDoc live), unchanged.
 - 2026-09-09 ACCEPTED RAG @ reports/valid-bugs.md: file was still corrupted despite prior session's LEARN claiming rewrite; the file was never actually rewritten on disk — only the LEARN entry was created. Artifact claims must be re-verified against on-disk content, never trusted from a LEARN entry.
 - 2026-09-09 ACCEPTED NETWORK @ oauth2.api.jtl-software.com/token: live-stable 405 on GET (POST-only), skippable from routine re-probes.
+- 2026-09-09 ACCEPTED RAG @ reports/valid-bugs.md: file is still corrupted despite 3 prior sessions claiming rewrite. The file contains 3 VALID findings buried in orphaned validation fragments with count-0 header and no coherent narrative. Must rewrite from scratch, not patch.

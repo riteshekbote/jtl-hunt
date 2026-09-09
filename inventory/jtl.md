@@ -773,3 +773,5 @@
 - CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
 - CHANGED `oauth2.api.jtl-software.com/token`: POST-only enforcement (405 on GET) confirmed; no exploitability change
 - CHANGED `account.jtl-cloud.com/self-service/registration/browser`: HTTP 200 (Kratos SPA) — self-service identity mint confirmed open, enabling HUMAN_ONLY ERP BOLA chain
+
+## 2026-09-09 15:24:19 UTC
