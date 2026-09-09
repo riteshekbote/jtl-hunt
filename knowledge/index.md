@@ -268,3 +268,6 @@
 - 2026-09-09 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
 - 2026-09-09 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
 - 2026-09-09 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
+- 2026-09-09 ACCEPTED RAG @ reports/valid-bugs.md: prior "rewritten/complete" claim was FALSE — file remained corrupted on disk; the rewrite was verified missing and actually performed this session. Artifact claims must always be re-verified against the on-disk artifact, never trusted from a LEARN.
+- 2026-09-09 ACCEPTED NETWORK @ oauth2.api.jtl-software.com/token: live-stable 405 on GET (POST-only), no degradation; skippable from routine re-probes.
+- 2026-09-09 ACCEPTED NETWORK @ ffn-sbx.api.jtl-software.com/api-docs/: live-stable 301 (ReDoc live), unchanged.
