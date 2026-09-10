@@ -807,3 +807,5 @@
 - NEW id.jtl-cloud.com/.well-known/openid-configuration: HTTP 200 — Zitadel OIDC live with PKCE, device_code grant advertised but token endpoint rejects with unauthorized_client: grant_type not allowed
 - NEW account.jtl-cloud.com/self-service/registration/browser: HTTP 200 — Kratos SPA, self-service identity mint open
 - CHANGED oauth2.api.jtl-software.com/token: POST-only enforcement (405 on GET) confirmed; no exploitability change
+
+## 2026-09-10 12:06:41 UTC
