@@ -40,3 +40,11 @@
   - | 1 | FFN OAuth scope escalation + leaked creds | **VALID** | 8.1 | Confirmed: leaked creds produce escalated JWT |
   - | 2 | FFN OAuth redirect_uri bypass | **VALID** | 7.4 | Confirmed: /doauthorize accepts attacker redirect_uri |
   - | 3 | FFN API public documentation | **VALID** (low) | 5.3 | Production API docs + 0.1-dev version exposed |
+
+- 6 lead(s) marked VALID at 2026-09-10 18:58:48 UTC
+  - **VERDICT: VALID**
+  - | Q3 Real security impact? | YES — valid client_id + client_secret enables OAuth token acquisition for FFN API |
+  - | Q2 Attacker reachable? | PARTIALLY — endpoint returns 401 without JWT; requires valid token to test |
+  - | Q4 Provable non-invasively? | NO — requires valid JWT for at least one tenant, then testing cross-tenant access. This is invasive testing against live customer data |
+  - | 1 | FFN OAuth Scope Escalation | **VALID** | Confirmed: client_credentials returns JWT with unauthorized scope |
+  - | 2 | FFN OAuth Leaked Credentials | **HOLD** | Creds valid but may be sandbox-only; needs scope clarification |
