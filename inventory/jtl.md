@@ -795,3 +795,15 @@
 ## 2026-09-09 23:34:18 UTC
 
 ## 2026-09-10 01:28:53 UTC
+
+## 2026-09-10 06:52:31 UTC
+- NEW oauth2.api.jtl-software.com/token: client_credentials with scope=ffn.merchant.read returns only ffn.merchant.read; requesting both read+write returns both scopes — server grants any requested ffn.* sc
+- NEW oauth2.api.jtl-software.com/authorize: attacker-controlled redirect_uri (https://evil.example.com/cb) produces byte-identical 302→/doauthorize flow as registered localhost URI — redirect_uri validatio
+- NEW ffn.api.jtl-software.com/api-docs/merchant-current/swagger.json: HTTP 200 — full merchant/fulfiller/shared API spec live including /api/v1/access/tokens (attacker-controlled scopes array, plaintext to
+- NEW ffn-sbx.api.jtl-software.com/api-docs/merchant-current/swagger.json: HTTP 200 — sandbox docs identical to prod
+- NEW api.jtl-cloud.com/erp/v2/graphql: HTTP 401 (JWT gate) — stable, prior 404 reports stale
+- NEW auth.jtl-cloud.com/oauth2/device/auth: HTTP 404 — device flow endpoint permanently removed
+- NEW auth.jtl-cloud.com/.well-known/openid-configuration: HTTP 200 — Ory Hydra OIDC live with implicit flow + public client ("none" auth_method) but device endpoint dead
+- NEW id.jtl-cloud.com/.well-known/openid-configuration: HTTP 200 — Zitadel OIDC live with PKCE, device_code grant advertised but token endpoint rejects with unauthorized_client: grant_type not allowed
+- NEW account.jtl-cloud.com/self-service/registration/browser: HTTP 200 — Kratos SPA, self-service identity mint open
+- CHANGED oauth2.api.jtl-software.com/token: POST-only enforcement (405 on GET) confirmed; no exploitability change
