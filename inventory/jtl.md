@@ -809,3 +809,5 @@
 - CHANGED oauth2.api.jtl-software.com/token: POST-only enforcement (405 on GET) confirmed; no exploitability change
 
 ## 2026-09-10 12:06:41 UTC
+
+## 2026-09-10 15:54:54 UTC
