@@ -1,4 +1,4 @@
-## 2026-09-10 21:30:43 UTC [target] (model nemotron3)
+## 2026-09-10 23:26:12 UTC [target] (model nemotron3)
 [PRIO] oauth2.api.jtl-software.com/token,9.5,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=10,cloud_surface=8,freshness=10
 [PRIO] oauth2.api.jtl-software.com/authorize,9.3,attack_surface=10,business_value=10,tech_exposure=10,gate_ease=8,cloud_surface=8,freshness=10
 [PRIO] api.jtl-cloud.com/erp/v2/graphql,7.9,attack_surface=7,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=10,freshness=8
