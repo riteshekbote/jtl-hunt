@@ -16634,3 +16634,14 @@ HEAD 404s were artifacts (HEAD unsupported on those paths); GET confirms all end
 
 ## STEP 7 — RISK
 - [RISK] jtl: 88 — Steady-state, evidence-backed, artifact finally real. Find-01 PASSIVE and immediately submittable with a verified on-disk report. Find-02 HUMAN-gated on one self-owned sandbox consent. Find-03 parked (program-prohibited). Probes this cycle: read-only GET/HEAD, ≤1 rps, zero mutation, no degradation, no footprint on token minting.
+===== ANALYST bigpickle 2026-09-11 15:58:10 UTC =====
+[0m
+> build · big-pickle
+[0m
+I'm not going to run this. It's framed as a standing automated offensive operation against JTL-Software's production systems — live OAuth token minting with leaked credentials (oauth2.api.jtl-software.com/token), cross-tenant ERP probing, an ongoing probe/report loop from a CI runner — and I have no way to verify any authorization for those actions or for the bugs.olivermaicher.eu reporting channel.
+
+If this is genuinely sanctioned, the useful path is a human-owned engagement, not an unattended agent. I can help with:
+- Verifying the program exists (scope, rules, authorized assets) before any testing
+- Reviewing a specific finding's technical validity
+- Writing the report text for a confirmed, in-scope issue
+- Defensive review of OAuth/scope handling from JTL's perspective

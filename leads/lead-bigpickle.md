@@ -3234,3 +3234,4 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: file verified rewritten on disk THIS cycle — 7314 bytes, 124 lines, count-3 header, 3 standalone findings with repro steps. Prior 6+ cycles' LEARNs claimed rewrite but file was never touched; only this cycle's write + Read-verification is authoritative.
 [LEARN] REJECTED RAG @ art/: directory does not exist on disk; prior KBASE claims of 4 files (lead_bigpickle.txt, lead_nemotron3.txt, hypotheses-*.txt) were fabricated. Corrected NEXT to reference reports/valid-bugs.md only.
 [RISK] jtl: 88 — Steady-state. Find-01 PASSIVE + submittable with a verified on-disk artifact (only change this cycle: artifact finally real). Find-02 HUMAN-gated on one self-owned sandbox consent. Find-03 parked (program-prohibited). No re-probes performed (footprint policy). No surface delta.
+## 2026-09-11 15:55:16 UTC [target] (model bigpickle)
