@@ -835,3 +835,5 @@
 - CHANGED api.jtl-cloud.com/erp/v2/graphql: stable HTTP 401 (JWT gate) — prior 404 reports were stale/flapping
 - CHANGED auth.jtl-cloud.com/oauth2/device/auth: stable HTTP 404 — device authorization endpoint permanently removed
 - CHANGED reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite prior LEARN claims of rewrite — artifact never actually written
+
+## 2026-09-11 23:35:28 UTC
