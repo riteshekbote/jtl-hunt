@@ -309,3 +309,4 @@
 - 2026-09-11 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
 - 2026-09-11 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
 - 2026-09-11 REJECTED RAG @ art/: directory does not exist on disk — prior KBASE entries claiming creation (4 files, 44 lines, verified) were false. LEARN entries about artifact creation must be independently verified against on-disk content.
+- 2026-09-11 REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite 6 prior cycles' LEARN claims of rewrite — artifact was never actually rewritten; LEARN entries about artifact creation must be independently verified against on-disk content
