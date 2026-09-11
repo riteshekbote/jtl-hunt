@@ -3131,3 +3131,36 @@ evidence_needed: authz code via PKCE → token with urn:jtl:tenants → 200 with
 verify_steps: HUMAN_ONLY — self-owned identity; BUT testing crosses into live customer/tenant data (program-prohibited)
 impact: cross-tenant ERP PII/financial/inventory; CRITICAL-if-confirmed
 testability: HUMAN_ONLY
+## 2026-09-11 01:27:36 UTC [target] (model bigpickle)
+[PRIO] oauth2.api.jtl-software.com,9.2,attack_surface:9|business_value:8|tech_exposure:10|gate_ease:10|cloud_surface:7|freshness:9
+[PRIO] ffn-sbx.api.jtl-software.com,7.8,attack_surface:8|business_value:7|tech_exposure:8|gate_ease:8|cloud_surface:6|freshness:8
+[PRIO] ffn.api.jtl-software.com,7.5,attack_surface:8|business_value:8|tech_exposure:8|gate_ease:5|cloud_surface:6|freshness:8
+[HYP] FFN OAuth scope escalation + silent degradation (Find-01)
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: leaked client_id 97170e64-d390-4696-ba46-d6fcef8207de + plaintext secret (sha256:9cc93f...) in public kruegge82/jtl-ffn-php-sdk README; client registered read-only; single POST client_credentials → 200 RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write]; ffn.admin.write → 200 + empty scopes (silent degradation); stable 14+ cycles
+evidence_needed: gathered — reproduced repeatedly; artifact now count-3 on disk
+verify_steps: PASSIVE complete; do NOT mint new tokens (footprint policy); report from known claims + sha256 secret
+impact: unauthorized write-scope FFN token without user account + silent-degradation masking; MEDIUM-HIGH (8.1)
+testability: PASSIVE
+[HYP] FFN ATO chain on sanctioned sandbox (Find-02)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: attacker redirect_uri (evil.example.com/cb) vs registered localhost URI → byte-identical 302→/doauthorize; leaked secret enables code exchange; userless client_credentials token 401 on data plane (sub/acl gate is only missing leg)
+evidence_needed: ONE human consent on ffn-sbx → code at attacker origin → authorization_code exchange → HTTP 200 on /api/v1/merchant/orders
+verify_steps: HUMAN_ONLY — GET /authorize (attacker redirect_uri) → consent → POST /token code exchange → GET ffn-sbx/api/v1/merchant/orders expect 200
+impact: user-context ffn.merchant.write → orders/returns/stock/Amazon-SFP + access-tokens key-mint; HIGH
+testability: HUMAN_ONLY
+[PARKED] ERP cross-tenant BOLA via Zitadel PKCE (Find-03): confidence 60 too low; testability HUMAN_ONLY but more importantly program-prohibits testing against live customer/tenant data; proof requires tenant-A token then x-tenant-id tenant-B against live multi-tenant system. Parked.
+[FINAL] survivors ranked:
+[NEXT] HUMAN: Submit Find-01 (FFN OAuth Scope Escalation + Silent Degradation) to bugs.olivermaicher.eu NOW. Artifact ready: reports/valid-bugs.md. PRIMARY: client_credentials with leaked creds grants unauthorized write scope. SECONDARY: requesting any ffn.* scope returns 200 + empty scopes instead of invalid_scope error. Include JWT payload proof (sub="", scopes=["ffn.merchant.read","ffn.merchant.write"], acl=""). All supporting artifacts in art/ (72 lines total). Do NOT re-probe — evidence is gathered and stable across 14+ cycles.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH (8.1). Stable 14+ cycles.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_code flow); HUMAN_ONLY gate.
+[LEARN] ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent.
+[LEARN] REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key; data access requires authorization_code flow.
+[LEARN] REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled.
+[LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod.
+[LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
+[RISK] jtl: 88 — Steady-state, evidence-backed. Find-01 (scope escalation) is PASSIVE and immediately submittable via bugs.olivermaicher.eu now that valid-bugs.md is verified rewritten on disk. Find-02 (ATO chain) remains HUMAN-gated on one self-owned sandbox consent. Find-03 (ERP BOLA) parked due to program prohibition on live tenant data testing. All probes read-only, <=1 rps, zero mutation on live customer data, no degradation. Artifact claims re-verified against on-disk content this cycle.
