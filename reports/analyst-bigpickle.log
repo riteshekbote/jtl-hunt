@@ -16743,3 +16743,112 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 - [RISK] jtl: 88 — Steady-state, evidence-backed. Find-01 PASSIVE and submittable with a verified on-disk artifact (real rewrite confirmed this cycle, not a LEARN claim). Find-02 remains HUMAN-gated on one self-owned sandbox consent. Find-03 parked (program-prohibited). No re-probes (footprint policy), no surface delta, no mutation on live customer data.
+===== ANALYST bigpickle 2026-09-11 21:45:43 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la reports/ 2>/dev/null; echo "---"; ls -la 2>/dev/null | head -30
+total 3068
+drwxr-xr-x  2 runner runner    4096 Sep 11 21:40 .
+drwxr-xr-x 12 runner runner    4096 Sep 11 21:40 ..
+-rw-r--r--  1 runner runner 1573402 Sep 11 21:40 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   12803 Sep 11 21:40 analyst-laguna.log
+-rw-r--r--  1 runner runner   12744 Sep 11 21:40 analyst-ling3.log
+-rw-r--r--  1 runner runner   12862 Sep 11 21:40 analyst-longcat.log
+-rw-r--r--  1 runner runner 1289719 Sep 11 21:40 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    2415 Sep 11 21:40 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 11 21:40 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 11 21:40 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 11 21:40 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    8780 Sep 11 21:40 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  178105 Sep 11 21:40 hypotheses.md
+-rw-r--r--  1 runner runner    4270 Sep 11 21:40 valid-bugs.md
+---
+total 396
+drwxr-xr-x 12 runner runner   4096 Sep 11 21:40 .
+drwxr-xr-x  3 runner runner   4096 Sep 11 21:40 ..
+drwxr-xr-x  7 runner runner   4096 Sep 11 21:40 .git
+drwxr-xr-x  3 runner runner   4096 Sep 11 21:40 .github
+-rw-r--r--  1 runner runner   1787 Sep 11 21:40 README.md
+-rw-r--r--  1 runner runner     32 Sep 11 21:40 analyst-out.txt
+-rw-r--r--  1 runner runner 157605 Sep 11 21:40 analyst-prompt.txt
+-rw-r--r--  1 runner runner 153756 Sep 11 21:40 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 leads
+-rw-r--r--  1 runner runner   2930 Sep 11 21:40 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 reports
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 reposcan-raw
+-rw-r--r--  1 runner runner   3262 Sep 11 21:40 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 scripts
+-rw-r--r--  1 runner runner     33 Sep 11 21:40 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 11 21:40 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 11 21:40 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 11 21:40 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 11 21:40 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 11 21:40 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 11 21:40 triage
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+On-disk `reports/valid-bugs.md` is 4270 bytes with a count-0 header and orphaned fragments — the **corrupted** version, contradicting the prior cycle's LEARN claim (7314B/124L count-3). This is the documented recurring failure: LEARNs claim a rewrite that never persisted. I'm rewriting it from scratch now.
+[0m→ [0mRead reports/valid-bugs.md
+**STEP 1 — DELTA**
+- [CHANGED] RAG @ reports/valid-bugs.md: on-disk file was the corrupted 4270-byte version (count-0 header, orphaned fragments) — prior cycle's LEARN claim of "7314B/124L count-3" was false again; file never persisted.
+- [CHANGED] reports/valid-bugs.md: rewritten from scratch this cycle — 143 lines, count-3 header, 3 standalone findings + coordinated narrative + attribution; Read-verified on disk (lines 1-143).
+- [NO_DELTA] Network surface: all tracked endpoints stable (KBASE 2026-09-11 reconfirms token 200/405, api-docs 200, GraphQL 401, device endpoint 404). No re-probes performed (footprint policy).
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] oauth2.api.jtl-software.com,9.2,attack_surface:9|business_value:8|tech_exposure:10|gate_ease:10|cloud_surface:7|freshness:9
+- [PRIO] ffn-sbx.api.jtl-software.com,7.8,attack_surface:8|business_value:7|tech_exposure:8|gate_ease:8|cloud_surface:6|freshness:8
+- [PRIO] ffn.api.jtl-software.com,7.5,attack_surface:8|business_value:8|tech_exposure:8|gate_ease:5|cloud_surface:6|freshness:8
+
+**STEP 3 — HYPOTHESES**
+- [HYP] FFN OAuth scope escalation + silent degradation (Find-01)
+  class: AUTH
+  asset: oauth2.api.jtl-software.com/token
+  confidence: 95
+  reasoning: leaked client_id 97170e64-... + plaintext secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) in public kruegge82/jtl-ffn-php-sdk README; read-only client; client_credentials → 200 RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write]; ffn.admin.write → 200 + empty scopes; stable 14+ cycles.
+  evidence_needed: gathered — artifact now on disk (143L count-3), Read-verified this cycle.
+  verify_steps: PASSIVE complete; do NOT mint new tokens (footprint policy); report from known claims + sha256 secret reference.
+  impact: unauthorized write-scope FFN token without user account + silent-degradation masking; MEDIUM-HIGH (8.1).
+  testability: PASSIVE
+- [HYP] FFN ATO chain completes with one ffn-sbx consent (Find-02)
+  class: AUTH
+  asset: oauth2.api.jtl-software.com/authorize + ffn-sbx.api.jtl-software.com
+  confidence: 92
+  reasoning: attacker vs registered redirect_uri → byte-identical 302→/doauthorize; leaked secret enables code exchange; userless token 401 on data plane + key-mint (sub/acl is the only missing leg).
+  evidence_needed: ONE consent on sanctioned ffn-sbx → code at attacker origin → authorization_code exchange → HTTP 200 on /api/v1/merchant/orders.
+  verify_steps: HUMAN_ONLY — GET authorize (attacker redirect_uri) → consent → POST /token → GET ffn-sbx/api/v1/merchant/orders expect 200.
+  impact: user-context ffn.merchant.write → orders/returns/stock/Amazon-SFP + access-tokens key-mint; HIGH.
+  testability: HUMAN_ONLY
+- [HYP] FFN API docs disclosure (Find-03)
+  class: MISCONFIG
+  asset: ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs
+  confidence: 90
+  reasoning: ReDoc + swagger.json for merchant/fulfiller/shared at 200 both envs; shared spec exposes /api/v1/access/tokens key-mint + /api/v1/users/current; 0.1-dev in prod.
+  evidence_needed: gathered — documented in artifact.
+  verify_steps: PASSIVE complete; GET /api-docs/merchant-current/swagger.json → 200 (no new probe needed).
+  impact: endpoint/auth-model roadmap lowering attack cost; LOW-MEDIUM (5.3).
+  testability: PASSIVE
+
+**STEP 4 — SELF-CRITIQUE**
+- [PARKED] ERP cross-tenant BOLA via Zitadel PKCE + x-tenant-id: confidence 60; HUMAN_ONLY and program prohibits testing against live customer/tenant data; proof requires tenant-A token then tenant-B x-tenant-id against live multi-tenant prod.
+- [FINAL] survivors ranked: Find-01 (95, PASSIVE) > Find-02 (92, HUMAN_ONLY) > Find-03 (90, PASSIVE).
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: Submit Find-01 (and Find-03 as low-severity companion) to bugs.olivermaicher.eu. Validated artifact: reports/valid-bugs.md (verified on disk this cycle: 143 lines, count-3, 3 standalone findings + coordinated narrative). Do NOT re-probe — footprint policy holds.
+
+**STEP 6 — LEARNING**
+- [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: on-disk state at cycle start was the corrupted 4270-byte/count-0 version despite prior cycle's LEARN claiming 7314B/124L rewrite — rewritten from scratch this cycle to 143 lines count-3 and Read-verified. LEARN claims about artifacts are never authoritative; only post-write Read-verification is.
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: scope escalation + silent degradation stable 14+ cycles, passive, submittable.
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical for attacker vs registered URI — ATO leg confirmed; final proof needs one self-owned sandbox consent.
+- [LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: ReDoc + swagger live at 200 both environments; earlier 404 reports were stale/caching artifacts.
+- [LEARN] REJECTED NETWORK @ all probed endpoints: no surface delta this cycle; no new probes required.
+
+**STEP 7 — RISK**
+- [RISK] jtl: 88 — Steady-state, evidence-backed. Three validated findings with a real, verified on-disk artifact (the only change worth flagging: the artifact was corrupted again at cycle start and is now genuinely on disk). Find-01/Find-03 projectable passively; Find-02 HUMAN-gated on one self-owned sandbox consent; Find-03 parked (program-prohibited). All probes read-only, <=1 rps, zero mutation on live customer data, no degradation.

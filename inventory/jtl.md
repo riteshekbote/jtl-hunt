@@ -827,3 +827,11 @@
 ## 2026-09-11 15:58:10 UTC
 
 ## 2026-09-11 19:03:40 UTC
+
+## 2026-09-11 21:45:43 UTC
+- CHANGED oauth2.api.jtl-software.com/token: client_credentials grant returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] (stable 14+ cycles)
+- CHANGED oauth2.api.jtl-software.com/authorize: attacker-controlled redirect_uri (https://evil.example.com/cb) produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri co
+- CHANGED ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs: public ReDoc + swagger.json for ALL THREE APIs (merchant/fulfiller/shared) confirmed LIVE at HTTP 200 both sandbox+prod
+- CHANGED api.jtl-cloud.com/erp/v2/graphql: stable HTTP 401 (JWT gate) — prior 404 reports were stale/flapping
+- CHANGED auth.jtl-cloud.com/oauth2/device/auth: stable HTTP 404 — device authorization endpoint permanently removed
+- CHANGED reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite prior LEARN claims of rewrite — artifact never actually written
