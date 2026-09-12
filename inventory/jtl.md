@@ -894,3 +894,8 @@
 - CHANGED id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
 
 ## 2026-09-12 21:47:59 UTC
+
+## 2026-09-12 23:21:13 UTC
+- CHANGED api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+- CHANGED ffn.api.jtl-software.com/api-docs: NOW 404 (was 200) — public API documentation removed from both prod and sandbox; finding no longer applicable
+- CHANGED ffn-sbx.api.jtl-software.com/api-docs: NOW 404 — sandbox docs also removed
