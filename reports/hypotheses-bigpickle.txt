@@ -1,19 +1,21 @@
-## 2026-09-11 23:34:12 UTC [target] (model bigpickle)
+## 2026-09-12 01:32:12 UTC [target] (model bigpickle)
 [HYP] FFN OAuth scope escalation + silent degradation via leaked creds (Find-01)
 class: AUTH
 asset: oauth2.api.jtl-software.com/token
 confidence: 95
-reasoning: valid client_id 97170e64-d390-4696-ba46-d6fcef8207de + plaintext secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) in public kruegge82/jtl-ffn-php-sdk README; registered read-only client returns 200 + RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write]; cross-role scopes (ffn.admin.write) → 200 + empty scopes not invalid_scope; stable 14+ cycles
-evidence_needed: gathered — PASSIVE repro in verified on-disk artifact
-verify_steps: PASSIVE complete; do NOT mint new tokens; submit from existing claims + sha256 secret
-impact: write-scope FFN bearer token with no user account; bounded by sub/acl 401 on data plane; MEDIUM-HIGH (8.1)
+reasoning: public kruegge82/jtl-ffn-php-sdk README commits valid client_id 97170e64-d390-4696-ba46-d6fcef8207de + plaintext secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e); read-only-registered client returns 200 + RS256 JWT with scopes=[ffn.merchant.read,ffn.merchant.write]; cross-role scopes (ffn.admin.write) return 200 + empty scopes not invalid_scope; stable 14+ cycles
+evidence_needed: gathered — artifact rewritten + Read-verified on disk (count-3)
+verify_steps: PASSIVE complete; do NOT mint new tokens (footprint policy); submit from existing claims + sha256 secret
+impact: write-scope FFN bearer token without user account + silent-degradation masking; MEDIUM-HIGH (8.1)
 testability: PASSIVE
 [HYP] FFN OAuth ATO chain via unvalidated redirect_uri + leaked secret (Find-02)
 class: AUTH
-asset: oauth2.api.jtl-software.com/authorize + /doauthorize + ffn-sbx
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize + ffn-sbx.api.jtl-software.com
 confidence: 92
-reasoning: attacker redirect_uri (https://evil.example.com/cb) vs registered localhost URI → byte-identical 302→/doauthorize; leaked secret enables code exchange; userless token 401 on data/key-mint, so user-context (sub/acl) token is the only missing leg
-evidence_needed: one consent on self-owned ffn-sbx test account → code at attacker origin → HTTP 200 on /api/v1/merchant/orders
-verify_steps: HUMAN_ONLY — GET authorize (attacker redirect_uri) → consent → POST /token → GET ffn-sbx/api/v1/merchant/orders expect 200
-impact: user-context ffn.merchant.write → orders/returns/stock/SFP + access-tokens key-mint; HIGH
+reasoning: attacker redirect_uri (https://evil.example.com/cb) vs registered localhost URI -> byte-identical 302 -> /doauthorize; leaked secret enables code exchange; userless client_credentials token 401 on data plane and /api/v1/access/tokens key-mint, so user-context (sub/acl) token is the only missing leg
+evidence_needed: one consent on self-owned sanctioned ffn-sbx account -> code at attacker origin -> authorization_code exchange -> HTTP 200 on /api/v1/merchant/orders
+verify_steps: HUMAN_ONLY — GET /authorize (attacker redirect_uri) -> consent -> POST /token grant_type=authorization_code -> GET ffn-sbx/api/v1/merchant/orders expect 200
+impact: user-context ffn.merchant.write -> orders/returns/stock/Amazon-SFP + access-tokens key-mint; HIGH if chain completes (7.4 standalone)
 testability: HUMAN_ONLY
+[NEXT] HUMAN: Submit Find-01 (FFN OAuth scope escalation + silent degradation + leaked credentials) to bugs.olivermaicher.eu; use artifact reports/valid-bugs.md (verified on disk, 4710B/81L, count-3) as the basis. Do NOT re-probe the network.
+[RISK] jtl: 88 — Steady-state. Find-01 PASSIVE and now backed by a genuinely verified on-disk artifact; Find-02 HUMAN-gated on one self-owned sandbox consent; Find-03 parked (program-prohibited). No network re-probes (footprint policy); no surface delta. Submission remains the single pending gating action.

@@ -837,3 +837,13 @@
 - CHANGED reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite prior LEARN claims of rewrite — artifact never actually written
 
 ## 2026-09-11 23:35:28 UTC
+
+## 2026-09-12 01:37:48 UTC
+- NEW oauth2.api.jtl-software.com/token: client_credentials POST returns HTTP 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] (live verified this cycle) — scope escalation + silent de
+- NEW oauth2.api.jtl-software.com/authorize: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed (li
+- NEW ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger.json for merchant/fulfiller/shared APIs live at HTTP 200 both environments; shared spec exposes /api/v1/access/tokens (attacker-cont
+- NEW api.jtl-cloud.com/erp/v2/graphql: stable HTTP 401 (JWT gate) — prior 404 reports were stale/flapping (live verified)
+- CHANGED auth.jtl-cloud.com/oauth2/device/auth: stable HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED oauth2.api.jtl-software.com/token: POST-only enforcement (HTTP 405 on GET) confirmed; no exploitability change
+- CHANGED account.jtl-cloud.com/self-service/registration/browser: stable HTTP 200 (Kratos SPA) — self-service identity mint open
+- CHANGED id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
