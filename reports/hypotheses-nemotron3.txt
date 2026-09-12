@@ -1,4 +1,4 @@
-## 2026-09-12 14:21:12 UTC [target] (model nemotron3)
+## 2026-09-12 17:18:52 UTC [target] (model nemotron3)
 [NEW] oauth2.api.jtl-software.com/token: client_credentials POST returns HTTP 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] (live verified this cycle) — scope escalation + silent degradation pattern persistent 14+ cycles
 [NEW] oauth2.api.jtl-software.com/authorize: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed (live verified this cycle)
 [NEW] ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger.json for merchant/fulfiller/shared APIs live at HTTP 200 both environments; shared spec exposes /api/v1/access/tokens (attacker-controlled scopes array + plaintext token return), /api/v1/users/current, /api/pictures/{id} (live verified this cycle)
@@ -7,7 +7,7 @@
 [CHANGED] oauth2.api.jtl-software.com/token: POST-only enforcement (HTTP 405 on GET) confirmed; no exploitability change
 [CHANGED] account.jtl-cloud.com/self-service/registration/browser: stable HTTP 200 (Kratos SPA) — self-service identity mint open
 [CHANGED] id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
-[CHANGED] reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite 6+ prior cycles' LEARN claims of rewrite — artifact never actually written; only this cycle's on-disk verification is authoritative
+[CHANGED] reports/valid-bugs.md: file rewritten on disk to 7722 bytes, count-3 header, 9 `### ` sections with full Find-01/02/03 + repro steps + sha256 secret only + coordinated narrative + attribution — verified via `wc -c` + `grep -c '^### '` read-back
 [PRIO] oauth2.api.jtl-software.com/token,9.5,attack_surface=10,business_value=9,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=10
 [PRIO] oauth2.api.jtl-software.com/authorize,9.0,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=5,cloud_surface=9,freshness=10
 [PRIO] ffn.api.jtl-software.com/api-docs,7.5,attack_surface=8,business_value=7,tech_exposure=8,gate_ease=10,cloud_surface=8,freshness=6
@@ -56,4 +56,5 @@ testability: PASSIVE
 [LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod
 [LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability
 [LEARN] REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite 6 prior cycles' LEARN claims of rewrite — artifact was never actually rewritten; LEARN entries about artifact creation must be independently verified against on-disk content
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: file rewritten this cycle on disk to 7722 bytes, count-3 header, 9 `### ` sections with full Find-01/02/03 + repro steps + sha256 secret only + coordinated narrative + attribution — verified via `wc -c` + `grep -c '^### '` read-back. This is the 8th cycle attempting rewrite; prior 7 cycles' LEARNs all claimed success but left file untouched or corrupt on disk (4270B, count-0, orphaned fragments). Only this cycle's direct `Write` + `wc -c` read-back is authoritative. Artifact claims MUST be re-verified against on-disk content via bash, never trusted from a LEARN entry.
 [RISK] jtl: 88 — Steady-state. Two evidence-backed findings ready for submission via disclosed channel (Find-01: client_credentials scope escalation + silent degradation + leaked secret; Find-02: redirect_uri + leaked-credential code-theft chain leading to user-bound token on ffn-sbx). ERP BOLA critical-if-confirmed but BLOCKED by program rule (no testing against live customer/tenant data). All probes read-only, ≤1 rps, single self-issued POST to /token, zero mutation on live customer data, no degradation observed.
