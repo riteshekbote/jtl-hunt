@@ -17023,3 +17023,141 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] jtl: 88 — Steady-state. Find-01 PASSIVE and now backed by a genuinely verified on-disk artifact; Find-02 HUMAN-gated on one self-owned sandbox consent; Find-03 parked (program-prohibited). No network re-probes (footprint policy); no surface delta. Submission remains the single pending gating action.
+===== ANALYST bigpickle 2026-09-12 06:31:50 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la reports/ 2>/dev/null; echo "---"; wc -c reports/valid-bugs.md 2>/dev/null; echo "---"; head -20 reports/valid-bugs.md 2>/dev/null
+total 3132
+drwxr-xr-x  2 runner runner    4096 Sep 12 06:28 .
+drwxr-xr-x 12 runner runner    4096 Sep 12 06:28 ..
+-rw-r--r--  1 runner runner 1595785 Sep 12 06:28 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   13454 Sep 12 06:28 analyst-laguna.log
+-rw-r--r--  1 runner runner   13392 Sep 12 06:28 analyst-ling3.log
+-rw-r--r--  1 runner runner   13516 Sep 12 06:28 analyst-longcat.log
+-rw-r--r--  1 runner runner 1328104 Sep 12 06:28 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    2510 Sep 12 06:28 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 12 06:28 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 12 06:28 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 12 06:28 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   10848 Sep 12 06:28 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  184033 Sep 12 06:28 hypotheses.md
+-rw-r--r--  1 runner runner    4270 Sep 12 06:28 valid-bugs.md
+---
+4270 reports/valid-bugs.md
+---
+# Validated findings (running count 0)
+
+- 10 lead(s) marked VALID at 2026-09-05 16:16:27 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q2 Reachable? | **PARTIAL** — endpoint live (401 without JWT) but requires valid token to test |
+  - | Q4 Provable non-invasively? | **NO** — requires valid JWT for tenant A, then query with `x-tenant-id: tenant-B`. Cannot obtain token without OAuth registration or test account |
+  - | Q2 Reachable? | **PARTIAL** — OIDC discovery confirms device flow + public client support, but no valid `client_id` enumerated |
+  - | Q4 Provable non-invasively? | **NO** — needs valid client_id to initiate device flow |
+  - | 1 | FFN OAuth leaked credentials | **VALID** | 7.5 |
+  - | 2 | FFN OAuth scope escalation | **VALID** | 8.1 |
+  - | 3 | FFN OAuth redirect_uri bypass | **VALID** | 6.8 |
+
+- 13 lead(s) marked VALID at 2026-09-07 19:25:53 UTC
+  - **Verdict: VALID**
+  - | Q3 | Real security impact? | **YES** — valid client_id + client_secret for production OAuth2; enables token minting for FFN API |
+  - **Verdict: VALID**
+  - | Proof | `https://github.com/kruegge82/jtl-ffn-php-sdk` README contains client_id `97170e64-d390-4696-ba46-d6fcef8207de` and client_secret `f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z`; POST to token en
+  - **Verdict: VALID**
+[0m
+[0m$ [0msed -n '20,120p' reports/valid-bugs.md
+- **Verdict: VALID**
+  - | Q2 | Attacker reachable? | **PARTIAL** — endpoint live (401 without JWT) but requires valid token |
+  - | Q4 | Provable non-invasively? | **NO** — requires valid JWT for tenant A, then query with `x-tenant-id: tenant-B` |
+  - | Q4 | Provable? | **NO** — no valid client_id, endpoint 404 |
+  - | Q2 | Attacker reachable? | **PARTIAL** — OIDC discovery live but no valid public client_id enumerated |
+  - | Q4 | Provable? | **NO** — needs valid client_id |
+  - | 1 | FFN OAuth scope escalation | **VALID** | 8.1 | bugs.olivermaicher.eu |
+  - | 2 | FFN OAuth leaked credentials | **VALID** | 7.5 | bugs.olivermaicher.eu |
+  - | 3 | FFN OAuth redirect_uri bypass | **VALID** | 6.8 | bugs.olivermaicher.eu |
+
+- 12 lead(s) marked VALID at 2026-09-07 22:16:37 UTC
+  - | Q2 Attacker reachable? | **YES** — Public GitHub repo `kruegge82/jtl-ffn-php-sdk` leaks valid `client_id`+`client_secret`; token endpoint is public internet |
+  - | Q7 Reasonable triager accept? | **YES** — Confirmed working PoC: leaked creds produce valid tokens with unauthorized scopes. Fundamental OAuth authorization flaw |
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q7 Reasonable triager accept? | **YES** — Production API docs exposing `0.1-dev` version, internal endpoint structure, and token minting endpoints is a valid misconfig finding |
+  - **Verdict: VALID** (low severity)
+  - | Q4 Provable non-invasively? | **NO** — Requires valid JWT from tenant A, then swap `x-tenant-id` to tenant B. Token acquisition requires HUMAN interaction (consent/login). All models mark this AUTH_
+  - | Q4 Provable non-invasively? | **NO** — No valid public client_id enumerated for this Ory instance. All attempts to find one failed |
+  - | Q7 Reasonable triager accept? | **NO** — Cannot demonstrate any exploit without a valid client_id. Discovery alone is not a vulnerability |
+  - | 1 | FFN OAuth scope escalation + leaked creds | **VALID** | 8.1 | Confirmed: leaked creds produce escalated JWT |
+  - | 2 | FFN OAuth redirect_uri bypass | **VALID** | 7.4 | Confirmed: /doauthorize accepts attacker redirect_uri |
+  - | 3 | FFN API public documentation | **VALID** (low) | 5.3 | Production API docs + 0.1-dev version exposed |
+
+- 6 lead(s) marked VALID at 2026-09-10 18:58:48 UTC
+  - **VERDICT: VALID**
+  - | Q3 Real security impact? | YES — valid client_id + client_secret enables OAuth token acquisition for FFN API |
+  - | Q2 Attacker reachable? | PARTIALLY — endpoint returns 401 without JWT; requires valid token to test |
+  - | Q4 Provable non-invasively? | NO — requires valid JWT for at least one tenant, then testing cross-tenant access. This is invasive testing against live customer data |
+  - | 1 | FFN OAuth Scope Escalation | **VALID** | Confirmed: client_credentials returns JWT with unauthorized scope |
+  - | 2 | FFN OAuth Leaked Credentials | **HOLD** | Creds valid but may be sandbox-only; needs scope clarification |
+[0m
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+[0m$ [0mwc -c reports/valid-bugs.md; grep -c '^## Find' reports/valid-bugs.md; head -1 reports/valid-bugs.md
+5703 reports/valid-bugs.md
+3
+# Validated findings (running count 3)
+[0m
+STEP 1 — DELTA:
+- CHANGED RAG @ reports/valid-bugs.md: on-disk state THIS cycle was still the corrupt 4270-byte count-0 artifact (orphaned validation fragments, stale table rows); the state's "verified on disk 4710B/81L count-3" claim was false — re-verified by wc/head, then rewritten to 5703B count-3 (3 findings + narrative + attribution) and re-verified (wc -c, grep count, header).
+- NO_DELTA network: no probes run (footprint policy); KBASE surface stable — token 200 escalation, authorize 302 unvalidated redirect_uri, ffn/ffn-sbx api-docs 200, graphql 401, device endpoint 404.
+
+STEP 2 — PRIORITIZE:
+- [PRIO] oauth2.api.jtl-software.com/token,8.6,attack_surface(0.85)/business_value(0.90)/tech_exposure(0.95)/gate_ease(0.90)/freshness(0.85) — leaked creds, scope escalation, no user gate
+- [PRIO] oauth2.api.jtl-software.com/authorize,7.2,attack_surface(0.75)/business_value(0.85)/tech_exposure(0.90)/gate_ease(0.55)/freshness(0.85) — ATO chain, one consent gate
+- [PRIO] ffn-sbx.api.jtl-software.com/api-docs,5.0,attack_surface(0.55)/business_value(0.45)/tech_exposure(0.60)/gate_ease(0.95)/freshness(0.10) — sanctioned full-chain path, low severity
+
+STEP 3 — HYPOTHESES:
+[HYP] FFN OAuth scope escalation + silent degradation via leaked creds (Find-01)
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: public kruegge82/jtl-ffn-php-sdk README commits client_id 97170e64-d390-4696-ba46-d6fcef8207de + plaintext secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e); read-only client returns 200 + RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write]; cross-role scopes (ffn.admin.write/portal.write) return 200 + empty scopes not invalid_scope; stable 14+ cycles
+evidence_needed: gathered — artifact rewritten + wc/head-verified on disk (5703B, count-3)
+verify_steps: PASSIVE complete; do NOT mint new tokens (footprint policy); submit from existing KBASE claims + sha256 secret
+impact: write-scope FFN bearer token without user account + silent-degradation masking; MEDIUM-HIGH (8.1)
+testability: PASSIVE
+[HYP] FFN OAuth ATO chain via unvalidated redirect_uri + leaked secret (Find-02)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize + ffn-sbx.api.jtl-software.com
+confidence: 92
+reasoning: attacker redirect_uri (https://evil.example.com/cb) vs registered localhost URI → byte-identical 302→/doauthorize; leaked secret enables authorization_code exchange; userless client_credentials 401 on data plane + /api/v1/access/tokens key-mint, so user-context (sub/acl) token is the only missing leg
+evidence_needed: one consent on self-owned sanctioned ffn-sbx account → code at attacker origin → HTTP 200 on /api/v1/merchant/orders
+verify_steps: HUMAN_ONLY — GET /authorize (attacker redirect_uri) → consent → POST /token grant_type=authorization_code → GET ffn-sbx/api/v1/merchant/orders expect 200
+impact: user-context ffn.merchant.write → orders/returns/stock/Amazon-SFP + key-mint; HIGH if chain completes (7.4 standalone)
+testability: HUMAN_ONLY
+[HYP] FFN API self-describing docs expose full surface incl. key-mint spec (Find-03)
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs
+confidence: 90
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) live at 200 both envs; version 0.1-dev; spec documents /api/v1/access/tokens (attacker-controlled scopes array, plaintext token return) + /api/v1/users/current
+evidence_needed: gathered — verified 200 both envs multiple cycles
+verify_steps: PASSIVE complete (no re-probe); include as LOW finding from existing claims
+impact: information disclosure + escalation blueprint; LOW (5.3)
+testability: PASSIVE
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] ERP cross-tenant BOLA via Zitadel PKCE + x-tenant-id: test crosses into live customer/tenant data — program-prohibited; confidence 60 but untestable.
+- [FINAL] Find-01 (95) > Find-02 (92, HUMAN gate) > Find-03 (90, LOW). All three now backed by a genuinely verified on-disk artifact (count-3, this cycle's own write+read-back). No hypothesis dropped below 40.
+
+STEP 5 — NEXT ACTION:
+[NEXT] HUMAN: Submit Find-01 (FFN OAuth scope escalation + silent degradation + leaked credentials, CVSS 8.1) to bugs.olivermaicher.eu using reports/valid-bugs.md — NOW verified on disk this cycle (5703B, count-3 header, 3 findings, repro steps, sha256 secret only). Do NOT re-probe the network; no new token minting.
+
+STEP 6 — LEARNING:
+[LEARN] REJECTED RAG @ reports/valid-bugs.md: file was corrupt on disk again despite prior cycle's "verified 4710B/81L count-3" state claim — LEARN/state artifact claims are consistently untrustworthy; only this cycle's on-disk write + wc/grep/head read-back (5703B, count-3) is authoritative.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten this cycle on disk to count-3 (Find-01 scope escalation 8.1, Find-02 redirect_uri 7.4 + ATO chain, Find-03 API docs 5.3) with repro steps, sha256 secret, coordinated narrative, attribution — submission-ready basis.
+
+STEP 7 — RISK:
+[RISK] jtl: 90 — Steady-state offensives held (0 network re-probes this cycle, footprint policy respected). Find-01 PASSIVE with a genuinely verified on-disk artifact; Find-02 HUMAN-gated on one self-owned sandbox consent; Find-03 parked as LOW. The sole execution risk is continued artifact/claim drift in the reporting pipeline — mitigated by mandatory on-disk verification before submission.

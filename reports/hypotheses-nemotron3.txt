@@ -1,4 +1,4 @@
-## 2026-09-12 01:37:01 UTC [target] (model nemotron3)
+## 2026-09-12 06:31:40 UTC [target] (model nemotron3)
 [NEW] oauth2.api.jtl-software.com/token: client_credentials POST returns HTTP 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] (live verified this cycle) — scope escalation + silent degradation stable 14+ cycles
 [NEW] oauth2.api.jtl-software.com/authorize: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed (live verified)
 [NEW] ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger.json for merchant/fulfiller/shared APIs live at HTTP 200 both environments; shared spec exposes /api/v1/access/tokens (attacker-controlled scopes array + plaintext token return), /api/v1/users/current, /api/pictures/{id} (live verified)
