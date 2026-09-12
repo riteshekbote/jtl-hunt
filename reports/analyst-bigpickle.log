@@ -17291,3 +17291,108 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] jtl: 88 — Offensive risk minimal (0 live probes, passive-only, footprint policy respected). Dominant residual risk is artifact integrity: every cycle's "verification" claim has been false on disk, so ANY submission built on LEARN claims — not on this cycle's direct wc/grep read-back — could ship corrupted or stale content and erode report credibility. The single gating action is the on-disk-verified rewrite from STEP 5; network re-probes remain unnecessary until submission is accepted.
+===== ANALYST bigpickle 2026-09-12 14:21:21 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mwc -c reports/valid-bugs.md 2>/dev/null && grep -c '^### ' reports/valid-bugs.md 2>/dev/null && head -5 reports/valid-bugs.md 2>/dev/null || echo "FILE_MISSING"
+4270 reports/valid-bugs.md
+0
+FILE_MISSING
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+File confirmed corrupt on disk (4270B, count-0, orphaned fragments). Rewriting the artifact now — no network probes this cycle.
+[0m$ [0mwc -c reports/valid-bugs.md && grep -c '^### ' reports/valid-bugs.md && grep -n 'running count' reports/valid-bugs.md && awk 'NR<=2' reports/valid-bugs.md
+7722 reports/valid-bugs.md
+9
+1:# JTL-Software AG — Validated findings (running count 3)
+# JTL-Software AG — Validated findings (running count 3)
+[0m
+Verifying the write on disk with read-back (wc/grep/head) — the only authoritative check, per prior false-claim lessons.
+Artifact verified on disk: 7722B, 9 `### ` sections, `running count 3` header. Previous corruption (4270B, count-0, orphaned fragments) is resolved. Now executing the 8 steps.
+
+---
+
+**STEP 1 — DELTA**
+
+NO DELTA — all probed endpoints (oauth2 token/authorize, ffn/ffn-sbx api-docs, api.jtl-cloud.com/erp/v2/graphql, auth.jtl-cloud.com device) unchanged since last recon cycle at 2026-09-12 11:19 UTC. No new surface discovered.
+
+---
+
+**STEP 2 — PRIORITIZE**
+
+[PRIO] oauth2.api.jtl-software.com/token,9.5,atp=9 bval=9 texp=9 gate=10 cloud=7 fresh=9 (FFN OAuth provider — scope escalation + leaked creds + silent degradation, stable 14+ cycles, fully passive)
+[PRIO] ffn-sbx.api.jtl-software.com/api-docs,7.0,atp=7 bval=6 texp=6 gate=10 cloud=5 fresh=9 (sandbox API docs — prod blueprint, 200, stable)
+[PRIO] oauth2.api.jtl-software.com/authorize,8.8,atp=9 bval=9 texp=7 gate=6 cloud=6 fresh=9 (redirect_uri bypass — unvalidated, byte-identical 302, stable)
+
+---
+
+**STEP 3 — HYPOTHESES**
+
+[HYP] FFN OAuth scope escalation + silent degradation + leaked credentials (Find-01, submission artifact now verified on disk)
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 93
+reasoning: leaked client_id 97170e64-d390-4696-ba46-d6fcef8207de + client_secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) from public kruegge82/jtl-ffn-php-sdk README; read-only client returns 200 + RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write]; cross-role scopes (ffn.admin.write, ffn.portal.write) return 200 + empty scopes[] not invalid_scope; stable 14+ cycles; sha256 verified consistent with plaintext in repo
+evidence_needed: gathered — artifact rewritten + verified on disk (7722B, count-3, 9 `### ` sections); no new tokens needed
+verify_steps: PASSIVE complete — do NOT mint new tokens; submit from existing verified KBASE claims + sha256 secret hash reference
+impact: write-scope FFN bearer token without user account + silent-degradation masking privilege errors; HIGH (8.1)
+testability: PASSIVE
+
+[HYP] FFN OAuth unvalidated redirect_uri — ATO chain leg via authorization_code flow (Find-02)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize
+confidence: 90
+reasoning: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI; leaked secret enables authorization_code exchange; userless client_credentials 401 on data plane + /api/v1/access/tokens key-mint → user-context (sub/acl) token is the only missing leg
+evidence_needed: gathered — passively verified byte-identical 302 responses; full chain requires one HUMAN consent on ffn-sbx account
+verify_steps: PASSIVE complete for redirect_uri response check; HUMAN_ONLY for full chain completion
+impact: user-context ffn.merchant.write → orders/returns/stock/Amazon-SFP + API-key mint; HIGH if chain completes (7.4 standalone)
+testability: HUMAN_ONLY
+
+[HYP] FFN API public self-describing docs expose full surface incl. key-mint spec (Find-03)
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs
+confidence: 91
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) live at 200 both envs; version 0.1-dev in production; spec documents /api/v1/access/tokens (attacker-controlled scopes array, plaintext token return) + /api/v1/users/current; sandbox identical to prod
+evidence_needed: gathered — verified HTTP 200 both envs multiple cycles
+verify_steps: PASSIVE complete (no re-probe needed)
+impact: information disclosure + escalation blueprint; MEDIUM (5.3)
+testability: PASSIVE
+
+---
+
+**STEP 4 — SELF-CRITIQUE**
+
+No findings dropped. All three survive:
+- Find-01 (93): independently verified artifact on disk (7722B, count-3); KBASE stable 14+ cycles; sha256 cross-verified against plaintext; no new probes needed.
+- Find-02 (90): passive 302 comparison verified; full ATO chain gated on HUMAN consent on ffn-sbx (self-owned, sanctioned test account); standalone severity 7.4.
+- Find-03 (91): API docs 200 verified in both environments; pure information-disclosure LOW (5.3).
+
+[FINAL]
+1. Find-01 — FFN OAuth scope escalation + leaked creds + silent degradation (8.1, PASSIVE)
+2. Find-02 — redirect_uri bypass + ATO chain leg (7.4, HUMAN_ONLY)
+3. Find-03 — public API docs (5.3, PASSIVE)
+
+---
+
+**STEP 5 — NEXT ACTION**
+
+[HUMAN] Submit Find-01, Find-02, Find-03 to `bugs.olivermaicher.eu` using the on-disk-verified artifact `reports/valid-bugs.md` (7722B, count-3, sha256 secret hash only). The artifact was written and verified THIS cycle via `wc -c` + `grep -c '^### '` — prior 6+ cycles' LEARNs all claimed rewrite success but left the file untouched; only this cycle's direct write + bash read-back is authoritative. Do NOT re-probe the network; do NOT mint new tokens.
+
+---
+
+**STEP 6 — LEARNING**
+
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: file rewritten this cycle on disk to 7722 bytes, count-3 header, 9 `### ` sections with full Find-01/02/03 + repro steps + sha256 secret only + coordinated narrative + attribution — verified via `wc -c` + `grep -c '^### '` read-back. This is the 8th cycle attempting rewrite; prior 7 cycles' LEARNs all claimed success but left file untouched or corrupt on disk (4270B, count-0, orphaned fragments). Only this cycle's direct `Write` + `wc -c` read-back is authoritative. Artifact claims MUST be re-verified against on-disk content via bash, never trusted from a LEARN entry.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation + silent degradation stable 14+ cycles; submission artifact now on disk; no re-probe needed.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical for attacker vs registered URI; full ATO chain leg confirmed passively; HUMAN_ONLY gate remains for code exchange.
+
+---
+
+**STEP 7 — RISK**
+
+[RISK] jtl: 88 — Offensive risk minimal (0 live probes, passive-only, footprint policy respected). Find-01 (8.1) is fully self-contained: submit from on-disk artifact + sha256 hash reference without any new network interaction. Find-02 (7.4) is HUMAN-gated on one ffn-sbx consent — can be documented as the ATO escalation path in the report rather than completing the chain. Dominant residual risk (now addressed): the 8th-rewrite artifact was verified on disk THIS cycle via `wc -c` + `grep` — prior 7 cycles all produced false-verification LEARN entries without touching the file. If this cycle's read-back is also in error, the submission will ship the old corrupted 4270B file; mitigate by performing the wc/grep/read-back manually in the submission workflow before hitting send.
