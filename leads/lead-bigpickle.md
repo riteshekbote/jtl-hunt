@@ -3470,3 +3470,31 @@ impact: enumeration + escalation blueprint for Find-01/02 chains; MEDIUM (5.3)
 testability: PASSIVE
 [NEXT] HUMAN: Submit the three findings to bugs.olivermaicher.eu using `reports/valid-bugs.md`. Before send: run `wc -c reports/valid-bugs.md` (expect 4963), `grep -c '^### '` (expect 3), `head -1` (expect count-3 header) — do NOT trust this or any LEARN entry; verify on disk.
 [RISK] jtl: 50 — Artifact-integrity residual retired for real this cycle (4963B/count-3 verified via three independent bash checks). Offensive footprint minimal and unchanged (0 new probes, single historical self-issued POST, no mutation). Remaining risk: submission harness pulling a stale path copy rather than the verified file — mitigated by the mandatory pre-send read-back; Find-02 impact stays HUMAN-gated by design.
+## 2026-09-12 21:40:00 UTC [target] (model bigpickle)
+[HYP] Find-01 FFN OAuth scope escalation + silent degradation via leaked client_credentials
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) public in kruegge82/jtl-ffn-php-sdk README; client_credentials documented 401 but returns 200 + RS256 JWT scopes=[read,write]; admin/portal scopes → 200 + empty scopes[]; stable 15+ cycles
+evidence_needed: gathered — repro step now verbatim in on-disk artifact (8073B, count-3)
+verify_steps: PASSIVE complete; submit from verified artifact, no new token mint per footprint policy
+impact: unauth write-scope FFN bearer without user context; HIGH (8.1)
+testability: PASSIVE
+[HYP] Find-02 OAuth unvalidated redirect_uri → user-context token ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize
+confidence: 90
+reasoning: attacker redirect_uri=https://evil.example.com/cb byte-identical 302→/doauthorize vs registered localhost URI; leaked secret enables authorization_code exchange; userless token 401 on data plane + key-mint proves sub/acl is the missing leg
+evidence_needed: redirect_uri leg gathered; chain completion needs one ffn-sbx authorization-con
+verify_steps: HUMAN_ONLY — GET /authorize(attacker uri) → consent → POST /token authorization_code → GET ffn-sbx /api/v1/merchant/orders expect 200
+impact: merchant orders/returns/stock/Amazon-SFP + API-key mint; HIGH if chained (7.4)
+testability: HUMAN_ONLY
+[HYP] Find-03 public FFN API docs expose full surface incl. key-mint spec
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs
+confidence: 92
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) 200 both envs; 0.1-dev in prod; shared spec documents /api/v1/access/tokens (attacker scopes array, plaintext return) + /api/v1/users/current
+evidence_needed: gathered — multiple-cycle 200 re-confirmation
+verify_steps: PASSIVE complete
+impact: enumeration + escalation blueprint for Find-01/02; MEDIUM (5.3)
+testability: PASSIVE

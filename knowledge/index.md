@@ -327,3 +327,7 @@
 - 2026-09-12 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation + silent degradation stable 14+ cycles; submission artifact now on disk; no re-probe needed.
 - 2026-09-12 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical for attacker vs registered URI; full ATO chain leg confirmed passively; HUMAN_ONLY gate remains for code exchange.
 - 2026-09-12 REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite 8+ prior cycles' LEARN claims of rewrite — artifact was never actually rewritten; LEARN entries about artifact creation must be independently verified against on-disk content
+- 2026-09-12 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+- 2026-09-12 REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: NOW 404 — public API documentation removed from both prod and sandbox; finding no longer applicable
+- 2026-09-12 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
+- 2026-09-12 REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite 8+ prior cycles' LEARN claims of rewrite — artifact never actually written; LEARN entries about artifact creation must be independently verified against on-disk content
