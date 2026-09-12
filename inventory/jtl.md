@@ -857,3 +857,5 @@
 - CHANGED oauth2.api.jtl-software.com/token: POST-only enforcement (HTTP 405 on GET) confirmed; no exploitability change
 - CHANGED account.jtl-cloud.com/self-service/registration/browser: stable HTTP 200 (Kratos SPA) — self-service identity mint open
 - CHANGED id.jtl-cloud.com: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+
+## 2026-09-12 11:19:46 UTC
