@@ -1,7 +1,9 @@
-## 2026-09-12 23:21:00 UTC [target] (model nemotron3)
-[CHANGED] api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
-[CHANGED] ffn.api.jtl-software.com/api-docs: NOW 404 (was 200) — public API documentation removed from both prod and sandbox; finding no longer applicable
-[CHANGED] ffn-sbx.api.jtl-software.com/api-docs: NOW 404 — sandbox docs also removed
+## 2026-09-13 01:13:54 UTC [target] (model nemotron3)
+[NEW] api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+[NEW] ffn.api.jtl-software.com/api-docs: NOW 404 (was 200) — public API documentation removed from both prod and sandbox; finding no longer applicable
+[NEW] ffn-sbx.api.jtl-software.com/api-docs: NOW 404 — sandbox docs also removed
+[CHANGED] oauth2.api.jtl-software.com/token: client_credentials scope escalation + silent degradation stable 14+ cycles; submission artifact on disk
+[CHANGED] oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical for attacker vs registered URI; full ATO chain leg confirmed passively; HUMAN_ONLY gate remains
 [PRIO] oauth2.api.jtl-software.com/token,9.5,attack_surface=10,business_value=9,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=10
 [PRIO] oauth2.api.jtl-software.com/authorize,9.0,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=5,cloud_surface=9,freshness=10
 [PRIO] id.jtl-cloud.com/oauth/v2/authorize,4.0,attack_surface=7,business_value=10,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=2

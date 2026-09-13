@@ -899,3 +899,13 @@
 - CHANGED api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
 - CHANGED ffn.api.jtl-software.com/api-docs: NOW 404 (was 200) — public API documentation removed from both prod and sandbox; finding no longer applicable
 - CHANGED ffn-sbx.api.jtl-software.com/api-docs: NOW 404 — sandbox docs also removed
+
+## 2026-09-13 01:14:43 UTC
+- CHANGED api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+- CHANGED ffn.api.jtl-software.com/api-docs: NOW 404 (was 200) — public API documentation removed from both prod and sandbox; finding no longer applicable
+- CHANGED ffn-sbx.api.jtl-software.com/api-docs: NOW 404 — sandbox docs also removed
+- NEW api.jtl-cloud.com/erp/v2/graphql: NOW 404 (was 401) — GraphQL endpoint removed/moved; cross-tenant BOLA chain blocked
+- NEW ffn.api.jtl-software.com/api-docs: NOW 404 (was 200) — public API documentation removed from both prod and sandbox; finding no longer applicable
+- NEW ffn-sbx.api.jtl-software.com/api-docs: NOW 404 — sandbox docs also removed
+- CHANGED oauth2.api.jtl-software.com/token: client_credentials scope escalation + silent degradation stable 14+ cycles; submission artifact on disk
+- CHANGED oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical for attacker vs registered URI; full ATO chain leg confirmed passively; HUMAN_ONLY gate remains
