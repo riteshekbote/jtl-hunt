@@ -199,3 +199,5 @@ reasoning: Multiple connectors call `unserialize()` on values read from the shop
 impact: LOW-MEDIUM — conditional RCE if database is compromised or customer-controlled serialized data flows to these paths.
 verify_steps: 1) Confirm which DB columns contain serialized PHP objects. 2) Trace if customer input can influence these columns. 3) Passively: confirm `unserialize()` at cited lines.
 TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 06:15:29 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
