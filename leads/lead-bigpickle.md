@@ -3781,3 +3781,33 @@ testability: PASSIVE
 [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: the corrupted 4270B artifact actually contained the plaintext client_secret (line 19) — a disclosure risk inside our own artifact; rewritten file has 0 plaintext occurrences, sha256(secret) only.
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (8.1) + Find-02 redirect_uri (7.4) + Find-03 (5.3) stable 14+ cycles; submission artifact complete on disk.
 [RISK] jtl: 30 — Footprint this cycle: 0 live probes (artifact-only local file work). Artifact-integrity blocker cleared with verifiable read-back; residual risk is now the submission act itself (must follow program channel rules; include only sha256 secret, never plaintext). Find-02 remains HUMAN-gated on a consenting self-owned sandbox identity — do not proceed without a self-owned test account. ERP GraphQL flapping is drift-watch only.
+## 2026-09-13 23:14:29 UTC [target] (model bigpickle)
+[HYP] Find-01 FFN OAuth client_credentials scope escalation — submission-ready
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: POST with leaked public-README creds returns 200 + RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write], sub="",acl=""; silent degradation on ffn.admin/portal.write; GET 405; stable 14+ cycles
+evidence_needed: gathered — JWT decode + on-disk artifact read-back (6384B/count-3/0-plaintext) verified this session
+verify_steps: PASSIVE complete; only submission remains
+impact: write-scope FFN bearer minting, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02 unvalidated redirect_uri -> user-context ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302->/doauthorize vs registered localhost URI; leaked creds enable authorization_code exchange
+evidence_needed: chain completion needs one consent on self-owned ffn-sbx identity
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) -> consent -> POST /token -> GET ffn-sbx /api/v1/merchant/orders and /api/v1/access/tokens
+impact: merchant orders/returns/stock/Amazon-SFP + API-key mint; 7.4
+testability: HUMAN_ONLY
+[HYP] ERP GraphQL endpoint status flapping
+class: OTHER
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 30
+reasoning: alternates 401/404 across cycles; JWT-gated; cross-tenant test on live data barred by program note
+evidence_needed: 3+ consecutive identical statuses
+verify_steps: PASSIVE weekly status log
+impact: cross-tenant BOLA only if stable-alive AND token obtainable AND rule waived (blocked)
+testability: PASSIVE
+[NEXT] HUMAN: Submit `reports/valid-bugs.md` to bugs.olivermaicher.eu. Pre-send re-run: `wc -c`=6384, `head -1`="running count 3", `grep -c '^## Find-'`=3, `grep -c <plaintext-secret>`=0, `grep -c sha256`=1. Send client_id `97170e64-d390-4696-ba46-d6fcef8207de` + sha256-only secret, 4 evidence URLs (GitHub README, oauth2 /token, oauth2 /authorize, ffn+ffn-sbx swagger.json). Flag Find-01 PASSIVE 8.1 / Find-02 HUMAN_ONLY chain 7.4 / Find-03 MISCONFIG 5.3 (flapping, verify at triage). Do NOT attempt Find-02 consent without a self-owned ffn-sbx account.
+[RISK] jtl: 25 — Footprint 0 live probes (artifact-only local work). Artifact-integrity blocker cleared with verified read-back; the corrupted file no longer leaks the plaintext secret. Residual risk now concentrates on the submission act: include sha256 only, follow program channel rules; Find-02 chain must wait for a self-owned sandbox account before any consent attempt. ERP GraphQL flap remains drift-watch only.

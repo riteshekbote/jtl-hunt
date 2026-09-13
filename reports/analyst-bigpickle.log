@@ -19103,3 +19103,118 @@ testability: PASSIVE
 
 **STEP 7 — RISK**
 [RISK] jtl: 30 — Footprint this cycle: 0 live probes (artifact-only local file work). Artifact-integrity blocker cleared with verifiable read-back; residual risk is now the submission act itself (must follow program channel rules; include only sha256 secret, never plaintext). Find-02 remains HUMAN-gated on a consenting self-owned sandbox identity — do not proceed without a self-owned test account. ERP GraphQL flapping is drift-watch only.
+===== ANALYST bigpickle 2026-09-13 23:16:16 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la reports/ 2>/dev/null; echo "---"; ls -la art/ 2>/dev/null || echo "art/ MISSING"; echo "---"; wc -c reports/valid-bugs.md 2>/dev/null || echo "valid-bugs.md MISSING"
+total 3504
+drwxr-xr-x  2 runner runner    4096 Sep 13 23:13 .
+drwxr-xr-x 12 runner runner    4096 Sep 13 23:13 ..
+-rw-r--r--  1 runner runner 1789425 Sep 13 23:13 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   16275 Sep 13 23:13 analyst-laguna.log
+-rw-r--r--  1 runner runner   16200 Sep 13 23:13 analyst-ling3.log
+-rw-r--r--  1 runner runner   16350 Sep 13 23:13 analyst-longcat.log
+-rw-r--r--  1 runner runner 1483819 Sep 13 23:13 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    3446 Sep 13 23:13 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 13 23:13 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 13 23:13 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 13 23:13 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    8872 Sep 13 23:13 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  216731 Sep 13 23:13 hypotheses.md
+-rw-r--r--  1 runner runner    4270 Sep 13 23:13 valid-bugs.md
+---
+art/ MISSING
+---
+4270 reports/valid-bugs.md
+[0m
+[0m$ [0mhead -1 reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '^## Find-' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c 'sha256:9cc93ff6' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '^### ' reports/valid-bugs.md 2>/dev/null
+# Validated findings (running count 0)
+---
+0
+---
+0
+---
+1
+---
+0
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+On-disk verification is authoritative: `reports/valid-bugs.md` is still the 4270-byte corrupt version (count-0 header, orphaned fragments, **plaintext client_secret on line 19**), `art/` missing. The 21:16:52 LEARN claim of a verified 8701B rewrite is false again — 10th cycle. Rewriting on disk now, then verifying.
+[0m$ [0mwc -c reports/valid-bugs.md; echo "---"; head -1 reports/valid-bugs.md; echo "---"; grep -c '^## Find-' reports/valid-bugs.md; echo "---"; grep -c 'sha256:9cc93ff6' reports/valid-bugs.md; echo "---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md; echo "---"; grep -c '^### ' reports/valid-bugs.md
+6384 reports/valid-bugs.md
+---
+# Validated findings (running count 3)
+---
+3
+---
+1
+---
+0
+---
+10
+[0m
+On-disk verification passes: **6384 bytes, header `running count 3`, 3 `## Find-` sections, 1 sha256, 0 plaintext-secret occurrences, 10 `### ` subsections.** Artifact restored from the 4270B/count-0/plaintext-leaking state.
+
+---
+
+**STEP 1 — DELTA**
+- [CHANGED] `reports/valid-bugs.md`: on-disk check THIS cycle proved the 21:16:52 LEARN (verified 8701B/count-3) **false** — file was still 4270B, count-0, orphaned fragments, **plaintext client_secret on line 19**. 10th consecutive false rewrite claim.
+- [CHANGED] `reports/valid-bugs.md`: now rewritten on disk this session — 6384B, `running count 3`, 3 `## Find-` sections, sha256-only secret, 0 plaintext occurrences. First read-back-verified correct state.
+- [CHANGED] `art/`: directory does not exist; analyst logs + hypothesis files actually live under `reports/` (hypotheses-bigpickle.txt, hypotheses-nemotron3.txt, analyst-*.log confirmed on disk).
+- [CHANGED] No target-surface delta — all findings stable 14+ cycles (Find-01/02 live, Find-03 flapping, ERP GraphQL 401, device endpoint 404).
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] reports/valid-bugs.md (submission artifact), 6.7, business_value=10(fresh=10) — gate now cleared
+- [PRIO] oauth2.api.jtl-software.com/token (Find-01 scope escalation), 8.1, tech_exposure=10(fresh=10)
+- [PRIO] oauth2.api.jtl-software.com/authorize (Find-02 redirect_uri ATO), 7.7, business_value=10(tech=10)
+
+**STEP 3 — HYPOTHESES**
+[HYP] Find-01 FFN OAuth client_credentials scope escalation — submission-ready
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: POST with leaked public-README creds returns 200 + RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write], sub="",acl=""; silent degradation on ffn.admin/portal.write; GET 405; stable 14+ cycles
+evidence_needed: gathered — JWT decode + on-disk artifact read-back (6384B/count-3/0-plaintext) verified this session
+verify_steps: PASSIVE complete; only submission remains
+impact: write-scope FFN bearer minting, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02 unvalidated redirect_uri -> user-context ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302->/doauthorize vs registered localhost URI; leaked creds enable authorization_code exchange
+evidence_needed: chain completion needs one consent on self-owned ffn-sbx identity
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) -> consent -> POST /token -> GET ffn-sbx /api/v1/merchant/orders and /api/v1/access/tokens
+impact: merchant orders/returns/stock/Amazon-SFP + API-key mint; 7.4
+testability: HUMAN_ONLY
+[HYP] ERP GraphQL endpoint status flapping
+class: OTHER
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 30
+reasoning: alternates 401/404 across cycles; JWT-gated; cross-tenant test on live data barred by program note
+evidence_needed: 3+ consecutive identical statuses
+verify_steps: PASSIVE weekly status log
+impact: cross-tenant BOLA only if stable-alive AND token obtainable AND rule waived (blocked)
+testability: PASSIVE
+
+**STEP 4 — SELF-CRITIQUE**
+- [PARKED] ERP GraphQL flap: confidence 30 < 40; no deterministic status; cross-tenant test barred regardless.
+- [PARKED] /api/v1/access/tokens live key-mint: requires user-context token from Find-02 consent — folded into HUMAN_ONLY chain, not a standalone reportable.
+- [FINAL] Ranked survivors: 1) Find-01 (95, PASSIVE, evidence gathered, artifact verified) 2) Find-02 (88, HUMAN_ONLY chain, needs self-owned sandbox account).
+
+**STEP 5 — NEXT ACTION**
+[NEXT] HUMAN: Submit `reports/valid-bugs.md` to bugs.olivermaicher.eu. Pre-send re-run: `wc -c`=6384, `head -1`="running count 3", `grep -c '^## Find-'`=3, `grep -c <plaintext-secret>`=0, `grep -c sha256`=1. Send client_id `97170e64-d390-4696-ba46-d6fcef8207de` + sha256-only secret, 4 evidence URLs (GitHub README, oauth2 /token, oauth2 /authorize, ffn+ffn-sbx swagger.json). Flag Find-01 PASSIVE 8.1 / Find-02 HUMAN_ONLY chain 7.4 / Find-03 MISCONFIG 5.3 (flapping, verify at triage). Do NOT attempt Find-02 consent without a self-owned ffn-sbx account.
+
+**STEP 6 — LEARNING**
+- [LEARN] REJECTED RAG @ reports/valid-bugs.md: the 21:16:52 claim of verified 8701B rewrite was FALSE — on-disk was still 4270B/count-0 with plaintext secret. 10th cycle proving LEARN artifact claims unverifiable; only bash read-back counts.
+- [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this session — 6384B, count-3, 3 `## Find-`, 1 sha256, 0 plaintext, 10 `### ` — verified via `wc -c`/`head -1`/`grep -c`.
+- [LEARN] ACCEPTED RAG @ reports/: hypothesis/analyst artifacts live under `reports/`, NOT `art/` — KBASE `art/` entries fabricated; corrected.
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (8.1) + Find-02 (7.4) stable 14+ cycles, no re-probe; artifact complete and submission-ready.
+
+**STEP 7 — RISK**
+[RISK] jtl: 25 — Footprint 0 live probes (artifact-only local work). Artifact-integrity blocker cleared with verified read-back; the corrupted file no longer leaks the plaintext secret. Residual risk now concentrates on the submission act: include sha256 only, follow program channel rules; Find-02 chain must wait for a self-owned sandbox account before any consent attempt. ERP GraphQL flap remains drift-watch only.
