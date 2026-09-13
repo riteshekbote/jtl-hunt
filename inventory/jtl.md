@@ -927,3 +927,12 @@
 - CHANGED oauth2.api.jtl-software.com/token: client_credentials returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable
 - CHANGED oauth2.api.jtl-software.com/authorize: attacker redirect_uri (https://evil.example.com/cb) produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed
 - CHANGED reports/valid-bugs.md: Still corrupted on disk (4270 bytes, count-0 header, 0 `### ` sections) despite 8+ prior LEARN claims of rewrite — artifact never actually written
+
+## 2026-09-13 16:40:46 UTC
+- NEW ffn.api.jtl-software.com/api-docs: Returns 301→200 with full ReDoc + swagger.json (merchant/fulfiller/shared) — prior KBASE 404 report was stale/incorrect
+- NEW ffn-sbx.api.jtl-software.com/api-docs: Returns 200 with identical structure to prod — prior KBASE 404 report was stale/incorrect
+- NEW api.jtl-cloud.com/erp/v2/graphql: Returns 401 (JWT gate alive) — prior KBASE 404 report was stale/incorrect
+- CHANGED auth.jtl-cloud.com/oauth2/device/auth: Confirmed 404 (endpoint permanently removed)
+- CHANGED oauth2.api.jtl-software.com/token: client_credentials returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable 14+ cycles
+- CHANGED oauth2.api.jtl-software.com/authorize: attacker redirect_uri (https://evil.example.com/cb) produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed
+- CHANGED reports/valid-bugs.md: Still corrupted on disk (4270 bytes, count-0 header, 0 `### ` sections) despite 8+ prior LEARN claims of rewrite — artifact never actually written
