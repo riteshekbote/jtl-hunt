@@ -936,3 +936,5 @@
 - CHANGED oauth2.api.jtl-software.com/token: client_credentials returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable 14+ cycles
 - CHANGED oauth2.api.jtl-software.com/authorize: attacker redirect_uri (https://evil.example.com/cb) produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed
 - CHANGED reports/valid-bugs.md: Still corrupted on disk (4270 bytes, count-0 header, 0 `### ` sections) despite 8+ prior LEARN claims of rewrite — artifact never actually written
+
+## 2026-09-13 18:59:46 UTC
