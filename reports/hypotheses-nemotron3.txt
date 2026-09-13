@@ -1,4 +1,4 @@
-## 2026-09-13 06:28:38 UTC [target] (model nemotron3)
+## 2026-09-13 12:05:09 UTC [target] (model nemotron3)
 [NEW] ffn.api.jtl-software.com/api-docs: Returns 301→200 with full ReDoc + swagger.json (merchant/fulfiller/shared) — prior KBASE 404 report was stale/incorrect
 [NEW] ffn-sbx.api.jtl-software.com/api-docs: Returns 200 with identical structure to prod — prior KBASE 404 report was stale/incorrect
 [NEW] api.jtl-cloud.com/erp/v2/graphql: Returns 401 (JWT gate alive) — prior KBASE 404 report was stale/incorrect
@@ -11,7 +11,6 @@
 [PRIO] ffn.api.jtl-software.com/api-docs,6.5,attack_surface=8,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=5
 [PRIO] ffn-sbx.api.jtl-software.com/api-docs,6.5,attack_surface=8,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=7,freshness=5
 [PRIO] api.jtl-cloud.com/erp/v2/graphql,4.0,attack_surface=7,business_value=10,tech_exposure=8,gate_ease=1,cloud_surface=7,freshness=2
-[PRIO] id.jtl-cloud.com/oauth/v2/authorize,3.5,attack_surface=6,business_value=9,tech_exposure=7,gate_ease=3,cloud_surface=6,freshness=2
 [HYP] FFN OAuth scope escalation via client_credentials with leaked credentials
 class: AUTH
 asset: oauth2.api.jtl-software.com/token

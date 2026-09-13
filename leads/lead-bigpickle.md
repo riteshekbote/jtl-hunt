@@ -3657,3 +3657,31 @@ impact: cross-tenant BOLA only if alive AND JWT obtainable AND program rule waiv
 testability: PASSIVE
 [NEXT] HUMAN: Submit reports/valid-bugs.md (verified 7680B, count-3, 3 findings) to bugs.olivermaicher.eu. Immediately pre-send re-run: `wc -c`=7680, `head -1`="running count 3", `grep -c '^## Find-'`=3 — then send with client_id + sha256 secret reference only (never plaintext), 4 evidence pointers, and findings flagged: Find-01 PASSIVE 8.1, Find-02 HUMAN_ONLY chain 7.4, Find-03 historical (docs now 404).
 [RISK] jtl: 45 — Footprint minimal (4 read-only probes, ≤1 rps, no token mint, zero mutation). Artifact-integrity risk retired: submission file verified real on disk with read-back. Residual: ERP flap misread could push a blocked BOLA finding (mitigated — parked); Find-02 remains HUMAN-gated on self-owned sandbox identity; Find-03 live value gone but retainable as historical disclosure.
+## 2026-09-13 12:06:44 UTC [target] (model bigpickle)
+[HYP] Find-01 FFN OAuth client_credentials scope escalation via leaked secret
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: POST client_credentials w/ public-README creds → HTTP 200 RS256 JWT `scopes:[ffn.merchant.read,ffn.merchant.write]`, `sub:""`, `acl:""` (minted live this cycle); README secret sha256 matches `9cc93ff6…`; endpoint live (405 on GET)
+evidence_needed: gathered — this-cycle mint + local JWT decode; repro steps written
+verify_steps: PASSIVE complete; optional one-shot re-mint before HUMAN send
+impact: unauthorized write-scope FFN bearer minting w/ zero user context; CVSS 8.1
+testability: AUTH_HELPED
+[HYP] Find-02 OAuth unvalidated redirect_uri → user-context ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx
+confidence: 88
+reasoning: attacker redirect_uri `https://evil.example.com/cb` and registered `http://localhost` yield byte-identical 302→/doauthorize (this cycle); leaked secret enables authorization_code exchange
+evidence_needed: chain completion needs one consent on self-owned ffn-sbx identity
+verify_steps: HUMAN_ONLY — consent → code at attacker URI → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: merchant orders/returns/stock/Amazon-SFP + /api/v1/access/tokens key-mint; 7.4
+testability: HUMAN_ONLY
+[HYP] ERP GraphQL endpoint flapping vs removed
+class: OTHER
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 30
+reasoning: 401 this cycle (alive); historical 401/404 alternation; JWT-gated; cross-tenant test on live data barred by program note
+evidence_needed: 3+ consecutive identical cycles
+verify_steps: PASSIVE weekly status log; drift-watch only
+impact: cross-tenant BOLA if alive AND token obtainable AND rule waived (currently blocked)
+testability: PASSIVE
