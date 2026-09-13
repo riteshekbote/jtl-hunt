@@ -3636,3 +3636,24 @@ impact: enumeration + escalation blueprint for Find-01/02; MEDIUM (5.3)
 testability: PASSIVE
 [NEXT] RAG: Rewrite `reports/valid-bugs.md` on disk NOW — current on-disk content is the 4270B/count-0 corruption (verified this cycle), so HUMAN submission must NOT be emitted until the artifact is real. Write 3 standalone findings (Find-01 8.1, Find-02 7.4 + ATO narrative, Find-03 5.3 with "flapping 200/404" caveat), client_id + sha256 secret reference only (never plaintext), 4 evidence URLs, coordinated OAuth narrative, attribution; then verify with `wc -c` + `grep -c '^## Find-'` (expect 3) + `head -1` (expect count-3). Only after that read-back converges do you emit the submission HUMAN step.
 [RISK] jtl: 42 — Offensive footprint minimal (5 GET/HEAD probes this cycle, ≤1 rps, zero mutation, no token mint, matching prior policy). Primary residual is artifact-integrity: submission of a still-corrupted report would be a program-grade failure; mitigated by mandatory RAG rewrite + read-back before any send. Find-01/03 are disclosure-level; Find-02 full chain remains HUMAN-gated on a consenting self-owned sandbox identity.
+## 2026-09-13 06:19:09 UTC [target] (model bigpickle)
+[HYP] Find-02 authorization_code chain completion → user-context token on ffn-sbx
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx.api.jtl-software.com
+confidence: 90
+reasoning: attacker redirect_uri 302 leg reconfirmed live this cycle (byte-identical to registered); leaked creds enable code exchange; userless token 401 on data-plane and key-mint proves sub/acl is the missing leg (established across cycles)
+evidence_needed: one login/consent on self-owned ffn-sbx identity → code at attacker callback → token with sub/acl → 200 on /api/v1/merchant/orders
+verify_steps: HUMAN_ONLY — GET /authorize(attacker uri) → consent → POST /token authorization_code → GET ffn-sbx /api/v1/merchant/orders
+impact: merchant orders/returns/stock/Amazon-SFP + /api/v1/access/tokens key-mint; HIGH (7.4)
+testability: HUMAN_ONLY
+[HYP] ERP GraphQL endpoint flapping vs removed
+class: OTHER
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 30
+reasoning: cycle alternates 401/404; this cycle 401 (alive); KBASE "NOW 404" reported stale one cycle later — cannot establish stable state
+evidence_needed: multi-cycle deterministic status (3+ consecutive identical)
+verify_steps: HEAD/GET weekly, record 401 vs 404 vs 200
+impact: cross-tenant BOLA only if alive AND JWT obtainable AND program rule waived (currently blocked)
+testability: PASSIVE
+[NEXT] HUMAN: Submit reports/valid-bugs.md (verified 7680B, count-3, 3 findings) to bugs.olivermaicher.eu. Immediately pre-send re-run: `wc -c`=7680, `head -1`="running count 3", `grep -c '^## Find-'`=3 — then send with client_id + sha256 secret reference only (never plaintext), 4 evidence pointers, and findings flagged: Find-01 PASSIVE 8.1, Find-02 HUMAN_ONLY chain 7.4, Find-03 historical (docs now 404).
+[RISK] jtl: 45 — Footprint minimal (4 read-only probes, ≤1 rps, no token mint, zero mutation). Artifact-integrity risk retired: submission file verified real on disk with read-back. Residual: ERP flap misread could push a blocked BOLA finding (mitigated — parked); Find-02 remains HUMAN-gated on self-owned sandbox identity; Find-03 live value gone but retainable as historical disclosure.

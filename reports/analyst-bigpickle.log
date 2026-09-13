@@ -18409,3 +18409,151 @@ testability: PASSIVE
 
 ## STEP 7 — RISK
 [RISK] jtl: 42 — Offensive footprint minimal (5 GET/HEAD probes this cycle, ≤1 rps, zero mutation, no token mint, matching prior policy). Primary residual is artifact-integrity: submission of a still-corrupted report would be a program-grade failure; mitigated by mandatory RAG rewrite + read-back before any send. Find-01/03 are disclosure-level; Find-02 full chain remains HUMAN-gated on a consenting self-owned sandbox identity.
+===== ANALYST bigpickle 2026-09-13 06:28:47 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la reports/ 2>&1; echo "---"; wc -c reports/valid-bugs.md 2>&1; echo "---"; grep -c '^## Find-' reports/valid-bugs.md 2>&1; echo "---"; head -3 reports/valid-bugs.md 2>&1
+total 3400
+drwxr-xr-x  2 runner runner    4096 Sep 13 06:16 .
+drwxr-xr-x 12 runner runner    4096 Sep 13 06:17 ..
+-rw-r--r--  1 runner runner 1739803 Sep 13 06:16 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   15190 Sep 13 06:16 analyst-laguna.log
+-rw-r--r--  1 runner runner   15120 Sep 13 06:16 analyst-ling3.log
+-rw-r--r--  1 runner runner   15260 Sep 13 06:16 analyst-longcat.log
+-rw-r--r--  1 runner runner 1426572 Sep 13 06:16 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   15358 Sep 13 06:16 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 13 06:16 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 13 06:16 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 13 06:16 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    8937 Sep 13 06:16 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  204278 Sep 13 06:16 hypotheses.md
+-rw-r--r--  1 runner runner    4270 Sep 13 06:16 valid-bugs.md
+---
+4270 reports/valid-bugs.md
+---
+0
+---
+# Validated findings (running count 0)
+
+- 10 lead(s) marked VALID at 2026-09-05 16:16:27 UTC
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+Confirmed on disk: `reports/valid-bugs.md` is still 4270 bytes with count-0 header — the 8+ LEARN rewrite claims were again false. Checking the corrupted content and the lead files to rebuild it properly.
+Artifact confirmed corrupt on disk. Before the rewrite, anchoring this cycle's evidence with 4 read-only probes (GET/HEAD, ≤1 rps, no tokens minted).
+[0m
+[0m$ [0mUA="Mozilla/5.0 (compatible; jtl-hunt-recon/1.0)"
+echo "== token GET (expect 405) =="
+curl -s -o /dev/null -w "%{http_code}\n" --max-time 15 -A "$UA" "https://oauth2.api.jtl-software.com/token"; sleep 1
+echo "== authorize attacker redirect_uri (expect 302->/doauthorize) =="
+curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" --max-time 15 -A "$UA" "https://oauth2.api.jtl-software.com/authorize?response_type=code&client_id=97170e64-d390-4696-ba46-d6fcef8207de&redirect_uri=https://evil.example.com/cb&scope=ffn.merchant.read&state=test"; sleep 1
+echo "== ffn.api-docs (expect 404) =="
+curl -s -o /dev/null -w "%{http_code}\n" --max-time 15 -A "$UA" -I "https://ffn.api.jtl-software.com/api-docs"; sleep 1
+echo "== erp graphql (expect 404) =="
+curl -s -o /dev/null -w "%{http_code}\n" --max-time 15 -A "$UA" "https://api.jtl-cloud.com/erp/v2/graphql"
+== token GET (expect 405) ==
+405
+== authorize attacker redirect_uri (expect 302->/doauthorize) ==
+302 https://oauth2.api.jtl-software.com/doauthorize?response_type=code&client_id=97170e64-d390-4696-ba46-d6fcef8207de&redirect_uri=https%3A%2F%2Fevil.example.com%2Fcb&scope=ffn.merchant.read&state=test
+== ffn.api-docs (expect 404) ==
+404
+== erp graphql (expect 404) ==
+401
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+Probes: token 405 (POST-only), authorize reconfirms unvalidated redirect_uri (302 → /doauthorize with `evil.example.com` preserved), api-docs 404 (docs removed), erp graphql 401 (alive — KBASE's this-cycle "NOW 404" was itself stale; endpoint is flapping, not gone). Now rewriting the corrupted artifact on disk.
+[0m$ [0mwc -c reports/valid-bugs.md; echo "count-header:"; head -1 reports/valid-bugs.md; echo "findings:"; grep -c '^## Find-' reports/valid-bugs.md; echo "sections:"; grep -c '^## ' reports/valid-bugs.md; echo "secret-plaintext-check (expect 0):"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md; echo "sha256-reference-count (expect >=2):"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md
+7680 reports/valid-bugs.md
+count-header:
+# Validated findings (running count 3)
+findings:
+3
+sections:
+5
+secret-plaintext-check (expect 0):
+0
+sha256-reference-count (expect >=2):
+2
+[0m
+Verifying the artifact on disk with the three checks (not trusting the write):
+[0m← [0mEdit reports/valid-bugs.md
+Index: /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md
+===================================================================
+--- /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md
++++ /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md
+@@ -78,9 +78,9 @@
+ A single OAuth server (`oauth2.api.jtl-software.com`) exhibits three coherent defects:
+ 
+ 1. **Leaked secrets** — the only discoverable production client (`97170e64-d390-4696-ba46-d6fcef8207de`) has its `client_secret` published in plaintext in a public GitHub README (`sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e`).
+ 2. **No scope validation (Find-01)** — `client_credentials` is silently escalated to write scope; illegal scopes degrade to `200`+empty instead of erroring.
+-3. **No `redirect_uri` validation (Find-02)** — attacker-controlled callback URIs are accepted with `302`; chained with (1)+(2) this yields a user-confext merchant token.
++3. **No `redirect_uri` validation (Find-02)** — attacker-controlled callback URIs are accepted with `302`; chained with (1)+(2) this yields a user-context merchant token.
+ 
+ The public FFN docs (Find-03) supplied the exact endpoint map — including `/api/v1/access/tokens` key minting — that turns a merchant token into standing API credentials. Remediation: revoke/rotate the leaked `client_secret`, enforce registered-scope checking on the token endpoint, enforce strict `redirect_uri` allowlisting on `/authorize` + `/doauthorize`, and remove the public API documentation or gate it behind authentication.
+ 
+ ## Attribution & method
+
+[0m
+Read-back converges: 7680B, count-3 header, 3 findings, no plaintext secret. Fixing one typo in the narrative, then finalizing.
+[0m$ [0mwc -c reports/valid-bugs.md; head -1 reports/valid-bugs.md; grep -c '^## Find-' reports/valid-bugs.md
+7680 reports/valid-bugs.md
+# Validated findings (running count 3)
+3
+[0m
+Artifact is now real on disk: 7680 bytes, count-3 header, 3 findings, secret referenced only as sha256. Read-back converged.
+
+---
+
+STEP 1 — DELTA
+- [CHANGED] `reports/valid-bugs.md`: verified corrupt on disk again this cycle (4270B, count-0) — prior 8+ LEARN rewrite claims false; REWRITTEN and bash-verified THIS cycle (7680B, count-3, 3 `## Find-` sections, sha256-only secret)
+- [CHANGED] `api.jtl-cloud.com/erp/v2/graphql`: returns **401** this cycle (alive, JWT gate) — contradicts prior-cycle "NOW 404"; endpoint is **flapping**, not removed
+- [CHANGED] `ffn.api.jtl-software.com/api-docs`: **404** (docs removed, prod+sandbox) — confirmed this cycle; Find-03 downgraded to historical
+- [CHANGED] `oauth2.api.jtl-software.com/token`: 405 GET (POST-only) — unchanged; `/authorize` reconfirmed live: attacker `redirect_uri=https://evil.example.com/cb` → 302 `/doauthorize` with attacker URI preserved (unvalidated redirect_uri)
+
+STEP 2 — PRIORITIZE
+- [PRIO] oauth2.api.jtl-software.com/token,9.5,attack_surface=10,business_value=9,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=10
+- [PRIO] oauth2.api.jtl-software.com/authorize,9.0,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=5,cloud_surface=9,freshness=10
+- [PRIO] api.jtl-cloud.com/erp/v2/graphql,4.0,attack_surface=7,business_value=10,tech_exposure=8,gate_ease=2,cloud_surface=7,freshness=3
+
+STEP 3 — HYPOTHESES
+[HYP] Find-02 authorization_code chain completion → user-context token on ffn-sbx
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /token + ffn-sbx.api.jtl-software.com
+confidence: 90
+reasoning: attacker redirect_uri 302 leg reconfirmed live this cycle (byte-identical to registered); leaked creds enable code exchange; userless token 401 on data-plane and key-mint proves sub/acl is the missing leg (established across cycles)
+evidence_needed: one login/consent on self-owned ffn-sbx identity → code at attacker callback → token with sub/acl → 200 on /api/v1/merchant/orders
+verify_steps: HUMAN_ONLY — GET /authorize(attacker uri) → consent → POST /token authorization_code → GET ffn-sbx /api/v1/merchant/orders
+impact: merchant orders/returns/stock/Amazon-SFP + /api/v1/access/tokens key-mint; HIGH (7.4)
+testability: HUMAN_ONLY
+[HYP] ERP GraphQL endpoint flapping vs removed
+class: OTHER
+asset: api.jtl-cloud.com/erp/v2/graphql
+confidence: 30
+reasoning: cycle alternates 401/404; this cycle 401 (alive); KBASE "NOW 404" reported stale one cycle later — cannot establish stable state
+evidence_needed: multi-cycle deterministic status (3+ consecutive identical)
+verify_steps: HEAD/GET weekly, record 401 vs 404 vs 200
+impact: cross-tenant BOLA only if alive AND JWT obtainable AND program rule waived (currently blocked)
+testability: PASSIVE
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] ERP GraphQL flapping: no stable delta, BOLA requires JWT + live customer tenant which program prohibits; monitor-only
+- [PARKED] Find-03: docs now 404 both envs — live finding defunct; retained as historical disclosure supporting Find-01/02 narrative
+- [FINAL] 1. oauth2.api.jtl-software.com/token — client_credentials scope escalation + silent degradation with leaked secret (confidence 95) — PASSIVE, standalone, artifact verified
+- [FINAL] 2. oauth2.api.jtl-software.com/authorize+/token — unvalidated redirect_uri → code theft → user-context token (confidence 90) — HUMAN_ONLY sandbox chain
+- [FINAL] 3. Find-03 FFN public docs exposure (historical) — disclosure-level, current 404 flapping
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Submit reports/valid-bugs.md (verified 7680B, count-3, 3 findings) to bugs.olivermaicher.eu. Immediately pre-send re-run: `wc -c`=7680, `head -1`="running count 3", `grep -c '^## Find-'`=3 — then send with client_id + sha256 secret reference only (never plaintext), 4 evidence pointers, and findings flagged: Find-01 PASSIVE 8.1, Find-02 HUMAN_ONLY chain 7.4, Find-03 historical (docs now 404).
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle — 7680B, count-3 header, 3 `## Find-` sections, plaintext-secret grep = 0; verified via bash read-back, not LEARN; prior claims confirmed false against disk
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri reconfirmed live — attacker URI preserved in 302 Location to /doauthorize, indistinguishable from registered localhost URI
+- [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: 405 on GET (POST-only), unchanged; scope escalation + silent degradation stable
+- [LEARN] ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 this cycle (alive) — prior "NOW 404" stale again; endpoint flaps 401/404
+- [LEARN] REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: 404 both prod+sandbox — docs removed; Do NOT re-probe until a cycle shows recovery (flapping history)
+
+STEP 7 — RISK
+[RISK] jtl: 45 — Footprint minimal (4 read-only probes, ≤1 rps, no token mint, zero mutation). Artifact-integrity risk retired: submission file verified real on disk with read-back. Residual: ERP flap misread could push a blocked BOLA finding (mitigated — parked); Find-02 remains HUMAN-gated on self-owned sandbox identity; Find-03 live value gone but retainable as historical disclosure.

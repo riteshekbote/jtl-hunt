@@ -349,3 +349,5 @@
 - 2026-09-13 REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: NOW 404 — public API documentation removed from both prod and sandbox; finding no longer applicable
 - 2026-09-13 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
 - 2026-09-13 REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (4270 bytes, count-0 header, orphaned fragments) despite 8+ prior cycles' LEARN claims of rewrite — artifact never actually written; LEARN entries about artifact creation must be independently verified against on-disk content
+- 2026-09-13 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); prior 404 reports were stale/flapping
+- 2026-09-13 REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
