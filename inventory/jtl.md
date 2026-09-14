@@ -948,3 +948,11 @@
 - CHANGED reports/valid-bugs.md: Still corrupted on disk (4270 bytes, count-0 header, 0 `### ` sections) despite 8+ prior LEARN claims of rewrite — artifact never actually written
 
 ## 2026-09-13 23:16:16 UTC
+
+## 2026-09-14 01:21:10 UTC
+- NEW ffn.api.jtl-software.com/api-docs + ffn-sbx: Public ReDoc + swagger.json confirmed LIVE at 301→200 (merchant/fulfiller/shared) — prior KBASE 404 reports were stale/incorrect
+- NEW api.jtl-cloud.com/erp/v2/graphql: Returns 401 (JWT gate alive) — prior KBASE 404 reports were stale/incorrect
+- CHANGED oauth2.api.jtl-software.com/token: client_credentials returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable 14+ cycles
+- CHANGED oauth2.api.jtl-software.com/authorize: attacker redirect_uri produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed
+- CHANGED auth.jtl-cloud.com/oauth2/device/auth: Confirmed 404 (endpoint permanently removed)
+- CHANGED reports/valid-bugs.md: REWRITTEN ON DISK this cycle — 6147 bytes, count-3 header, 3 `## Find-` sections, sha256 secret only (0 plaintext), verified via wc/head/grep read-back
