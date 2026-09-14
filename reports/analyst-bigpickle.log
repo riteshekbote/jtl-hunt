@@ -19642,3 +19642,117 @@ No hypotheses dropped. All three have on-disk evidence or passive verification. 
 **STEP 7 — RISK**
 
 [RISK] jtl: 15 — Footprint 5 read-only probes (all previously-probed endpoints, ≤1 rps). Plaintext-secret leak in artifact persists (line 19) — must purge during rewrite. Residual risk concentrated on the rewrite action itself (writes to disk only, no network impact). No further on-target probing required this cycle.
+===== ANALYST bigpickle 2026-09-14 18:50:56 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mwc -c reports/valid-bugs.md 2>/dev/null; echo "---head---"; head -5 reports/valid-bugs.md 2>/dev/null; echo "---find-sections---"; grep -c '^## Find-' reports/valid-bugs.md 2>/dev/null; echo "---plaintext-secret---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md 2>/dev/null; echo "---sha256---"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md 2>/dev/null; echo "---clientid---"; grep -c '97170e64-d390-4696-ba46-d6fcef8207de' reports/valid-bugs.md 2>/dev/null
+6360 reports/valid-bugs.md
+---head---
+# Validated findings (running count 0)
+
+- 10 lead(s) marked VALID at 2026-09-05 16:16:27 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+---find-sections---
+0
+---plaintext-secret---
+1
+---sha256---
+0
+---clientid---
+1
+[0m
+[0m$ [0mls -la reports/ 2>/dev/null; echo "---art---"; ls -la art/ 2>/dev/null || echo "art/ MISSING"
+total 3608
+drwxr-xr-x  2 runner runner    4096 Sep 14 18:43 .
+drwxr-xr-x 12 runner runner    4096 Sep 14 18:43 ..
+-rw-r--r--  1 runner runner 1825111 Sep 14 18:43 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   17143 Sep 14 18:43 analyst-laguna.log
+-rw-r--r--  1 runner runner   17064 Sep 14 18:43 analyst-ling3.log
+-rw-r--r--  1 runner runner   17222 Sep 14 18:43 analyst-longcat.log
+-rw-r--r--  1 runner runner 1530936 Sep 14 18:43 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    3770 Sep 14 18:43 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 14 18:43 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 14 18:43 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 14 18:43 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    8946 Sep 14 18:43 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  226055 Sep 14 18:43 hypotheses.md
+-rw-r--r--  1 runner runner    6360 Sep 14 18:43 valid-bugs.md
+---art---
+art/ MISSING
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+On-disk check confirms the recurring corruption: `reports/valid-bugs.md` is 6360 bytes, count-0 header, **0** `## Find-` sections, plaintext secret present (1x), sha256 absent. Blocking action is the rewrite — performing it now.
+[0m$ [0mecho "bytes=$(wc -c < reports/valid-bugs.md)"; echo "head1=$(head -1 reports/valid-bugs.md)"; echo "find_sections=$(grep -c '^## Find-' reports/valid-bugs.md)"; echo "plaintext_secret=$(grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md)"; echo "sha256=$(grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md)"; echo "client_id=$(grep -c '97170e64-d390-4696-ba46-d6fcef8207de' reports/valid-bugs.md)"
+bytes=4080
+head1=# Validated findings (running count 3)
+find_sections=3
+plaintext_secret=0
+sha256=1
+client_id=3
+[0m
+On-disk artifact now verified: **4080 bytes, `head -1` = count-3, `grep '^## Find-'` = 3, plaintext secret = 0, sha256 = 1, client_id = 3**. The blocking action from the prior NEXT is complete and corroborated by bash read-back, not a LEARN claim.
+
+---
+
+**STEP 1 — DELTA**
+- CHANGED RAG @ reports/valid-bugs.md: on-disk prior state was corrupt again (6360B, count-0, 0 × `## Find-`, plaintext secret 1x at line 19) — rewritten this cycle to 4080B count-3 (3 findings, 0 plaintext, sha256-only). Matching the 12-cycle pattern: LEARN claims unverifiable; disk state was the true signal.
+- NO_DELTA @ network surface: last live probe (2026-09-14 13:23) showed oauth2/token 405, authorize 302, ffn/api-docs 301, erp/graphql 401 — no new probes run this cycle; no reason to re-probe.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] oauth2.api.jtl-software.com/token, 9.0, AUTH=95/BIZ=85/TECH=90/GATE=95/CLOUD=30/FRESH=90 — Find-01 submission-ready
+- [PRIO] oauth2.api.jtl-software.com/authorize, 8.0, AUTH=90/BIZ=85/TECH=85/GATE=40/CLOUD=30/FRESH=90 — Find-02 ATO chain leg
+- [PRIO] ffn.api.jtl-software.com/api-docs, 6.5, AUTH=40/BIZ=60/TECH=80/GATE=100/CLOUD=30/FRESH=85 — Find-03 (flapping, note at triage)
+
+**STEP 3 — HYPOTHESES**
+- [HYP] Find-01 FFN client_credentials scope escalation — submission-ready
+- class: AUTH
+- asset: oauth2.api.jtl-software.com/token
+- confidence: 95
+- reasoning: POST client_credentials with README-leaked creds (client_id 97170e64-d390-4696-ba46-d6fcef8207de, secret sha256 9cc93ff6…) → 200 + RS256 JWT scopes=[ffn.merchant.read, ffn.merchant.write], sub="", acl=""; unregistered ffn.* scopes silently degrade to [] with 200; stable 15+ cycles
+- evidence_needed: gathered — artifact now verified on disk (4080B, count-3, 0 plaintext)
+- verify_steps: PASSIVE complete; no further probes required pre-submission
+- impact: write-scope FFN bearer minting, zero user context; CVSS 8.1
+- testability: PASSIVE
+
+- [HYP] Find-02 unvalidated redirect_uri → authorization-code ATO chain
+- class: AUTH
+- asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+- confidence: 88
+- reasoning: attacker redirect_uri=https://evil.example.com/cb → byte-identical 302→/doauthorize vs registered localhost URI (RFC 6749 §3.1.2.4 requires 400); leaked creds enable automated code exchange
+- evidence_needed: chain completion requires one consent on self-owned ffn-sbx identity (not executed)
+- verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent → POST /token → GET ffn-sbx /api/v1/merchant/orders
+- impact: user-context FFN data access + API-key mint; CVSS 7.4
+- testability: HUMAN_ONLY
+
+- [HYP] Find-03 public FFN API docs expose key-mint schema — flapping
+- class: MISCONFIG
+- asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+- confidence: 70
+- reasoning: 301→200 (ReDoc + swagger.json merchant/fulfiller/shared) across most cycles with occasional 404 — intermittent removal pattern; shared spec exposes /api/v1/access/tokens + /api/v1/users/current; API version 0.1-dev
+- evidence_needed: triager re-verify at assessment due to flapping
+- verify_steps: PASSIVE GET /api-docs/ + swagger.json; documented as flapping in artifact
+- impact: schema disclosure lowering exploitation effort for Find-01/02; CVSS 5.3
+- testability: PASSIVE
+
+**STEP 4 — SELF-CRITIQUE**
+- [PARKED] ERP cross-tenant BOLA (api.jtl-cloud.com/erp/v2/graphql): no anonymous surface (401 JWT gate), x-tenant-id post-auth-only, token acquisition requires consent — HUMAN_ONLY, left out of submission.
+- [PARKED] Zitadel device_code (id.jtl-cloud.com) / Ory device auth: endpoint 404 / grant_type rejected (unauthorized_client) — no chain.
+- [PARKED] FFN userless token 401 on data endpoints: gate is user+tenant context (sub/acl) — confirms Find-02's human leg is required, not a blocker on Find-01 (standalone scope escalation remains valid).
+- [FINAL] Find-01 (95, submission-grade) > Find-02 (88, PASSIVE leg confirmed) > Find-03 (70, flapping).
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: Submit `reports/valid-bugs.md` to bugs.olivermaicher.eu with the three findings. Pre-send verification THIS cycle (authoritative, bash read-back): 4080 bytes, `head -1`="running count 3", `grep -c '^## Find-'`=3, `grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z'`=0, `grep -c '97170e64-d390-4696-ba46-d6fcef8207de'`=3. Include client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret sha256-only 9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e; flag Find-01 PASSIVE 8.1, Find-02 PASSIVE-leg/HUMAN_ONLY-chain 7.4, Find-03 5.3 flapping re-verify. Do NOT trigger any consent flow without a self-owned ffn-sbx account.
+
+**STEP 6 — LEARNING**
+- [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and verified via `wc -c`=4080 / `head -1`="running count 3" / `grep -c '^## Find-'`=3 / plaintext-secret-count=0 / sha256=1 / client_id=3. 12th+ rewrite attempt; every prior LEARN claiming success was contradicted by the on-disk 5745B/count-0 file (which leaked the plaintext secret). Only direct bash/Read verification after a Write is authoritative.
+- [LEARN] REJECTED RAG @ reports/valid-bugs.md: file was corrupt on disk at cycle start (6360B, count-0 header, orphaned fragments, plaintext secret at line 19, sha256=0) — prior cycle's "verified 6147B/count-3" claim did not persist. Artifact claims MUST be re-verified against on-disk content, never trusted from a LEARN entry.
+
+**STEP 7 — RISK**
+- [RISK] jtl: 10 — Footprint: zero network requests this cycle (no live probes); only local file writes. Artifact now verifiably clean of plaintext secret (0 occurrences, sha256-only). Residual risk concentrated on the submission act itself: transmit sha256 only, never the plaintext; Find-02 consent work restricted to a self-owned ffn-sbx sandbox identity; Find-03/ERP flapping is drift-watch only.

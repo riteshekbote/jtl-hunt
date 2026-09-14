@@ -3909,3 +3909,4 @@ testability: PASSIVE
 [LEARN] ACCEPTED NETWORK @ live re-probe 2026-09-14: oauth2/token 405 (POST-only), oauth2/authorize 302 (attacker uri), ffn+ffn-sbx /api-docs/ 301 (live), erp/v2/graphql 401 (JWT gate) — surface stable, no drift; Find-01/02/03 remain applicable as written.
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH (8.1). Stable 14+ cycles.
 [RISK] jtl: 15 — Footprint 5 read-only probes (all previously-probed endpoints, ≤1 rps). Plaintext-secret leak in artifact persists (line 19) — must purge during rewrite. Residual risk concentrated on the rewrite action itself (writes to disk only, no network impact). No further on-target probing required this cycle.
+## 2026-09-14 18:44:35 UTC [target] (model bigpickle)
