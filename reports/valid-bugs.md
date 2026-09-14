@@ -48,3 +48,18 @@
   - | Q4 Provable non-invasively? | NO — requires valid JWT for at least one tenant, then testing cross-tenant access. This is invasive testing against live customer data |
   - | 1 | FFN OAuth Scope Escalation | **VALID** | Confirmed: client_credentials returns JWT with unauthorized scope |
   - | 2 | FFN OAuth Leaked Credentials | **HOLD** | Creds valid but may be sandbox-only; needs scope clarification |
+
+- 13 lead(s) marked VALID at 2026-09-14 01:13:47 UTC
+  - | Q7 | Would a reasonable triager accept? | **YES** — Confirmed working: leaked creds → valid token with `ffn.merchant.write` scope |
+  - **Verdict: VALID** | CVSS 7.5 | Impact: OAuth credential leak + scope escalation
+  - **Verdict: VALID** | CVSS 8.1 | Impact: Unauthorized privilege escalation on production API
+  - **Verdict: VALID** | CVSS 7.4 | Impact: OAuth authorization code theft → account takeover
+  - **Verdict: VALID** (low severity) | CVSS 5.3 | Impact: Full API schema exposure enabling targeted attacks
+  - | Q4 | Provable non-invasively? | **NO** — Requires valid JWT for tenant A, then query with `x-tenant-id: tenant-B`; token acquisition requires OAuth registration + human consent flow |
+  - | Q7 | Would a reasonable triager accept? | **NO** — Cannot demonstrate without valid JWT; hypothesis-level finding |
+  - | Q4 | Provable non-invasively? | **NO** — Needs valid public `client_id` to initiate device flow; enumeration attempts failed |
+  - | Q7 | Would a reasonable triager accept? | **NO** — Cannot demonstrate without valid client_id |
+  - | 1 | FFN OAuth Leaked Credentials | **VALID** | 7.5 | bugs.olivermaicher.eu |
+  - | 2 | FFN OAuth Scope Escalation | **VALID** | 8.1 | bugs.olivermaicher.eu |
+  - | 3 | FFN OAuth redirect_uri Bypass | **VALID** | 7.4 | bugs.olivermaicher.eu |
+  - | 4 | FFN API Public Documentation | **VALID** (low) | 5.3 | bugs.olivermaicher.eu |
