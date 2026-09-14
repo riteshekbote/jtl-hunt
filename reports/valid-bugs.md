@@ -63,3 +63,9 @@
   - | 2 | FFN OAuth Scope Escalation | **VALID** | 8.1 | bugs.olivermaicher.eu |
   - | 3 | FFN OAuth redirect_uri Bypass | **VALID** | 7.4 | bugs.olivermaicher.eu |
   - | 4 | FFN API Public Documentation | **VALID** (low) | 5.3 | bugs.olivermaicher.eu |
+
+- 4 lead(s) marked VALID at 2026-09-14 13:19:06 UTC
+  - | 1 | FFN OAuth leaked credentials (client_id + secret in public GitHub `kruegge82/jtl-ffn-php-sdk`) | VALID | 7.5 | bugs.olivermaicher.eu |
+  - | 2 | FFN OAuth scope escalation (`ffn.merchant.read` → `ffn.merchant.write` via client_credentials) | VALID | 8.1 | bugs.olivermaicher.eu |
+  - | 3 | FFN OAuth unvalidated redirect_uri (attacker URI accepted on `/authorize`) | VALID | 7.4 | bugs.olivermaicher.eu |
+  - | 4 | FFN API public documentation (ReDoc + swagger.json on prod + sandbox, `0.1-dev` version) | VALID (low) | 5.3 | bugs.olivermaicher.eu |
