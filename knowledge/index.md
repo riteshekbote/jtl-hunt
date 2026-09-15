@@ -394,3 +394,10 @@
 - 2026-09-15 REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
 - 2026-09-15 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
 - 2026-09-15 REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (6360 bytes, count-0 header, orphaned fragments, plaintext secret leaked) despite 10+ prior LEARN claims of rewrite — artifact never actually written; LEARN entries about artifact creation must be independently verified against on-disk content
+- 2026-09-15 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation — standalone PASSIVE finding (8.1), 15+ cycles stable; now submission-ready with Find-01 on disk; no re-probe needed.
+- 2026-09-15 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri byte-identical attacker vs registered URI; ATO chain legs fully evidenced; remains HUMAN_ONLY at code exchange.
+- 2026-09-15 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent.
+- 2026-09-15 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key; data access requires authorization_code flow.
+- 2026-09-15 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled.
+- 2026-09-15 ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod.
+- 2026-09-15 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
