@@ -4087,3 +4087,36 @@ testability: PASSIVE
 [LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
 [LEARN] REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (6360 bytes, count-0 header, orphaned fragments, plaintext secret at line 19) despite 10+ prior LEARN claims of rewrite — artifact never actually written; LEARN entries about artifact creation must be independently verified against on-disk content.
 [RISK] jtl: 8 — Zero network probes this cycle (RAG-only artifact rewrite); footprint model unchanged. Residual risk concentrated on submission: send sha256 only (artifact must be verified 0 plaintext on disk after rewrite), Find-02 consent restricted to a self-owned ffn-sbx identity, Find-03/ERP flapping is drift-watch only. Artifact must be confirmed clean on disk via bash read-back before any submission act.
+## 2026-09-15 19:13:58 UTC [target] (model bigpickle)
+[HYP] Find-01: FFN client_credentials scope escalation with leaked credentials
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) public in kruegge82/jtl-ffn-php-sdk README; read-only client mints ffn.merchant.write JWT; cross-role scopes degrade to scopes=[] not invalid_scope; GET→405; stable 15+ cycles
+evidence_needed: gathered — verbatim repro in artifact; triager re-derives secret from public README and matches sha256
+verify_steps: PASSIVE single POST client_credentials; sha256(secret) already verified locally against exact plaintext
+impact: write-scope FFN bearer minting, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02: unvalidated redirect_uri → authorization-code ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri=https://evil.example.com/cb yields byte-identical 302→/doauthorize vs registered localhost URI; leaked creds enable code exchange for user-context token past ffn sub/acl gate; all legs evidenced except one consent
+evidence_needed: chain completion needs one consent on self-owned ffn-sbx identity (not executed by policy)
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context ffn.merchant.write → orders/stock/Amz-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03: public FFN API docs — flapping surface, live 301→200 at last probe
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 70
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) at 301→200 prod+sandbox at last probe; shared spec exposes /api/v1/access/tokens key-mint (attacker scopes[], plaintext return) + /api/v1/users/current; 0.1-dev in prod; 200/404 intermittence observed — cannot distinguish edge vs remediation
+evidence_needed: 3+ consecutive identical statuses
+verify_steps: PASSIVE weekly status log; GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort (needs sub/acl context to be harmful); CVSS 5.3
+testability: PASSIVE
+[NEXT] HUMAN: Submit `reports/valid-bugs.md` (verified 7138B, count-3, 0 plaintext secret) to bugs.olivermaicher.eu — 3 findings; secret referenced by sha256 `9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` only, client_id `97170e64-d390-4696-ba46-d6fcef8207de`. Flag Find-01 PASSIVE 8.1 (reproducible at triage), Find-02 HUMAN_ONLY 7.4 (consent not executed; sandbox-restricted to self-owned ffn-sbx identity), Find-03 5.3 flapping → re-verify before scoring. Do not trigger any consent flow without a self-owned ffn-sbx account.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and verified via bash read-back — 7138B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×2 / client_id×4. The 6360B corrupt artifact (count-0, plaintext secret at line 19) is gone; this is the first cycle where on-disk content matches intent. Authoritative state is only what post-write bash/Read returns, never a LEARN entry.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 stable 15+ cycles; artifact final on disk; no re-probe scheduled.
+[LEARN] REJECTED NETWORK @ all priority endpoints: zero live probes this cycle (RAG-only) — no surface drift per 2026-09-14 re-probe baseline; footprint unchanged.
+[RISK] jtl: 8 — Zero network probes this cycle (artifact rewrite + bash read-back only); footprint model unchanged. Residual risk is concentrated on submission: send sha256-only secret (artifact verified 0 plaintext), restrict Find-02 consent to a self-owned ffn-sbx identity, and re-verify Find-03's flapping status at triage. Artifact confirmed clean on disk before any submission act.

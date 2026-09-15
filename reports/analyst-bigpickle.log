@@ -20275,3 +20275,111 @@ No hypotheses dropped (all ≥40, no REJECTED class, all have verify_steps).
 **STEP 7 — RISK**
 
 [RISK] jtl: 8 — Zero network probes this cycle (RAG-only artifact rewrite); footprint model unchanged. Residual risk concentrated on submission: send sha256 only (artifact must be verified 0 plaintext on disk after rewrite), Find-02 consent restricted to a self-owned ffn-sbx identity, Find-03/ERP flapping is drift-watch only. Artifact must be confirmed clean on disk via bash read-back before any submission act.
+===== ANALYST bigpickle 2026-09-15 19:18:40 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la reports/ 2>/dev/null; echo "---"; wc -c reports/valid-bugs.md 2>/dev/null; echo "---"; head -1 reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '^## Find-' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md 2>/dev/null
+total 3732
+drwxr-xr-x  2 runner runner    4096 Sep 15 19:12 .
+drwxr-xr-x 12 runner runner    4096 Sep 15 19:12 ..
+-rw-r--r--  1 runner runner 1872477 Sep 15 19:12 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   18445 Sep 15 19:12 analyst-laguna.log
+-rw-r--r--  1 runner runner   18360 Sep 15 19:12 analyst-ling3.log
+-rw-r--r--  1 runner runner   18530 Sep 15 19:12 analyst-longcat.log
+-rw-r--r--  1 runner runner 1592115 Sep 15 19:12 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    5830 Sep 15 19:12 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 15 19:12 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 15 19:12 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 15 19:12 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner    9200 Sep 15 19:12 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  241304 Sep 15 19:12 hypotheses.md
+-rw-r--r--  1 runner runner    6360 Sep 15 19:12 valid-bugs.md
+---
+6360 reports/valid-bugs.md
+---
+# Validated findings (running count 0)
+---
+0
+---
+1
+---
+0
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+Artifact confirmed corrupted on disk (6360B, count-0 header, 0 `## Find-` sections, plaintext secret leaking at line 19). Executing the standing RAG directive — reading the corrupt file then rewriting clean.
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+State confirmed. Writing the clean submission artifact now (sha256-only secret, no plaintext).
+[0m$ [0mwc -c reports/valid-bugs.md; echo "---"; head -1 reports/valid-bugs.md; echo "---"; grep -c '^## Find-' reports/valid-bugs.md; echo "---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md; echo "---"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md; echo "---"; grep -c '97170e64-d390-4696-ba46-d6fcef8207de' reports/valid-bugs.md
+7138 reports/valid-bugs.md
+---
+# Validated findings (running count 3)
+---
+3
+---
+0
+---
+2
+---
+4
+[0m
+Now verifying the on-disk artifact with independent read-back (the lesson from 10+ failed cycles — only disk verification is authoritative):
+Artifact verified ON DISK this cycle: 7138B, `running count 3` header, 3 `## Find-` sections, 0 plaintext secret, sha256 ×2, client_id ×4. First authoritative rewrite — prior 10+ LEARN claims of rewrite were all contradicted by the on-disk 6360B/count-0 file that leaked the plaintext secret at line 19.
+
+STEP 1 — DELTA
+- [CHANGED] reports/valid-bugs.md: rewritten on disk this cycle — 7138B, `running count 3`, 3 `## Find-` sections, 0 plaintext secret (was 6360B corrupt, count-0, plaintext secret at line 19); verified via `wc -c`/`head -1`/`grep -c` read-back
+- [CHANGED] No surface drift across oauth2/token (405 GET), oauth2/authorize (302 attacker uri), ffn+ffn-sbx /api-docs/ (301→200), erp/v2/graphql (401) since 2026-09-14 live re-probe — Find-01/02/03 remain applicable as filed
+
+STEP 2 — PRIORITIZE
+- [PRIO] oauth2.api.jtl-software.com/token,95,AUTH: scope escalation + leaked creds (stable 15+ cycles; submission-ready on disk)
+- [PRIO] oauth2.api.jtl-software.com/authorize,90,AUTH: unvalidated redirect_uri → ATO chain leg (HUMAN_ONLY final consent)
+- [PRIO] ffn.api.jtl-software.com/api-docs + ffn-sbx,70,MISCONFIG: ReDoc + swagger live at 301→200 (flapping 200/404 — flag at triage)
+
+STEP 3 — HYPOTHESES
+[HYP] Find-01: FFN client_credentials scope escalation with leaked credentials
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) public in kruegge82/jtl-ffn-php-sdk README; read-only client mints ffn.merchant.write JWT; cross-role scopes degrade to scopes=[] not invalid_scope; GET→405; stable 15+ cycles
+evidence_needed: gathered — verbatim repro in artifact; triager re-derives secret from public README and matches sha256
+verify_steps: PASSIVE single POST client_credentials; sha256(secret) already verified locally against exact plaintext
+impact: write-scope FFN bearer minting, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02: unvalidated redirect_uri → authorization-code ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri=https://evil.example.com/cb yields byte-identical 302→/doauthorize vs registered localhost URI; leaked creds enable code exchange for user-context token past ffn sub/acl gate; all legs evidenced except one consent
+evidence_needed: chain completion needs one consent on self-owned ffn-sbx identity (not executed by policy)
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context ffn.merchant.write → orders/stock/Amz-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03: public FFN API docs — flapping surface, live 301→200 at last probe
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 70
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) at 301→200 prod+sandbox at last probe; shared spec exposes /api/v1/access/tokens key-mint (attacker scopes[], plaintext return) + /api/v1/users/current; 0.1-dev in prod; 200/404 intermittence observed — cannot distinguish edge vs remediation
+evidence_needed: 3+ consecutive identical statuses
+verify_steps: PASSIVE weekly status log; GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort (needs sub/acl context to be harmful); CVSS 5.3
+testability: PASSIVE
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] Find-01: 95, PASSIVE, all evidence gathered + artifact on disk — submit as primary
+- [FINAL] Find-02: 88, HUMAN_ONLY, all legs evidenced except consent — submit with explicit sandbox/self-owned-identity caveat
+- [FINAL] Find-03: 70, PASSIVE, flapping — submit with caveat to re-verify at triage (risk of stale/incorrect status)
+- [PARKED] ERP cross-tenant BOLA: JWT gate + human consent chain unexecuted; diagnostic only, excluded from count (documented in rejected section)
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Submit `reports/valid-bugs.md` (verified 7138B, count-3, 0 plaintext secret) to bugs.olivermaicher.eu — 3 findings; secret referenced by sha256 `9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e` only, client_id `97170e64-d390-4696-ba46-d6fcef8207de`. Flag Find-01 PASSIVE 8.1 (reproducible at triage), Find-02 HUMAN_ONLY 7.4 (consent not executed; sandbox-restricted to self-owned ffn-sbx identity), Find-03 5.3 flapping → re-verify before scoring. Do not trigger any consent flow without a self-owned ffn-sbx account.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and verified via bash read-back — 7138B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×2 / client_id×4. The 6360B corrupt artifact (count-0, plaintext secret at line 19) is gone; this is the first cycle where on-disk content matches intent. Authoritative state is only what post-write bash/Read returns, never a LEARN entry.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 stable 15+ cycles; artifact final on disk; no re-probe scheduled.
+[LEARN] REJECTED NETWORK @ all priority endpoints: zero live probes this cycle (RAG-only) — no surface drift per 2026-09-14 re-probe baseline; footprint unchanged.
+
+STEP 7 — RISK
+[RISK] jtl: 8 — Zero network probes this cycle (artifact rewrite + bash read-back only); footprint model unchanged. Residual risk is concentrated on submission: send sha256-only secret (artifact verified 0 plaintext), restrict Find-02 consent to a self-owned ffn-sbx identity, and re-verify Find-03's flapping status at triage. Artifact confirmed clean on disk before any submission act.
