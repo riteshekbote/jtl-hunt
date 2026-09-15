@@ -4012,3 +4012,33 @@ testability: PASSIVE
 [LEARN] ACCEPTED MISCONFIG @ ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger (merchant/fulfiller/shared) live at 200 both environments; sandbox identical to prod.
 [LEARN] ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token now returns 405 (Method Not Allowed) — POST-only enforcement confirmed; no change to exploitability.
 [RISK] jtl: 10 — This cycle ran zero network probes (RAG-only disk rewrite + read-back). Footprint model is unchanged and stable. Residual risk is concentrated on the submission act: send sha256 only, never plaintext; Find-02 consent work restricted to a self-owned sandbox identity; Find-03/ERP flapping is drift-watch only. Artifact verified clean on disk before submission.
+## 2026-09-15 11:09:34 UTC [target] (model bigpickle)
+[HYP] Find-01: FFN client_credentials scope escalation with leaked credentials
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: POST client_credentials with leaked public creds (client_id 97170e64-..., secret sha256:9cc93...a) returns 200 RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write] for a read-only client; any requested ffn.* scope granted; cross-role scopes degrade to scopes=[] not invalid_scope; GET→405; stable 15+ cycles; repro now on disk (count-3 verified).
+evidence_needed: gathered — verbatim repro in Find-01 on disk
+verify_steps: PASSIVE single POST; triager re-derives secret from public kruegge82/jtl-ffn-php-sdk README
+impact: write-scope FFN bearer minting, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02: unvalidated redirect_uri → authorization-code ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri=https://evil.example.com/cb yields byte-identical 302→/doauthorize vs registered localhost URI; leaked creds enable code exchange for a user-context token past the sub/acl data gate; chain legs all evidenced except one consent.
+evidence_needed: chain completion needs one consent on self-owned ffn-sbx identity (not executed by policy)
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context ffn.merchant.write → orders/stock/Amz-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03: public FFN API docs — flapping surface, live 301→200 at last probe
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 70
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) at 301→200 prod+sandbox at last probe; shared spec exposes /api/v1/access/tokens key-mint (attacker scopes[], plaintext return) + /api/v1/users/current; 0.1-dev in prod; 200/404 intermittence observed — cannot distinguish edge vs remediation.
+evidence_needed: 3+ consecutive identical statuses
+verify_steps: PASSIVE weekly status log; GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort (needs sub/acl context to be harmful); CVSS 5.3
+testability: PASSIVE
+[NEXT] HUMAN: Submit `reports/valid-bugs.md` (verified 9397B, count-3) to bugs.olivermaicher.eu — 3 findings, sha256-only secret `9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e`, client_id `97170e64-d390-4696-ba46-d6fcef8207de`, no plaintext secret in artifact. Flag Find-01 PASSIVE 8.1, Find-02 HUMAN_ONLY chain 7.4 (consent not executed, sandbox-restricted), Find-03 5.3 flapping → re-verify at triage. Do not trigger any consent flow without a self-owned ffn-sbx account.
+[RISK] jtl: 8 — Zero network probes this cycle (RAG-only artifact rewrite + read-back); footprint model unchanged. Residual risk concentrated on submission: send sha256 only (artifact verified 0 plaintext), Find-02 consent restricted to a self-owned ffn-sbx identity, Find-03/ERP flapping is drift-watch only. Artifact confirmed clean on disk before submission.
