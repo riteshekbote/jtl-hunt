@@ -4120,3 +4120,31 @@ testability: PASSIVE
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 stable 15+ cycles; artifact final on disk; no re-probe scheduled.
 [LEARN] REJECTED NETWORK @ all priority endpoints: zero live probes this cycle (RAG-only) — no surface drift per 2026-09-14 re-probe baseline; footprint unchanged.
 [RISK] jtl: 8 — Zero network probes this cycle (artifact rewrite + bash read-back only); footprint model unchanged. Residual risk is concentrated on submission: send sha256-only secret (artifact verified 0 plaintext), restrict Find-02 consent to a self-owned ffn-sbx identity, and re-verify Find-03's flapping status at triage. Artifact confirmed clean on disk before any submission act.
+## 2026-09-15 22:20:21 UTC [target] (model bigpickle)
+[HYP] Find-01: OAuth client_credentials scope escalation via leaked creds
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e, plaintext in public kruegge82/jtl-ffn-php-sdk README) mint RS256 JWT scopes=[ffn.merchant.read,ffn.merchant.write] for a read-only client; unauthorized ffn.admin.write/ffn.portal.write degrade to scopes=[] not error; GET→405; stable 15+ cycles
+evidence_needed: gathered — repro step `POST /token grant_type=client_credentials` in artifact; triager derives plaintext from public README, sha256 matches
+verify_steps: PASSIVE single POST to /token with leaked creds + scope ffn.merchant.read ffn.merchant.write → assert 200 + write scope in token
+impact: anyone can mint production write-scope FFN bearer, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02: Unvalidated redirect_uri → authorization-code ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: redirect_uri=https://evil.example.com/cb yields 302 to /doauthorize preserving attacker URI — byte-identical to registered localhost URI; Find-01 creds authenticate code exchange, lifting sub/acl data gate into user context; all legs evidenced except one consent
+evidence_needed: one consent on self-owned ffn-sbx identity — deliberately not executed
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent(self-owned ffn-sbx) → POST /token code exchange → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context ffn.merchant.write → orders/stock/Amazon-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03: Public FFN API docs prod+sandbox
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 70
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) 301→200 both envs at last probe; shared spec exposes /api/v1/access/tokens key-mint (attacker scopes[], plaintext return) + /api/v1/users/current; API version 0.1-dev in prod; 200/404 flapping history — remediation vs edge indistinguishable
+evidence_needed: 3+ consecutive identical statuses before scoring
+verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json weekly status log
+impact: schema disclosure lowers exploitation effort (harmless without sub/acl context); CVSS 5.3
+testability: PASSIVE
