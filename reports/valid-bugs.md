@@ -69,3 +69,9 @@
   - | 2 | FFN OAuth scope escalation (`ffn.merchant.read` → `ffn.merchant.write` via client_credentials) | VALID | 8.1 | bugs.olivermaicher.eu |
   - | 3 | FFN OAuth unvalidated redirect_uri (attacker URI accepted on `/authorize`) | VALID | 7.4 | bugs.olivermaicher.eu |
   - | 4 | FFN API public documentation (ReDoc + swagger.json on prod + sandbox, `0.1-dev` version) | VALID (low) | 5.3 | bugs.olivermaicher.eu |
+
+- 4 lead(s) marked VALID at 2026-09-15 22:19:55 UTC
+  - | Q4 Provable | NO — requires valid JWT (AUTH_HELPED); two tenants needed to demonstrate cross-tenant read; official app samples suggest no JWT tenant binding but proof requires token from two tenants
+  - **Verdict: VALID**
+  - | Q4 Provable | NO — no valid public client_id enumerated yet for Ory instance; cannot mint tokens without known client_id |
+  - | 2 | FFN OAuth scope escalation + leaked creds | **VALID** | HIGH (7.5) |
