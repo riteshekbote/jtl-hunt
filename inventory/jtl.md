@@ -1060,3 +1060,5 @@
 - CHANGED api.jtl-cloud.com/erp/v2/graphql: stable 401 (JWT gate alive); prior 404 reports were stale/flapping
 - CHANGED auth.jtl-cloud.com/oauth2/device/auth: confirmed 404 (endpoint permanently removed)
 - NEW No surface drift detected across all priority endpoints since 2026-09-14 live re-probe
+
+## 2026-09-16 10:03:47 UTC
