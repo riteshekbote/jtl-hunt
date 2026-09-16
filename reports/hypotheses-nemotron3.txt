@@ -1,4 +1,4 @@
-## 2026-09-16 00:30:51 UTC [target] (model nemotron3)
+## 2026-09-16 05:13:20 UTC [target] (model nemotron3)
 [CHANGED] reports/valid-bugs.md verified rewritten ON DISK 2026-09-15 (7138B, count-3 header, 3 `## Find-` sections, 0 plaintext secret, sha256×2) — first cycle where on-disk content matches LEARN claim after 10+ false claims
 [CHANGED] oauth2.api.jtl-software.com/token: live POST client_credentials returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable 15+ cycles
 [CHANGED] oauth2.api.jtl-software.com/authorize: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed

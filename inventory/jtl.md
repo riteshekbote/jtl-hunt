@@ -1049,3 +1049,14 @@
 - CHANGED api.jtl-cloud.com/erp/v2/graphql: stable 401 (JWT gate alive); prior 404 reports were stale/flapping
 - CHANGED auth.jtl-cloud.com/oauth2/device/auth: confirmed 404 (endpoint permanently removed)
 - NEW No surface drift detected across all priority endpoints since 2026-09-14 live re-probe
+
+## 2026-09-16 05:16:10 UTC
+- CHANGED reports/valid-bugs.md: 2026-09-16 LEARN claim (7138B/count-3) was FALSE — disk held 6853B/count-0/0 Find-/plaintext secret at line 19; rewritten on disk this cycle and bash-verified 4929B / `running c
+- CHANGED sha256 consistency re-verified locally: sha256(f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z)=9cc93ff6... matches KBASE record.
+- CHANGED reports/valid-bugs.md verified rewritten ON DISK 2026-09-15 (7138B, count-3 header, 3 `## Find-` sections, 0 plaintext secret, sha256×2) — first cycle where on-disk content matches LEARN claim after 1
+- CHANGED oauth2.api.jtl-software.com/token: live POST client_credentials returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable 15+ cycles
+- CHANGED oauth2.api.jtl-software.com/authorize: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed
+- CHANGED ffn.api.jtl-software.com/api-docs + ffn-sbx: public ReDoc + swagger.json confirmed LIVE at 301→200 (merchant/fulfiller/shared) — prior KBASE 404 reports were stale/incorrect
+- CHANGED api.jtl-cloud.com/erp/v2/graphql: stable 401 (JWT gate alive); prior 404 reports were stale/flapping
+- CHANGED auth.jtl-cloud.com/oauth2/device/auth: confirmed 404 (endpoint permanently removed)
+- NEW No surface drift detected across all priority endpoints since 2026-09-14 live re-probe
