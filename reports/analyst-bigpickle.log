@@ -20526,3 +20526,8 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] jtl: 6 — Zero network probes this cycle (artifact rewrite + read-back only; footprint unchanged). Residual risk now concentrated solely on submission: send sha256-only secret (artifact verified 0 plaintext), keep Find-02 consent strictly to a self-owned ffn-sbx identity, re-check Find-03 status at triage (flapping). Plaintext-secret disclosure vector inside our own repo is closed.
+===== ANALYST bigpickle 2026-09-16 00:30:59 UTC =====
+[0m
+> build · big-pickle
+[0m
+[91m[1mError: [0mError from provider (Console): Upstream request failed: [invalid_request_error] request could not be processed

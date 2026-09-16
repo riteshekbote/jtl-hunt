@@ -4148,3 +4148,4 @@ evidence_needed: 3+ consecutive identical statuses before scoring
 verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json weekly status log
 impact: schema disclosure lowers exploitation effort (harmless without sub/acl context); CVSS 5.3
 testability: PASSIVE
+## 2026-09-16 00:30:21 UTC [target] (model bigpickle)

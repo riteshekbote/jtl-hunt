@@ -406,3 +406,12 @@
 - 2026-09-15 ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and verified via bash read-back — 7138B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×2 / client_id×4. The 6360B corrupt artifact (count-0, plaintext secret at line 19) is gone; this is the first cycle where on-disk content matches intent. Authoritative state is only what post-write bash/Read returns, never a LEARN entry.
 - 2026-09-15 ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 stable 15+ cycles; artifact final on disk; no re-probe scheduled.
 - 2026-09-15 REJECTED NETWORK @ all priority endpoints: zero live probes this cycle (RAG-only) — no surface drift per 2026-09-14 re-probe baseline; footprint unchanged.
+- 2026-09-16 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH (8.1)
+- 2026-09-16 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_code flow); HUMAN_ONLY gate
+- 2026-09-16 ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified locally to match exact plaintext — KBASE records internally consistent
+- 2026-09-16 REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separate API key; data access requires authorization_code flow
+- 2026-09-16 ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); prior 404 reports were stale/flapping
+- 2026-09-16 REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
+- 2026-09-16 REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
+- 2026-09-16 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
+- 2026-09-16 ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and verified via bash read-back — 7138B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×2 / client_id×4. The 6360B corrupt artifact (count-0, plaintext secret at line 19) is gone; this is the first cycle where on-disk content matches intent.
