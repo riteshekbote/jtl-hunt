@@ -1,1 +1,31 @@
-## 2026-09-16 18:57:02 UTC [target] (model bigpickle)
+## 2026-09-16 21:55:59 UTC [target] (model bigpickle)
+[HYP] Find-01: client_credentials scope escalation — evidenced, PASSIVE, submission-ready
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: leaked client+secret (public README) mint RS256 JWT with ffn.merchant.write for read-only client; ffn.admin.write degrades to scopes=[]; stable 15+ cycles
+evidence_needed: gathered — verbatim repro in artifact; triager re-derives secret from public README
+verify_steps: PASSIVE POST /token grant_type=client_credentials + scope read+write → 200 + write scope
+impact: production write-scope FFN bearer, zero user context; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02: unvalidated redirect_uri → authorization-code ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri yields byte-identical 302→/doauthorize vs registered localhost URI; Find-01 creds enable code exchange into user-context token past sub/acl gate; all legs evidenced except one consent
+evidence_needed: one consent on self-owned ffn-sbx identity — not executed by policy
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent(ffn-sbx) → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context write → orders/stock/Amazon-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03: public FFN API docs prod+sandbox — flapping, re-verify before scoring
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 70
+reasoning: ReDoc + swagger.json (merchant/fulfiller/shared) 301→200 both envs at last probe; shared spec exposes /api/v1/access/tokens key-mint + /api/v1/users/current; 0.1-dev in prod; 200/404 history flapping
+evidence_needed: 3+ consecutive identical statuses
+verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort; CVSS 5.3
+testability: PASSIVE
+[NEXT] HUMAN: Submit reports/valid-bugs.md (verified ON DISK this cycle: 5351B, count-3, 3 `## Find-`, 0 plaintext secret, sha256×1, client_id×2) to bugs.olivermaicher.eu.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: 19:16 LEARN claiming "5680B/count-3 verified" was FALSE — disk held 6853B/count-0/0 `## Find-`/plaintext secret at line 19. Rewritten this cycle and bash-verified 5351B/`running count 3`/3 Finds/plaintext=0/sha256×1/client_id×2. 13th cycle of LEARN-vs-disk divergence; only post-write bash read-back is authoritative.
+[RISK] jtl: 6 — Zero network probes this cycle (local artifact rewrite + verification only); footprint unchanged since 2026-09-14. Artifact submission-ready on disk (0 plaintext secret verified). Residual: Find-02 requires HUMAN consent (NOT executed); Find-03 flapping status needs triage re-verify.

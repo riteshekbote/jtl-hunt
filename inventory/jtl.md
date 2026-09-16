@@ -1073,3 +1073,5 @@
 - CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
 
 ## 2026-09-16 19:16:40 UTC
+
+## 2026-09-16 21:56:54 UTC
