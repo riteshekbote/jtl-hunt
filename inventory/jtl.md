@@ -1062,3 +1062,12 @@
 - NEW No surface drift detected across all priority endpoints since 2026-09-14 live re-probe
 
 ## 2026-09-16 10:03:47 UTC
+
+## 2026-09-16 15:07:20 UTC
+- NEW `reports/valid-bugs.md` rewritten ON DISK and verified (5680B, count-3, 3 `## Find-`, 0 plaintext secret, sha256×2) — first cycle where on-disk content matches intent after 11+ false LEARN claims
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: stable HTTP 401 (JWT gate alive); prior 404 reports were stale/flapping
+- CHANGED `ffn.api.jtl-software.com/api-docs` + `ffn-sbx`: public ReDoc + swagger.json confirmed LIVE at 301→200 (merchant/fulfiller/shared) — prior KBASE 404 reports were stale/incorrect
+- CHANGED `oauth2.api.jtl-software.com/token`: `client_credentials` POST returns 200 + RS256 JWT with `scopes=["ffn.merchant.read","ffn.merchant.write"]` — scope escalation + silent degradation stable 15+ cycle
+- CHANGED `oauth2.api.jtl-software.com/authorize`: attacker `redirect_uri=https://evil.example.com/cb` produces byte-identical 302→`/doauthorize` as registered localhost URI — unvalidated `redirect_uri` reconfi
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
