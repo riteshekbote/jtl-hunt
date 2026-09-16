@@ -1736,3 +1736,5 @@
 - LEARN: REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
 - LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
 - LEARN: ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and verified via bash read-back — 5680B / `running count 3` / 3 `## Find-` / plaintext-secret
+
+## RANKED HYPOTHESES 2026-09-16 19:16:40 UTC

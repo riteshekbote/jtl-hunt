@@ -1071,3 +1071,5 @@
 - CHANGED `oauth2.api.jtl-software.com/authorize`: attacker `redirect_uri=https://evil.example.com/cb` produces byte-identical 302→`/doauthorize` as registered localhost URI — unvalidated `redirect_uri` reconfi
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
 - CHANGED `id.jtl-cloud.com`: Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
+
+## 2026-09-16 19:16:40 UTC
