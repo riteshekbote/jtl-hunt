@@ -75,3 +75,10 @@
   - **Verdict: VALID**
   - | Q4 Provable | NO — no valid public client_id enumerated yet for Ory instance; cannot mint tokens without known client_id |
   - | 2 | FFN OAuth scope escalation + leaked creds | **VALID** | HIGH (7.5) |
+
+- 5 lead(s) marked VALID at 2026-09-16 21:56:13 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q4 Provable non-invasively? | **NO** — requires valid JWT for two different tenants; cannot obtain without accounts |
+  - | 1 | FFN OAuth Credential Leak (GitHub) | **VALID** | 8.6 |
+  - | 2 | FFN OAuth Scope Escalation | **VALID** | 7.2 |
