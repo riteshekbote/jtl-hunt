@@ -5249,3 +5249,4 @@ testability: PASSIVE
 [RISK] jtl: 85 — Surface stable: FFN OAuth scope escalation + redirect_uri + leaked creds remain primary attack chain; FFN API docs live (contrary to KBASE 404); ERP GraphQL alive at 401 but BOLA blocked by program rule. Two evidence-backed findings submission-ready (Find-01: client_credentials scope escalation + silent degradation + leaked secret; Find-02: redirect_uri + leaked-credential code-theft chain → user-bound token on ffn-sbx). All probes read-only, ≤1 rps, zero mutation on live customer data.
 ## 2026-09-16 19:16:31 UTC [target] (model nemotron3)
 ## 2026-09-16 21:56:44 UTC [target] (model nemotron3)
+## 2026-09-17 00:08:28 UTC [target] (model nemotron3)

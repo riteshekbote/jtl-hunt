@@ -1743,3 +1743,5 @@
 - [95] oauth2.api.jtl-software.com/token: Find-01: client_credentials scope escalation — evidenced, PASSIVE, submission-ready (from art/lead_bigpickle.txt)
 - NEXT(hypotheses-bigpickle.txt): HUMAN: Submit reports/valid-bugs.md (verified ON DISK this cycle: 5351B, count-3, 3 `## Find-`, 0 plaintext secret, sha256×1, client_id×2) to bugs.olivermaicher
 - LEARN: ACCEPTED RAG @ reports/valid-bugs.md: 19:16 LEARN claiming "5680B/count-3 verified" was FALSE — disk held 6853B/count-0/0 `## Find-`/plaintext secret at line 19
+
+## RANKED HYPOTHESES 2026-09-17 00:08:41 UTC

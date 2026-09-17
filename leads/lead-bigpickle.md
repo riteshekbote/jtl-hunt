@@ -4293,3 +4293,4 @@ testability: PASSIVE
 [NEXT] HUMAN: Submit reports/valid-bugs.md (verified ON DISK this cycle: 5351B, count-3, 3 `## Find-`, 0 plaintext secret, sha256×1, client_id×2) to bugs.olivermaicher.eu.
 [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: 19:16 LEARN claiming "5680B/count-3 verified" was FALSE — disk held 6853B/count-0/0 `## Find-`/plaintext secret at line 19. Rewritten this cycle and bash-verified 5351B/`running count 3`/3 Finds/plaintext=0/sha256×1/client_id×2. 13th cycle of LEARN-vs-disk divergence; only post-write bash read-back is authoritative.
 [RISK] jtl: 6 — Zero network probes this cycle (local artifact rewrite + verification only); footprint unchanged since 2026-09-14. Artifact submission-ready on disk (0 plaintext secret verified). Residual: Find-02 requires HUMAN consent (NOT executed); Find-03 flapping status needs triage re-verify.
+## 2026-09-17 00:07:47 UTC [target] (model bigpickle)

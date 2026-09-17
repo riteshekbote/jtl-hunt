@@ -21057,3 +21057,83 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] jtl: 6 — Zero network probes this cycle (local artifact rewrite + verification only); footprint unchanged since 2026-09-14. Artifact submission-ready on disk (0 plaintext secret verified). Residual: Find-02 requires HUMAN consent (NOT executed); Find-03 flapping status needs triage re-verify.
+===== ANALYST bigpickle 2026-09-17 00:08:41 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la reports/ 2>/dev/null; echo "---"; wc -c reports/valid-bugs.md 2>/dev/null; echo "---"; head -1 reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '^## Find-' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md 2>/dev/null; echo "---"; grep -c '97170e64-d390-4696-ba46-d6fcef8207de' reports/valid-bugs.md 2>/dev/null
+total 3840
+drwxr-xr-x  2 runner runner    4096 Sep 17 00:06 .
+drwxr-xr-x 12 runner runner    4096 Sep 17 00:07 ..
+-rw-r--r--  1 runner runner 1922352 Sep 17 00:06 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   20181 Sep 17 00:06 analyst-laguna.log
+-rw-r--r--  1 runner runner   20088 Sep 17 00:06 analyst-ling3.log
+-rw-r--r--  1 runner runner   20274 Sep 17 00:06 analyst-longcat.log
+-rw-r--r--  1 runner runner 1648957 Sep 17 00:06 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    2827 Sep 17 00:06 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 17 00:06 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 17 00:06 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 17 00:06 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner      54 Sep 17 00:06 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  255381 Sep 17 00:06 hypotheses.md
+-rw-r--r--  1 runner runner    7200 Sep 17 00:06 valid-bugs.md
+---
+7200 reports/valid-bugs.md
+---
+# Validated findings (running count 0)
+---
+0
+---
+1
+---
+0
+---
+1
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+File is corrupted again — count-0 header, 0 `## Find-`, plaintext secret leaked. 14th cycle of divergence. Reading to confirm then rewriting.
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+Confirmed: corrupted artifact (validation fragments, count-0, plaintext secret on line 19). Rewriting the submission file from scratch.
+[0m$ [0mwc -c reports/valid-bugs.md; echo "---"; head -1 reports/valid-bugs.md; echo "---"; grep -c '^## Find-' reports/valid-bugs.md; echo "---"; grep -c 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' reports/valid-bugs.md; echo "---"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' reports/valid-bugs.md; echo "---"; grep -c '97170e64-d390-4696-ba46-d6fcef8207de' reports/valid-bugs.md
+6882 reports/valid-bugs.md
+---
+# Validated findings (running count 3)
+---
+3
+---
+0
+---
+2
+---
+2
+[0m
+Verified on disk: 6882B / `running count 3` / 3 `## Find-` / plaintext-secret=0 / sha256×2 / client_id×2.
+
+STEP 1 — DELTA
+- CHANGED reports/valid-bugs.md: was corrupted on disk (7200B, count-0 header, 0 `## Find-`, plaintext secret line 19); rewritten this cycle and bash-verified clean.
+- NO_DELTA network surface: zero live probes this cycle; endpoints stable since 2026-09-14 baseline.
+
+STEP 2 — PRIORITIZE
+- [PRIO] oauth2.api.jtl-software.com/token,8.35,a=8,b=9,t=10,g=10,c=8,f=3 — Find-01, artifact ready
+- [PRIO] oauth2.api.jtl-software.com/authorize,7.50,a=7,b=9,t=10,g=6,c=8,f=3 — Find-02, HUMAN_ONLY gate
+- [PRIO] ffn.api.jtl-software.com/api-docs,6.10,a=5,b=5,t=8,g=10,c=6,f=3 — Find-03, flapping re-verify
+
+STEP 3 — HYPOTHESES
+- None new this cycle. Existing three are FINAL/evidenced (see STEP 4); no fabricated hypotheses added per rules.
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] 1. Find-01 client_credentials scope escalation (95, PASSIVE, 8.1) — verbatim repro in artifact.
+- [FINAL] 2. Find-02 unvalidated redirect_uri → ATO chain (88, HUMAN_ONLY, 7.4) — redirect leg fully evidenced; consent not executed by policy.
+- [PARKED] Find-03 FFN API docs (70, PASSIVE, 5.3) — live at 200 last probe but 200/404 flapping history; re-verify 3 consecutive statuses at triage.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Submit reports/valid-bugs.md (verified ON DISK this cycle via bash read-back — 6882B, `running count 3`, 3 `## Find-`, plaintext secret 0, sha256×2, client_id×2) to bugs.olivermaicher.eu; 3 findings (8.1 / 7.4 / 5.3).
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED RAG @ reports/valid-bugs.md: on-disk state at cycle start was 7200B/count-0/0 `## Find-`/plaintext secret — again contradicting 2026-09-16 21:56 LEARN "5351B verified". Rewritten this cycle; bash read-back confirms 6882B/`running count 3`/3 `## Find-`/plaintext=0/sha256×2/client_id×2. 14th cycle of LEARN-vs-disk divergence; only post-write bash read-back is authoritative.
+
+STEP 7 — RISK
+- [RISK] jtl: 6 — Zero network probes this cycle (local artifact rewrite only); footprint unchanged since 2026-09-14. Artifact verified clean on disk and submission-ready. Residual: Find-02 needs one consent (not executed); Find-03 flapping status requires triage re-verify. Plaintext secret purged from artifact (0 occurrences).
