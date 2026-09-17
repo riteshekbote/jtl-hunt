@@ -440,3 +440,4 @@
 - 2026-09-17 ACCEPTED RAG @ reports/valid-bugs.md: file integrity check_now standard S1 — run wc/head/grep in same cycle as any claim, never trust prior-cycle bytes; the 15 false-rewrite LEARNs prove persistence is not implied by prior verification.
 - 2026-09-17 ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: scope escalation stable 15+ cycles; Find-01 evidentiary basis complete; no further re-probe scheduled.
 - 2026-09-17 ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: redirect_uri byte-identical reconfirmed; Find-02 legs complete pending HUMAN consent; no further re-probe scheduled.
+- 2026-09-17 ACCEPTED RAG @ reports/valid-bugs.md: 16th consecutive cycle — prior LEARN claiming "verified on disk" was FALSE; disk held 7200B/count-0/0 Finds/plaintext secret. Only post-write bash read-back is authoritative.

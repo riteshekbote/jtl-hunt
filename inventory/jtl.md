@@ -1097,3 +1097,12 @@
 - CHANGED `id.jtl-cloud.com` Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
 
 ## 2026-09-17 14:47:25 UTC
+
+## 2026-09-17 18:54:57 UTC
+- CHANGED `reports/valid-bugs.md` corrupted on disk (7200B, count-0 header, 0 `## Find-`, plaintext secret at line 19) — 16th consecutive cycle of LEARN-vs-disk divergence; all prior LEARN claims of "verified r
+- CHANGED `oauth2.api.jtl-software.com/token`: client_credentials POST returns 200 + RS256 JWT with scopes=["ffn.merchant.read","ffn.merchant.write"] — scope escalation + silent degradation stable 15+ cycles (l
+- CHANGED `oauth2.api.jtl-software.com/authorize`: attacker redirect_uri=https://evil.example.com/cb produces byte-identical 302→/doauthorize as registered localhost URI — unvalidated redirect_uri reconfirmed (
+- CHANGED `ffn.api.jtl-software.com/api-docs` + `ffn-sbx`: public ReDoc + swagger.json confirmed LIVE at 301→200 (merchant/fulfiller/shared) — prior KBASE 404 reports were stale/incorrect (live re-confirmed)
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql`: stable HTTP 401 (JWT gate alive); prior 404 reports were stale/flapping (live re-confirmed)
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED `id.jtl-cloud.com`: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support

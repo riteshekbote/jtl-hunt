@@ -4402,3 +4402,4 @@ testability: PASSIVE
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: scope escalation stable 15+ cycles; Find-01 evidentiary basis complete; no further re-probe scheduled.
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: redirect_uri byte-identical reconfirmed; Find-02 legs complete pending HUMAN consent; no further re-probe scheduled.
 [RISK] jtl: 3 — Submission blocker resolved (artifact verified submission-ready on disk, plaintext secret purged). Zero live probes this cycle; findings stable. Residual: Find-02 requires one in-scope consent NOT executed by policy (may weaken triager acceptance); Find-03 flapping history warrants triage re-verify step embedded in repro; artifact must be re-verified at submit time — a single unchecked LEARN revert would re-create the plaintext-secret exposure.
+## 2026-09-17 18:50:02 UTC [target] (model bigpickle)
