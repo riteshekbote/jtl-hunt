@@ -122,3 +122,52 @@ reasoning: The nachricht messaging library ships example config and test fixture
 impact: LOW — default credentials in example code; risk only if deployed without credential rotation.
 verify_steps: 1) Check if any production deployment uses these example configs. 2) Passively: confirm hardcoded values at cited lines.
 TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-17 23:54:54 UTC
+class: SECRET
+asset: nachricht/examples/common/service.yaml:29
+asset: nachricht/tests/Integration/Fixtures/RabbitMqManagementClient.php:20
+confidence: 20
+reasoning: Hardcoded `guest:guest` default RabbitMQ credentials in example service config and test fixture class. This is the well-known RabbitMQ default — not a leaked production secret. No AWS/Azure/GCP keys found anywhere in the org.
+impact: LOW (example/test only; if someone copies the example without changing creds, their local dev instance is exposed)
+verify_steps: (passive) Confirm no production docker-compose or .env files override these with real creds; grep all repos for `guest:guest` — already done, only these two locations.
+class: SECRET
+asset: wemogy-libs-infrastructure-database/src/mongo/Wemogy.Infrastructure.Database.Mongo.UnitTests/appsettings.json:2
+confidence: 15
+reasoning: `mongodb://admin:test@localhost:27017/infrastructuredbtests` — credentials are `admin:test`, pointing at localhost. This is a local unit-test fixture, not a production endpoint.
+impact: LOW (localhost-only, test user; if reused in prod would be a full credential leak)
+verify_steps: (passive) Confirm the value is only consumed by test harness; search all repos for other MongoDB URIs — none found with real hosts.
+class: SSRF
+asset: jtl-platform-demo-pacon-2026/customer-voice/packages/backend/src/index.ts:243-279
+confidence: 65
+reasoning: The `/erp-info/:tenantId/:endpoint` route accepts a user-controlled `endpoint` URL segment and forwards a server-side `fetch()` to `https://api.jtl-cloud.com/erp/${endpoint}`. The `endpoint` param is not validated against an allowlist — an attacker could supply `../../account/users` or similar path-traversal to hit unintended JTL Cloud API paths. Additionally, the `tenantId` and `endpoint` can be overridden via `_tenantId`/`_endpoint` in the request body (lines 253-254), bypassing the URL parameters entirely. Although the base URL is hardcoded to `api.jtl-cloud.com`, the unvalidated path traversal allows hitting any sub-resource on the JTL Cloud API with the server's bearer token.
+impact: MEDIUM (server-side JWT token is attached to all proxied requests; path traversal could expose other tenants' data or hit internal API endpoints)
+verify_steps: (passive) Confirm the endpoint is only used in the demo (pacon-2026) app and not deployed to production; verify the JTL Cloud API has its own tenant-scoping on all endpoints.
+class: IDOR
+asset: jtl-platform-demo-pacon-2026/customer-voice/packages/backend/src/index.ts:58-70
+confidence: 60
+reasoning: The `resolveTenantId()` function first tries to extract tenant ID from a verified JWT session token (line 62). If that fails (or no token is provided), it falls through to reading `X-Tenant-ID` from the request headers (line 68) with no verification. Any unauthenticated caller can supply `X-Tenant-ID: cv-<victim-tenant>` to read or modify another tenant's feedbacks, config, and tenant mapping via `/feedbacks`, `/tenants/config`, etc.
+impact: MEDIUM (tenant data isolation bypass; allows cross-tenant read/write of feedback and config in the demo app)
+verify_steps: (passive) Confirm `resolveTenantId` is used on all sensitive routes (it is — lines 92, 117, 176, 186); check if the demo app is deployed publicly.
+class: OTHER
+asset: nachricht/src/Serializer/PhpMessageSerializer.php:35
+asset: onetimelink_api/src/Session/Session.php:109
+asset: connector-opencart2/.../CustomField.php:62
+asset: connector-shopware5/.../CustomerOrder.php:465
+asset: connector-magento1/.../Magento.php:57,64
+confidence: 40
+reasoning: Multiple repos use PHP `unserialize()` on data from messages, session storage, or database columns. In `PhpMessageSerializer`, an attacker who controls an AMQP message body could inject a crafted serialized payload for PHP object injection. In `Session.php`, the session data (stored server-side) is deserialized — lower risk unless session storage is compromised. The OpenCart and Shopware mappers deserialize data from e-commerce databases, which could be exploited if an attacker can write to the DB.
+impact: LOW-MEDIUM (depends on whether attacker can influence serialized payload; in the AMQP case, a malicious message on the broker could trigger RCE via gadget chains if vulnerable class autoload paths exist)
+verify_steps: (passive) Check if the AMQP broker is exposed to untrusted publishers; verify if `allowed_classes` parameter is used (it is not); check for known gadget chains in the autoloaded class set.
+class: MISCONFIG
+asset: php-health-check/src/AbstractHealthCheck.php:19
+confidence: 30
+reasoning: `Access-Control-Allow-Origin: *` is set on health check responses. If health check endpoints are deployed on internal infrastructure, this allows any origin to read the response via JavaScript, potentially leaking service status or error details.
+impact: LOW (health check data is typically non-sensitive; wildcard CORS is common practice for health endpoints)
+verify_steps: (passive) Confirm whether health checks expose any sensitive information beyond pass/fail status.
+class: IDOR
+asset: jtl-platform-demo-pacon-2026/customer-voice/packages/backend/src/index.ts:243
+confidence: 55
+reasoning: The `/erp-info/:tenantId/:endpoint` route uses `app.all()` but never calls `resolveTenantId()` or checks `x-session-token`. It directly uses URL params and body overrides for `tenantId` and `endpoint`. Any unauthenticated request can proxy to JTL Cloud API endpoints using the server's service-account JWT, potentially accessing any tenant's data via the JTL Cloud ERP API.
+impact: MEDIUM (full unauthenticated access to JTL Cloud ERP API via server-side proxy with service credentials)
+verify_steps: (passive) Verify if this route is behind a reverse proxy with auth; check if the JTL Cloud ERP API enforces tenant-scoping independent of the `X-Tenant-ID` header.
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
