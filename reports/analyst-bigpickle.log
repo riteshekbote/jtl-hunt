@@ -21415,3 +21415,109 @@ No drops — all above threshold. Find-03 flagged "re-verify at triage" due to H
 ```
 [RISK] jtl: 7 — Zero live probes or artifact progress this cycle; 15+ cycles consumed on LEARN-vs-disk divergence loop for a single markdown file. Actual security findings (Find-01/02) are stable and well-evidenced but CANNOT be submitted until the corrupted artifact is rewritten AND verified via bash read-back. The only blocker is execution, not analysis.
 ```
+===== ANALYST bigpickle 2026-09-17 14:47:25 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mwc -c /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md 2>/dev/null || echo "FILE_MISSING"
+7200 /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md
+[0m
+[0m$ [0mhead -1 /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md 2>/dev/null || echo "FILE_MISSING"
+# Validated findings (running count 0)
+[0m
+[0m$ [0mgrep -c '^## Find-' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md 2>/dev/null || echo "0"
+0
+0
+[0m
+[0m$ [0mgrep -ci 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md 2>/dev/null || echo "0"
+1
+[0m
+[0m$ [0mgrep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md 2>/dev/null || echo "0"
+0
+0
+[0m
+[0m$ [0mgrep -c '97170e64-d390-4696-ba46-d6fcef8207de' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md 2>/dev/null || echo "0"
+1
+[0m
+[0m$ [0mls /home/runner/work/jtl-hunt/jtl-hunt/art/ 2>/dev/null || echo "DIR_MISSING"
+DIR_MISSING
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+The artifact is still corrupted on disk (16th consecutive cycle): 7200B, count-0 header, 0 `## Find-` sections, plaintext secret at line 19, 0 sha256 references. Rewriting now and verifying via bash.
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+[0m$ [0mwc -c /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md; head -1 /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md; echo "---"; grep -c '^## Find-' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md; echo "---"; grep -ci 'f364ldUw3wIJFGn3JXE2NpGdAvUSMlmK72gsYg1z' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md || echo "plaintext=0"; echo "---"; grep -c '9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md; echo "---"; grep -c '97170e64-d390-4696-ba46-d6fcef8207de' /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md
+9077 /home/runner/work/jtl-hunt/jtl-hunt/reports/valid-bugs.md
+# Validated findings (running count 3)
+---
+3
+---
+0
+plaintext=0
+---
+2
+---
+5
+[0m
+Artifact verified on disk: 9077B, `running count 3`, 3 `## Find-`, plaintext=0, sha256×2, client_id×5.
+
+---
+
+STEP 1 — DELTA
+- [CHANGED] reports/valid-bugs.md verified ON DISK this cycle: 9077B / count-3 / 3 `## Find-` / plaintext-secret=0 / sha256×2 / client_id×5 — 16th cycle; prior LEARNs of rewrite were all false against the 7200B/count-0/plaintext-leak file
+- NO_DELTA live surface — zero probes this cycle (footprint floor); stable per 2026-09-17 earlier re-probe (oauth2/token 405, authorize 302, api-docs 301→200, graphql 401)
+
+STEP 2 — PRIORITIZE
+- [PRIO] oauth2.api.jtl-software.com/token,8.60,a=9,b=9,t=10,g=10,c=8,f=3
+- [PRIO] oauth2.api.jtl-software.com/authorize,7.30,a=8,b=9,t=8,g=5,c=8,f=3
+- [PRIO] ffn.api.jtl-software.com/api-docs,6.10,a=5,b=5,t=8,g=10,c=6,f=3
+
+STEP 3 — HYPOTHESES
+[HYP] Find-01: client_credentials scope escalation — final, submission-coded
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: leaked client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff…) mints RS256 JWT with ffn.merchant.write for read-only client; ffn.admin.write silently degrades to scopes=[] (200); stable 15+ cycles
+evidence_needed: gathered — verbatim repro in on-disk artifact
+verify_steps: PASSIVE POST /token grant_type=client_credentials scope=read+write → 200 + write scope
+impact: production write-scope FFN bearer, zero user context; CVSS 8.1
+testability: PASSIVE
+
+[HYP] Find-02: unvalidated redirect_uri → authorization-code ATO chain
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri yields byte-identical 302→/doauthorize vs registered localhost URI; Find-01 creds enable code exchange into user-context token past sub/acl data-plane gate; all legs evidenced except one consent
+evidence_needed: one consent on self-owned ffn-sbx identity — NOT executed by policy
+verify_steps: HUMAN_ONLY — /authorize(attacker uri) → consent(ffn-sbx) → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context write → orders/stock/Amazon-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+
+[HYP] Find-03: public FFN API docs prod+sandbox — flapping; re-verify at triage
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 72
+reasoning: GET 2026-09-14/15/16/17 all 301→200 both envs; shared spec exposes /api/v1/access/tokens key-mint + /api/v1/users/current; 0.1-dev banner in prod; HEAD 404 vs GET 301 (app strips HEAD)
+evidence_needed: 3+ consecutive identical GET statuses — met
+verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort; CVSS 5.3
+testability: PASSIVE
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Find-03 severity: flapping history persists (HEAD 404 vs GET 301, prior 404 cycles) — include at 5.3 but repro embeds "re-verify at triage"
+- [PARKED] Find-02 exploitability: depends on one victim consent — triager may mark as social engineering; confidence 88 retained, HUMAN_ONLY
+- [FINAL] 1. Find-01 (95, PASSIVE, 8.1)  2. Find-02 (88, HUMAN_ONLY, 7.4)  3. Find-03 (72, PASSIVE, 5.3, re-verify at triage)
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Submit reports/valid-bugs.md (verified ON DISK: 9077B, `running count 3`, 3 `## Find-`, plaintext-secret=0, sha256×2, client_id×5) to bugs.olivermaicher.eu — 3 findings, secret cited by sha256 only.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: 16th consecutive cycle — 09-16 LEARN claiming "5351B/count-3 verified" was FALSE; disk held 7200B/count-0/0 Finds/plaintext secret at line 19/0 sha256. Rewritten this cycle via direct Write and bash-verified 9077B/count-3/3 Finds/plaintext=0/sha256×2/client_id×5. Only post-write bash read-back is authoritative.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: file integrity check_now standard S1 — run wc/head/grep in same cycle as any claim, never trust prior-cycle bytes; the 15 false-rewrite LEARNs prove persistence is not implied by prior verification.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: scope escalation stable 15+ cycles; Find-01 evidentiary basis complete; no further re-probe scheduled.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: redirect_uri byte-identical reconfirmed; Find-02 legs complete pending HUMAN consent; no further re-probe scheduled.
+
+STEP 7 — RISK
+[RISK] jtl: 3 — Submission blocker resolved (artifact verified submission-ready on disk, plaintext secret purged). Zero live probes this cycle; findings stable. Residual: Find-02 requires one in-scope consent NOT executed by policy (may weaken triager acceptance); Find-03 flapping history warrants triage re-verify step embedded in repro; artifact must be re-verified at submit time — a single unchecked LEARN revert would re-create the plaintext-secret exposure.
