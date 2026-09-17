@@ -4403,3 +4403,33 @@ testability: PASSIVE
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: redirect_uri byte-identical reconfirmed; Find-02 legs complete pending HUMAN consent; no further re-probe scheduled.
 [RISK] jtl: 3 — Submission blocker resolved (artifact verified submission-ready on disk, plaintext secret purged). Zero live probes this cycle; findings stable. Residual: Find-02 requires one in-scope consent NOT executed by policy (may weaken triager acceptance); Find-03 flapping history warrants triage re-verify step embedded in repro; artifact must be re-verified at submit time — a single unchecked LEARN revert would re-create the plaintext-secret exposure.
 ## 2026-09-17 18:50:02 UTC [target] (model bigpickle)
+## 2026-09-17 21:56:08 UTC [target] (model bigpickle)
+[HYP] Find-01 client_credentials scope escalation is submission-blocked only by artifact state, not evidence
+class: AUTH
+asset: reports/valid-bugs.md / oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: token grant verified stable 15+ cycles; artifact now correct on disk (6753B, count-3, plaintext secret purged); no further re-probe warranted
+evidence_needed: on-disk verification whether another analyst clobbers the artifact before submission
+verify_steps: bash read-back at submit time, not a LEARN claim
+impact: none new — integrity of submission artifact; CVSS 8.1 finding ready
+testability: PASSIVE
+[HYP] Find-02 unvalidated redirect_uri chain completes with one in-scope consent (NOT executed by policy)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302 vs registered URI; Find-01 creds enable code exchange past sub/acl data-plane gate; all legs evidenced except one consent
+evidence_needed: one consent on self-owned ffn-sbx identity — excluded by program rules
+verify_steps: HUMAN_ONLY (out of policy) — /authorize(attacker uri) → consent(ffn-sbx) → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context write → orders/stock/Amazon-SFP creds + key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03 API docs flapping — must re-verify at triage before relying on it
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 72
+reasoning: GET 301→200 confirmed 2026-09-14..17 both envs; HEAD returns 404 (app strips HEAD); shared spec exposes /api/v1/access/tokens + /api/v1/users/current; 0.1-dev banner
+evidence_needed: 3+ consecutive identical GET statuses at triage time
+verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort; CVSS 5.3
+testability: PASSIVE
+[NEXT] HUMAN: Submit reports/valid-bugs.md to bugs.olivermaicher.eu after ONE bash re-verify in the same cycle as the submission (6753B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0) — the shared-workspace race means a LEARN-level claim alone is not proof; only the read-back immediately before submit counts.
+[RISK] jtl: 2 — Submission artifact verified correct on disk and purged of plaintext secret; 3 findings (8.1/7.4/5.3) stable 15+ cycles. Residual risk: (a) concurrent sibling writers may clobber the artifact before submission → re-verify at submit time; (b) Find-02 final leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping history → triage re-verify embedded in repro. No new active-testing risk taken this cycle.

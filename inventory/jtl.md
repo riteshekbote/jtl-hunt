@@ -1106,3 +1106,5 @@
 - CHANGED `api.jtl-cloud.com/erp/v2/graphql`: stable HTTP 401 (JWT gate alive); prior 404 reports were stale/flapping (live re-confirmed)
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth`: confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
 - CHANGED `id.jtl-cloud.com`: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
+
+## 2026-09-17 21:58:06 UTC
