@@ -1108,3 +1108,8 @@
 - CHANGED `id.jtl-cloud.com`: Zitadel device_code grant rejected at token endpoint with "unauthorized_client: grant_type not allowed" — client config disables device_code despite server advertising support
 
 ## 2026-09-17 21:58:06 UTC
+
+## 2026-09-17 23:57:03 UTC
+- NEW reports/valid-bugs.md still corrupted on disk (7200B, count-0 header, 0 `## Find-`, plaintext secret at line 19) — 17th cycle LEARN-vs-disk divergence; prior LEARN "verified on disk" was FALSE
+- NEW All priority endpoints stable vs 2026-09-17 21:58 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 200, erp/v2/graphql 401, auth.jt
+- CHANGED No surface drift detected; attack chains unchanged

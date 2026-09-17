@@ -4433,3 +4433,31 @@ impact: schema disclosure lowering exploitation effort; CVSS 5.3
 testability: PASSIVE
 [NEXT] HUMAN: Submit reports/valid-bugs.md to bugs.olivermaicher.eu after ONE bash re-verify in the same cycle as the submission (6753B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0) — the shared-workspace race means a LEARN-level claim alone is not proof; only the read-back immediately before submit counts.
 [RISK] jtl: 2 — Submission artifact verified correct on disk and purged of plaintext secret; 3 findings (8.1/7.4/5.3) stable 15+ cycles. Residual risk: (a) concurrent sibling writers may clobber the artifact before submission → re-verify at submit time; (b) Find-02 final leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping history → triage re-verify embedded in repro. No new active-testing risk taken this cycle.
+## 2026-09-17 23:56:16 UTC [target] (model bigpickle)
+[HYP] Submission-blocking artifact race on shared workspace
+class: MISCONFIG
+asset: reports/valid-bugs.md
+confidence: 95
+reasoning: 17 consecutive cycles of LEARN-vs-disk divergence; file repeatedly reverted to 7200B count-0 + plaintext secret; only same-cycle bash read-back detects it
+evidence_needed: on-disk wc/head/grep immediately before & after any write; no claim from memory or LEARN
+verify_steps: bash wc -c, head -1, grep -c '^## Find-', grep -c plaintext (0), grep -c sha256
+impact: if unchecked at submit time, our own artifact re-exposes the plaintext client_secret; contamination of the one submission artifact
+testability: PASSIVE
+[HYP] Find-02 authorization-code ATO completes with one in-scope consent (NOT executed by policy)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302 vs registered URI across cycles; Find-01 creds enable code exchange; data-plane gate blocked only by empty sub/acl which a user-consent token would populate
+evidence_needed: one consent on a self-owned ffn-sbx identity — excluded by program policy
+verify_steps: HUMAN_ONLY (out of policy): /authorize(attacker uri) → consent(ffn-sbx) → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context write → orders/stock/Amazon-SFP creds + API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03 API docs present at GET at triage time (flapping history)
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx/api-docs
+confidence: 72
+reasoning: GET 301→200 confirmed 2026-09-14..17 both envs; HEAD 404 (app strips HEAD); swagger exposes /api/v1/access/tokens + /api/v1/users/current; 0.1-dev banner
+evidence_needed: 3+ consecutive identical GET statuses at triage
+verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json
+impact: schema disclosure lowering exploitation effort; CVSS 5.3
+testability: PASSIVE
