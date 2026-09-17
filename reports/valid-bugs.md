@@ -82,3 +82,19 @@
   - | Q4 Provable non-invasively? | **NO** — requires valid JWT for two different tenants; cannot obtain without accounts |
   - | 1 | FFN OAuth Credential Leak (GitHub) | **VALID** | 8.6 |
   - | 2 | FFN OAuth Scope Escalation | **VALID** | 7.2 |
+
+- 14 lead(s) marked VALID at 2026-09-17 23:58:10 UTC
+  - | **Verdict** | **VALID** |
+  - | Q3 Real impact? | **YES** — valid `client_id` + `client_secret` for production OAuth2 enables token minting for FFN API |
+  - | **Verdict** | **VALID** (but secondary to scope escalation; cred leak alone is insufficient if secret was intended for public use) |
+  - | **Verdict** | **VALID** |
+  - | Q7 Reasonable triager? | **YES** — valid misconfig, low severity |
+  - | **Verdict** | **VALID (low)** |
+  - | Q2 Reachable? | **PARTIAL** — endpoint returns 401 "JWT not present" without token; requires valid JWT |
+  - | Q4 Provable non-invasively? | **NO** — requires valid JWT from two different tenants; token acquisition needs HUMAN interaction (OAuth consent); testing against live customer data prohibited |
+  - | Q7 Reasonable triager? | **NO** — hypothesis-level; cannot demonstrate without valid JWT |
+  - | Q2 Reachable? | **NO** — OIDC discovery live but device auth endpoint now returns 404; no valid public client_id enumerated |
+  - | 1 | FFN OAuth Scope Escalation | **VALID** | 7.2 | Yes |
+  - | 2 | FFN OAuth Leaked Credentials | **VALID** | 7.5 | Yes (secondary to #1) |
+  - | 3 | FFN OAuth redirect_uri Bypass | **VALID** | 7.4 | Yes |
+  - | 4 | FFN API Public Documentation | **VALID** (low) | 5.3 | Yes |
