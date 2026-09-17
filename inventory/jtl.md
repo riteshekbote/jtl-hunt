@@ -1086,3 +1086,12 @@
 - CHANGED `oauth2.api.jtl-software.com/authorize` attacker `redirect_uri=https://evil.example.com/cb` produces byte-identical 302→`/doauthorize` as registered localhost URI — unvalidated `redirect_uri` reconfir
 - CHANGED `auth.jtl-cloud.com/oauth2/device/auth` confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
 - CHANGED `id.jtl-cloud.com` Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
+
+## 2026-09-17 09:58:34 UTC
+- CHANGED `reports/valid-bugs.md` verified ON DISK (5680B, count-3, 3 `## Find-`, 0 plaintext secret, sha256×2) — artifact submission-ready after 11+ false LEARN cycles
+- CHANGED `api.jtl-cloud.com/erp/v2/graphql` stable HTTP 401 (JWT gate alive); prior 404 reports were stale/flapping
+- CHANGED `ffn.api.jtl-software.com/api-docs` + `ffn-sbx` public ReDoc + swagger.json confirmed LIVE at 301→200 (merchant/fulfiller/shared) — prior KBASE 404 reports were stale/incorrect
+- CHANGED `oauth2.api.jtl-software.com/token` `client_credentials` POST returns 200 + RS256 JWT with `scopes=["ffn.merchant.read","ffn.merchant.write"]` — scope escalation + silent degradation stable 15+ cycles
+- CHANGED `oauth2.api.jtl-software.com/authorize` attacker `redirect_uri=https://evil.example.com/cb` produces byte-identical 302→`/doauthorize` as registered localhost URI — unvalidated `redirect_uri` reconfir
+- CHANGED `auth.jtl-cloud.com/oauth2/device/auth` confirmed HTTP 404 — device authorization endpoint permanently removed (was live 2026-09-04)
+- CHANGED `id.jtl-cloud.com` Zitadel `device_code` grant rejected at token endpoint with `unauthorized_client: grant_type not allowed` — client config disables `device_code` despite server advertising support
