@@ -1138,3 +1138,8 @@
 - CHANGED `reports/valid-bugs.md` still corrupted on disk (8530B, count-0 header, 0 `## Find-` sections, plaintext secret fragments) — 18th cycle LEARN-vs-disk divergence
 - CHANGED All priority endpoints stable vs 2026-09-17 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 200, erp/v2/graphql 401, auth.jtl-clou
 - NEW No surface drift detected across all probed endpoints; attack chains unchanged since 2026-09-14 live re-probe
+
+## 2026-09-18 22:20:48 UTC
+- CHANGED `reports/valid-bugs.md` still corrupted on disk (8530B, count-0 header, 0 `## Find-` sections, plaintext secret fragments) — 18th cycle LEARN-vs-disk divergence
+- CHANGED All priority endpoints stable vs 2026-09-17 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 200, erp/v2/graphql 401, auth.jtl-clou
+- NEW No surface drift detected across all probed endpoints; attack chains unchanged since 2026-09-14 live re-probe

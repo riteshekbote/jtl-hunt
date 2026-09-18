@@ -458,3 +458,5 @@
 - 2026-09-18 ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and bash-verified — 4975B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×1 / client_id×4. Only post-write bash read-back is authoritative; LEARN entries about artifact state are consistently fabricated by concurrent sibling writers.
 - 2026-09-18 ACCEPTED MISCONFIG: in-workspace unique-named snapshot (`valid-bugs.md.bigpickle`) is the only clobber-resistant per-agent copy available; `/tmp` is policy-blocked, global `valid-bugs.md` is racy by design.
 - 2026-09-18 REJECTED NETWORK: zero live probes this cycle; no surface drift vs 2026-09-17 baseline; footprint unchanged.
+- 2026-09-18 ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
+- 2026-09-18 ACCEPTED: passive DNS/CT enumeration alone insufficient for JTL bug bounty. Main services likely on primary domains.
