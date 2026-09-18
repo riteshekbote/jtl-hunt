@@ -1905,3 +1905,17 @@
 - LEARN: REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
 - LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
 - LEARN: REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (8530B, count-0, 0 Finds, plaintext secret fragments) despite prior LEARN claiming "verified 
+
+## RANKED HYPOTHESES 2026-09-18 19:44:13 UTC
+- [95] oauth2.api.jtl-software.com/token: Find-01 stays submission-ready; scopes still unchecked server-side (from art/lead_bigpickle.txt)
+- [95] oauth2.api.jtl-software.com/token: FFN OAuth client_credentials scope escalation with leaked credentials (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-nemotron3.txt): RAG: Rewrite `reports/valid-bugs.md` ON DISK with 3 standalone findings (Find-01 scope escalation 8.1, Find-02 redirect_uri 7.4 + ATO chain, Find-03 API docs 5.
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single 
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_cod
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e verified l
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separ
+- LEARN: ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); prior 404 reports were stale/flapping
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
+- LEARN: REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
+- LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
+- LEARN: REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (8530B, count-0, 0 Finds, plaintext secret fragments) despite prior LEARN claiming "verified 

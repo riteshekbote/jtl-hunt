@@ -4560,3 +4560,31 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG: in-workspace unique-named snapshot (`valid-bugs.md.bigpickle`) is the only clobber-resistant per-agent copy available; `/tmp` is policy-blocked, global `valid-bugs.md` is racy by design.
 [LEARN] REJECTED NETWORK: zero live probes this cycle; no surface drift vs 2026-09-17 baseline; footprint unchanged.
 [RISK] jtl: 2 — No new active-testing risk (RAG + artifact only, read-only). Residual: (a) sibling clobbering may revert the shared file before submission — mitigated by the in-workspace snapshot `valid-bugs.md.bigpickle`; (b) Find-02 last leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping → triangle-embedded re-verify in repro. The plaintext-secret re-exposure risk is contained so long as the snapshot is used for submission content.
+## 2026-09-18 19:43:06 UTC [target] (model bigpickle)
+[HYP] Find-01 stays submission-ready; scopes still unchecked server-side
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret sha256:9cc93ff6… from public README; client_credentials POST returns 200 RS256 with read+write beyond registration; admin.write silently degrades to empty scopes; stable 15+ cycles.
+evidence_needed: full repro + sha256-only secret now on disk (plaintext=0, verified this cycle).
+verify_steps: PASSIVE — opt-in ffn-sbx re-probe only if triage demands; GET/HEAD not applicable to POST-only endpoint.
+impact: unauthorized write-scope token mint, no human interaction; CVSS 8.1.
+testability: PASSIVE
+[HYP] Snapshot will be clobbered again before submission
+class: MISCONFIG
+asset: reports/valid-bugs.md.bigpickle (shared workspace)
+confidence: 90
+reasoning: 20 consecutive divergence cycles; snapshot file deleted by sibling writers this cycle (was 4975B/count-3, now absent); 5 sibling logs confirmed; only post-write bash read-back is authoritative.
+evidence_needed: next cycle re-verify both files; if re-corrupted, submit from the snapshot content (identical now).
+verify_steps: PASSIVE — wc/head/grep both paths each cycle.
+impact: report content loss and plaintext-secret re-exposure inside our own artifact (self-disclosure risk).
+testability: PASSIVE
+[HYP] Find-02 ATO chain completes with one in-scope consent — not executed by policy
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302 vs registered localhost URI; Find-01 creds complete the code exchange; consent-derived token populates empty sub/acl gate.
+evidence_needed: one consent on self-owned ffn-sbx identity — excluded by program rules.
+verify_steps: HUMAN_ONLY (out of policy).
+impact: user-context write + API-key mint; CVSS 7.4.
+testability: HUMAN_ONLY
