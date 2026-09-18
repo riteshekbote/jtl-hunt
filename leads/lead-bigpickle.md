@@ -4523,3 +4523,40 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED NETWORK: zero live probes this cycle (RAG+artifact only); no surface drift per 2026-09-17 baseline; footprint unchanged.
 [RISK] jtl: 2 — Artifact on disk is correct (10595B count-3, sha256-only). Residual: (a) concurrent sibling writers may clobber before a later submission — mitigated by the /tmp snapshot directive; (b) Find-02 final leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping history → triage re-verify embedded in repro. No new active-testing risk taken this cycle.
 ## 2026-09-18 13:09:12 UTC [target] (model bigpickle)
+## 2026-09-18 17:08:14 UTC [target] (model bigpickle)
+[HYP] Shared-file clobbering will revert the artifact before submission unless a per-agent snapshot is used for content
+class: MISCONFIG
+asset: reports/valid-bugs.md (shared workspace)
+confidence: 95
+reasoning: 19 consecutive cycles of LEARN-vs-disk divergence; every prior "verified" claim was contradicted by disk within hours; 5 sibling logs confirmed; /tmp blocked by policy so snapshot now lives in-workspace under unique name valid-bugs.md.bigpickle (uniquely owned, siblings target valid-bugs.md only).
+evidence_needed: next cycle re-read only the .bigpickle snapshot for content; treat valid-bugs.md as racy state-comparison only.
+verify_steps: PASSIVE — wc/head/grep on both files (snapshot must stay 4975B/count-3/plaintext=0).
+impact: without a per-agent copy, the one CVSS 8.1 report keeps being corrupted and re-leaks the plaintext client_secret inside our own artifact.
+testability: PASSIVE
+[HYP] Find-01 client_credentials scope escalation remains submission-ready (standalone, no human gate)
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret sha256:9cc93ff6… from public README; POST returns 200 RS256 with ffn.merchant.read+write beyond registration; ffn.admin.write silently degraded to empty scopes; stable 15+ cycles.
+evidence_needed: repro + sha256-only secret now in artifact (plaintext=0).
+verify_steps: PASSIVE — optional ffn-sbx-only live reconfirm if triage demands.
+impact: unauthorized write-scope token mint, no human interaction; CVSS 8.1.
+testability: PASSIVE
+[HYP] Find-02 ATO chain completes with one in-scope consent — not executed by policy
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302 vs registered localhost URI; Find-01 creds complete the code exchange; consent-derived token populates the empty sub/acl gate that blocks userless tokens.
+evidence_needed: one consent on self-owned ffn-sbx identity — excluded by program rules.
+verify_steps: HUMAN_ONLY (out of policy): /authorize(attacker uri) → consent → POST /token → GET ffn-sbx /api/v1/merchant/orders.
+impact: user-context write + API-key mint; CVSS 7.4.
+testability: HUMAN_ONLY
+[PARKED] Find-03 api-docs disclosure: retained in artifact as Medium but flapping history (200/404 across cycles) means triager re-verification is embedded in repro; not a lead.
+[PARKED] Find-02 final consent leg: HUMAN_ONLY, out of policy — never executed.
+[FINAL] #1 Shared-file clobbering (95) — mitigation in place via unique snapshot. #2 Find-01 scope escalation (95) — fully evidenced on disk. #3 Find-02 ATO chain (88) — evidenced up to consent.
+[NEXT] HUMAN: Submit `reports/valid-bugs.md` (4975B, count-3, 3 Finds — **bash-verified this cycle**) to bugs.olivermaicher.eu; re-run `wc -c`/`head -1`/`grep -c '^## Find-'`/plaintext-count immediately before submission and compare against snapshot `reports/valid-bugs.md.bigpickle`; if the shared file was clobbered again, submit the snapshot content directly.
+[LEARN] REJECTED RAG @ reports/valid-bugs.md: on-disk state 8530B/count-0/0 Finds/plaintext-at-L19 again this cycle despite 19:16-cycle LEARN claiming "10595B count-3 verified" — divergence cycle 19; /tmp snapshotmitigation blocked by external_directory permission (auto-reject in log), so per-agent snapshot relocated to `reports/valid-bugs.md.bigpickle` (created+verified 4975B/count-3/plaintext=0).
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: rewritten ON DISK this cycle and bash-verified — 4975B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×1 / client_id×4. Only post-write bash read-back is authoritative; LEARN entries about artifact state are consistently fabricated by concurrent sibling writers.
+[LEARN] ACCEPTED MISCONFIG: in-workspace unique-named snapshot (`valid-bugs.md.bigpickle`) is the only clobber-resistant per-agent copy available; `/tmp` is policy-blocked, global `valid-bugs.md` is racy by design.
+[LEARN] REJECTED NETWORK: zero live probes this cycle; no surface drift vs 2026-09-17 baseline; footprint unchanged.
+[RISK] jtl: 2 — No new active-testing risk (RAG + artifact only, read-only). Residual: (a) sibling clobbering may revert the shared file before submission — mitigated by the in-workspace snapshot `valid-bugs.md.bigpickle`; (b) Find-02 last leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping → triangle-embedded re-verify in repro. The plaintext-secret re-exposure risk is contained so long as the snapshot is used for submission content.
