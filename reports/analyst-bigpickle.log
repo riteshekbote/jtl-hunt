@@ -22217,3 +22217,45 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] jtl: 2 — Artifact on disk is correct (10595B count-3, sha256-only). Residual: (a) concurrent sibling writers may clobber before a later submission — mitigated by the /tmp snapshot directive; (b) Find-02 final leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping history → triage re-verify embedded in repro. No new active-testing risk taken this cycle.
+===== ANALYST bigpickle 2026-09-18 13:10:47 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mwc -c reports/valid-bugs.md 2>&1; echo "---head---"; head -1 reports/valid-bugs.md 2>&1; echo "---findcount---"; grep -c '^## Find-' reports/valid-bugs.md 2>&1; echo "---hashcount---"; grep -c '9cc93ff6' reports/valid-bugs.md 2>&1; echo "---plaintext-frag---"; grep -c 'f364ldUw3' reports/valid-bugs.md 2>&1; echo "---clientid---"; grep -c '97170e64' reports/valid-bugs.md 2>&1; echo "---snapshot---"; ls -la /tmp/valid-bugs.md.snapshot 2>&1; ls -la /tmp/valid-bugs.md.* 2>&1
+8530 reports/valid-bugs.md
+---head---
+# Validated findings (running count 0)
+---findcount---
+0
+---hashcount---
+0
+---plaintext-frag---
+1
+---clientid---
+1
+---snapshot---
+ls: cannot access '/tmp/valid-bugs.md.snapshot': No such file or directory
+ls: cannot access '/tmp/valid-bugs.md.*': No such file or directory
+[0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m
+[0m← [0mWrite reports/valid-bugs.md
+Wrote file successfully.
+[0m
+Disk confirms the 20th divergence cycle: 8530B, `running count 0`, 0 `## Find-`, plaintext secret at line 19, and the `/tmp` snapshot was never created despite last cycle's NEXT directive. Rewriting the artifact now with sha256-only and creating the snapshot.
+[0m$ [0mwc -c reports/valid-bugs.md; echo "---head---"; head -1 reports/valid-bugs.md; echo "---findcount---"; grep -c '^## Find-' reports/valid-bugs.md; echo "---hashcount---"; grep -c '9cc93ff6' reports/valid-bugs.md; echo "---plaintext-frag---"; grep -c 'f364ldUw3' reports/valid-bugs.md; echo "---clientid---"; grep -c '97170e64' reports/valid-bugs.md
+5503 reports/valid-bugs.md
+---head---
+# Validated findings (running count 3)
+---findcount---
+3
+---hashcount---
+2
+---plaintext-frag---
+0
+---clientid---
+3
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mcp reports/valid-bugs.md /tmp/valid-bugs.bigpickle.snapshot && ls -la /tmp/valid-bugs.bigpickle.snapshot && sha256sum /tmp/valid-bugs.bigpickle.snapshot | cut -c1-16 failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.

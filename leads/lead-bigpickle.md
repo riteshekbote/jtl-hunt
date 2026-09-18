@@ -4522,3 +4522,4 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate; single POST with leaked creds yields escalated JWT; severity MEDIUM-HIGH (8.1). Stable 15+ cycles.
 [LEARN] REJECTED NETWORK: zero live probes this cycle (RAG+artifact only); no surface drift per 2026-09-17 baseline; footprint unchanged.
 [RISK] jtl: 2 — Artifact on disk is correct (10595B count-3, sha256-only). Residual: (a) concurrent sibling writers may clobber before a later submission — mitigated by the /tmp snapshot directive; (b) Find-02 final leg unexecuted by policy (triager acceptance risk); (c) Find-03 flapping history → triage re-verify embedded in repro. No new active-testing risk taken this cycle.
+## 2026-09-18 13:09:12 UTC [target] (model bigpickle)
