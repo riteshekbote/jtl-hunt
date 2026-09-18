@@ -1,5 +1,5 @@
-## 2026-09-18 03:22:34 UTC [target] (model nemotron3)
-[CHANGED] `reports/valid-bugs.md` still corrupted on disk (8530B, count-0 header, 0 `## Find-` sections, 0 sha256, plaintext secret fragments at lines 19, 31) — 18th cycle LEARN-vs-disk divergence; prior LEARN "verified on disk" was FALSE
+## 2026-09-18 08:24:48 UTC [target] (model nemotron3)
+[CHANGED] `reports/valid-bugs.md` still corrupted on disk (8530B, count-0 header, 0 `## Find-` sections, plaintext secret fragments at lines 19, 31) — 18th cycle LEARN-vs-disk divergence
 [CHANGED] All priority endpoints stable vs 2026-09-17 23:57 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 200, erp/v2/graphql 401, auth.jtl-cloud.com/device 404
 [NEW] No surface drift detected across all probed endpoints; attack chains unchanged since 2026-09-14 live re-probe
 [PRIO] oauth2.api.jtl-software.com/token,9.7,attack_surface=10,business_value=9,tech_exposure=10,gate_ease=10,cloud_surface=9,freshness=10
