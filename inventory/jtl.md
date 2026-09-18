@@ -1113,3 +1113,8 @@
 - NEW reports/valid-bugs.md still corrupted on disk (7200B, count-0 header, 0 `## Find-`, plaintext secret at line 19) — 17th cycle LEARN-vs-disk divergence; prior LEARN "verified on disk" was FALSE
 - NEW All priority endpoints stable vs 2026-09-17 21:58 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 200, erp/v2/graphql 401, auth.jt
 - CHANGED No surface drift detected; attack chains unchanged
+
+## 2026-09-18 03:22:56 UTC
+- CHANGED `reports/valid-bugs.md` still corrupted on disk (8530B, count-0 header, 0 `## Find-` sections, 0 sha256, plaintext secret fragments at lines 19, 31) — 18th cycle LEARN-vs-disk divergence; prior LEARN 
+- CHANGED All priority endpoints stable vs 2026-09-17 23:57 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 200, erp/v2/graphql 401, auth.jt
+- NEW No surface drift detected across all probed endpoints; attack chains unchanged since 2026-09-14 live re-probe

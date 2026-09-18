@@ -4461,3 +4461,31 @@ evidence_needed: 3+ consecutive identical GET statuses at triage
 verify_steps: PASSIVE GET /api-docs/merchant-current/swagger.json
 impact: schema disclosure lowering exploitation effort; CVSS 5.3
 testability: PASSIVE
+## 2026-09-18 03:21:57 UTC [target] (model bigpickle)
+[HYP] Submission artifact must be re-verified on disk at submit time — 18th-cycle divergence proves persistence is never implied
+class: MISCONFIG
+asset: reports/valid-bugs.md
+confidence: 95
+reasoning: 18 consecutive cycles of LEARN-vs-disk divergence; on-disk holds 8530B count-0 + plaintext secret whenever a prior cycle claims "verified"; multi-analyst logs now explain concurrent clobbering
+evidence_needed: same-cycle bash read-back (wc/head/grep) immediately before submission, not at any earlier point
+verify_steps: wc -c; head -1; grep -c '^## Find-'; grep -c plaintext-secret (must be 0)
+impact: unchecked reversion re-exposes the plaintext client_secret in our own submission artifact; blocks the one CVSS 8.1 report
+testability: PASSIVE
+[HYP] Find-01 client_credentials scope escalation stands as primary submission finding
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret sha256:9cc93ff6… verified; client_credentials POST returns 200 with ffn.merchant.write scope beyond registration; stable 15+ cycles; silent degradation for ffn.admin.write
+evidence_needed: artifact contains repro + sha256-only; no further live probe required
+verify_steps: optional on ffn-sbx only if triage demands live reconfirmation
+impact: unauthorized write-scope token minting, no human gate; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02 authorization-code ATO completes with one in-scope consent (NOT executed by policy)
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri byte-identical 302 vs registered URI across cycles; Find-01 creds complete code exchange; empty sub/acl gate that blocks userless tokens is populated by consent-derived token
+evidence_needed: one consent on self-owned ffn-sbx identity — excluded by program rules
+verify_steps: HUMAN_ONLY (out of policy): /authorize(attacker uri) → consent(ffn-sbx) → POST /token → GET ffn-sbx /api/v1/merchant/orders
+impact: user-context write → orders/stock/Amazon-SFP creds + key mint; CVSS 7.4
+testability: HUMAN_ONLY
