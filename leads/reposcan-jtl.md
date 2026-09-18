@@ -171,3 +171,5 @@ reasoning: The `/erp-info/:tenantId/:endpoint` route uses `app.all()` but never 
 impact: MEDIUM (full unauthenticated access to JTL Cloud ERP API via server-side proxy with service credentials)
 verify_steps: (passive) Verify if this route is behind a reverse proxy with auth; check if the JTL Cloud ERP API enforces tenant-scoping independent of the `X-Tenant-ID` header.
 TARGET_ORG not configured for jtl; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 02:51:54 UTC
+TARGET_ORG not configured for jtl; skipping public-org deep scan.
