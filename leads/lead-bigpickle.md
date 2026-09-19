@@ -4831,3 +4831,37 @@ testability: PASSIVE
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (scope escalation) + Find-02 (unvalidated redirect_uri) chunks stable 16+ cycles, no drift; evidence current as written in snapshot.
 [LEARN] REJECTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); no surface drift vs 2026-09-17/09-19 baseline; footprint unchanged.
 [RISK] program: 30 — three findings submission-ready (8.1 / 7.4 / 5.3), live-current as of 2026-09-19; residual risk = artifact clobbering of the shared report file (mitigated by per-agent snapshot recreated this cycle) and the HUMAN consent gate on the highest-value chain; testing footprint minimal (GET-only, sha256-only secrets, zero data access).
+## 2026-09-19 13:24:27 UTC [target] (model bigpickle)
+[HYP] Find-01 server-side scope validation still absent; any ffn.* scope mints from public creds
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf920e) public in SDK README; client_credentials POST returns 200 + RS256 read+write beyond registration; cross-role scopes degrade to empty not error; stable 16+ cycles, reconfirmed 2026-09-19
+evidence_needed: none — on-disk repro in snapshot (sha256-only)
+verify_steps: PASSIVE — no further probe scheduled; re-probe only on drift
+impact: zero-interaction write-scope token mint from public credentials; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02 ATO chain completes with exactly one in-scope victim consent; consent not executed
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri (https://evil.example.com/cb) yields byte-identical 302→/doauthorize as registered localhost URI (reconfirmed 2026-09-19); Find-01 creds complete code exchange; user-bound token fills the empty sub/acl gate enabling data-plane + key-mint
+evidence_needed: one consent on self-owned ffn-sbx identity — excluded by program rules (HUMAN_ONLY)
+verify_steps: HUMAN_ONLY (out of policy)
+impact: user-context write + API-key mint → ATO of consenting FFN portal user; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Public FFN API docs continue to disclose key-mint surface; GET-only baseline holds
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs
+confidence: 90
+reasoning: ReDoc + swagger for merchant/fulfiller/shared live at 301→200 both environments (app strips HEAD); shared spec exposes /api/v1/access/tokens (attacker scopes[], plaintext token return) and /api/v1/users/current; stable 16+ cycles
+evidence_needed: snapshot references Find-03 with GET-verified status
+verify_steps: PASSIVE — no re-probe this cycle; GET on drift only
+impact: full endpoint/parameter disclosure accelerates chains; CVSS 5.3
+testability: PASSIVE
+[NEXT] RAG: next cycle verify `reports/valid-bugs.md.bigpickle` integrity (`wc -c` / `head -1` / `grep -c '^## Find-'` =3 / plaintext-secret grep=0) and recreate from 3-finding template if absent; re-probe the 5 core endpoints only on sibling-signaled drift; keep zero live probes while baseline holds.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md.bigpickle (13:23 UTC): snapshot was deleted again by sibling writers (absent at cycle start); recreated + bash-verified 4868B / `running count 3` / 3 `## Find-` / plaintext-secret-count=0 / sha256×2 / client_id×3 — divergence cycle 22; only post-write read-back is authoritative.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: global artifact still corrupt (8530B, count-0, plaintext secret present) — not our write target; per-agent `.bigpickle` snapshot is the only durable per-agent copy in the racy shared workspace.
+[LEARN] ACCEPTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); no surface drift vs 2026-09-19 baseline; footprint unchanged.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (scope escalation) + Find-02 (unvalidated redirect_uri) chunks stable 16+ cycles; evidence current as written in snapshot.
+[RISK] program: 30 — three findings submission-ready (8.1 / 7.4 / 5.3), live-current as of 2026-09-19; residual risk = artifact clobbering of the shared report file (mitigated by `.bigpickle` snapshot recreated this cycle) and the HUMAN consent gate on the highest-value chain; testing footprint minimal (GET-only, sha256-only secrets, zero data access/mutation).

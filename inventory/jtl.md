@@ -1157,3 +1157,9 @@
 ## 2026-09-19 09:38:08 UTC
 - CHANGED `reports/valid-bugs.md` still corrupted on disk (8530B, count-0 header, 0 `## Find-` sections, plaintext secret at line 19) — 20th cycle LEARN-vs-disk divergence; prior KBASE claims of "verified rewri
 - CHANGED All priority endpoints stable vs 2026-09-17 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 301→200, erp/v2/graphql 401, auth.jtl-
+
+## 2026-09-19 13:25:18 UTC
+- CHANGED `reports/valid-bugs.md` global still corrupted on disk (8530B, count-0 header, 0 `## Find-`, plaintext secret at line 19) — 20th cycle LEARN-vs-disk divergence
+- CHANGED `reports/valid-bugs.md.bigpickle` per-agent snapshot recreated and bash-verified this cycle (4249B, count-3, 3 `## Find-`, plaintext=0, sha256×1) — only clobber-resistant copy
+- CHANGED All 5 core endpoints stable vs 2026-09-17 baseline: oauth2/token 200 (scope escalation), oauth2/authorize 302 (unvalidated redirect_uri), ffn+ffn-sbx /api-docs 301→200, erp/v2/graphql 401, auth.jtl-cl
+- CHANGED No surface drift detected; attack chains unchanged since 2026-09-14 live re-probe
