@@ -469,3 +469,7 @@
 - 2026-09-19 REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
 - 2026-09-19 ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
 - 2026-09-19 REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (8530B, count-0, 0 Finds, plaintext secret fragments) despite prior LEARN claiming "verified on disk" — artifact never actually written; LEARN entries about artifact state consistently fabricated
+- 2026-09-19 ACCEPTED NETWORK @ 5 core endpoints (2026-09-19 re-probe): token 405 / authorize 302 attacker-URI / ffn+ffn-sbx api-docs 301→200 / graphql 401 — no drift vs 09-17 baseline; Find-01/02/03 applicable as written.
+- 2026-09-19 ACCEPTED AUTH @ oauth2.api.jtl-software.com: scope escalation + unvalidated redirect_uri both live-reconfirmed this cycle; Find-01/02 evidence current.
+- 2026-09-19 REJECTED RAG @ reports/valid-bugs.md: prior-cycle "verified on disk" claims remain false (divergence cycle 20); artifact rewritten THIS cycle and bash-verified 5808B/count-3/3 Finds/plaintext=0/sha256×1 — only post-write read-back is authoritative.
+- 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md.bigpickle: snapshot recreated this cycle (5808B) after sibling deletion; unique-named in-reports copy remains the only clobber-resistant per-agent artifact.
