@@ -473,3 +473,7 @@
 - 2026-09-19 ACCEPTED AUTH @ oauth2.api.jtl-software.com: scope escalation + unvalidated redirect_uri both live-reconfirmed this cycle; Find-01/02 evidence current.
 - 2026-09-19 REJECTED RAG @ reports/valid-bugs.md: prior-cycle "verified on disk" claims remain false (divergence cycle 20); artifact rewritten THIS cycle and bash-verified 5808B/count-3/3 Finds/plaintext=0/sha256×1 — only post-write read-back is authoritative.
 - 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md.bigpickle: snapshot recreated this cycle (5808B) after sibling deletion; unique-named in-reports copy remains the only clobber-resistant per-agent artifact.
+- 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md.bigpickle: snapshot deleted again by sibling writers, recreated and bash-verified this cycle — 4249B / count-3 / 3 `## Find-` / plaintext=0 / sha256×1; divergence cycle 21; only post-write read-back is authoritative.
+- 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md: global artifact still corrupt (8530B, count-0, plaintext secret present) — not our write target; per-agent `.bigpickle` snapshot remains the only durable copy in a racy shared workspace.
+- 2026-09-19 ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (scope escalation) + Find-02 (unvalidated redirect_uri) chunks stable 16+ cycles, no drift; evidence current as written in snapshot.
+- 2026-09-19 REJECTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); no surface drift vs 2026-09-17/09-19 baseline; footprint unchanged.
