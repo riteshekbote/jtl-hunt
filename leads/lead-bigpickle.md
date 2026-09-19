@@ -4865,3 +4865,37 @@ testability: PASSIVE
 [LEARN] ACCEPTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); no surface drift vs 2026-09-19 baseline; footprint unchanged.
 [LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (scope escalation) + Find-02 (unvalidated redirect_uri) chunks stable 16+ cycles; evidence current as written in snapshot.
 [RISK] program: 30 — three findings submission-ready (8.1 / 7.4 / 5.3), live-current as of 2026-09-19; residual risk = artifact clobbering of the shared report file (mitigated by `.bigpickle` snapshot recreated this cycle) and the HUMAN consent gate on the highest-value chain; testing footprint minimal (GET-only, sha256-only secrets, zero data access/mutation).
+## 2026-09-19 16:48:16 UTC [target] (model bigpickle)
+[HYP] Find-01 scope escalation unchanged — any ffn.* scope still mints from public creds
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: leaked client 97170e64... + secret (sha256:9cc93f...) public in SDK README; client_credentials POST returns 200 + RS256 read+write beyond registration; cross-role scopes degrade to empty not error; reconfirmed 2026-09-19
+evidence_needed: none — repro persisted in on-disk snapshot (sha256-only)
+verify_steps: PASSIVE — no re-probe while baseline holds
+impact: zero-interaction write-scope token mint from public credentials; CVSS 8.1
+testability: PASSIVE
+[HYP] Find-02 ATO chain completes with exactly one in-scope consent
+class: AUTH
+asset: oauth2.api.jtl-software.com/authorize + /doauthorize
+confidence: 88
+reasoning: attacker redirect_uri yields byte-identical 302→/doauthorize as registered localhost URI (reconfirmed 2026-09-19); Find-01 creds complete exchange; user-bound token fills empty sub/acl gate → data plane + key-mint
+evidence_needed: one consent on self-owned ffn-sbx identity — excluded by program HUMAN_ONLY rule
+verify_steps: HUMAN_ONLY (out of policy)
+impact: ATO of consenting FFN portal user + cross-tenant API-key mint; CVSS 7.4
+testability: HUMAN_ONLY
+[HYP] Find-03 public docs keep exposing key-mint surface
+class: MISCONFIG
+asset: ffn.api.jtl-software.com/api-docs + ffn-sbx.api.jtl-software.com/api-docs
+confidence: 90
+reasoning: ReDoc + swagger (merchant/fulfiller/shared) live at 301→200 both envs; shared spec exposes /api/v1/access/tokens (attacker scopes[], plaintext return) + /api/v1/users/current; stable 16+ cycles
+evidence_needed: snapshot references Find-03 GET-verified status
+verify_steps: PASSIVE — no re-probe; GET only on drift
+impact: full endpoint/parameter disclosure accelerates chains; CVSS 5.3
+testability: PASSIVE
+[NEXT] RAG: next cycle re-verify `reports/valid-bugs.md.bigpickle` (`wc -c`/`head -1`/`grep -c '^## Find-'`=3/plaintext grep=0) and recreate from template if absent; live re-probe of the 5 core endpoints only on sibling-signaled drift; else zero live probes.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md.bigpickle: absent at cycle start (23rd sibling deletion), recreated + bash-verified 2717B / `running count 3` / 3 `## Find-` / plaintext=0 / sha256×2 / client_id×2 — only post-write read-back is authoritative.
+[LEARN] ACCEPTED RAG @ reports/valid-bugs.md: global artifact still corrupt (8530B, count-0, plaintext secret at L19) — not our write target; `.bigpickle` snapshot remains the only durable per-agent copy.
+[LEARN] ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 chunks stable, evidence current per 2026-09-19 re-probe; no drift.
+[LEARN] REJECTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); footprint unchanged vs 2026-09-19 baseline.
+[RISK] program: 30 — three findings submission-ready (8.1 / 7.4 / 5.3), live-current 2026-09-19, artifact snapshot recreated on disk this cycle; residual risk = shared-file clobbering (mitigated by unique-named snapshot) and the HUMAN consent gate on the highest-value chain; footprint minimal (GET-only, sha256-only secrets, zero data access).

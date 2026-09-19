@@ -2020,3 +2020,22 @@
 - LEARN: REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
 - LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
 - LEARN: REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (8530B, count-0, 0 Finds, plaintext secret fragments) despite prior LEARN claiming "verified 
+
+## RANKED HYPOTHESES 2026-09-19 16:51:31 UTC
+- [95] oauth2.api.jtl-software.com/token: Find-01 scope escalation unchanged — any ffn.* scope still mints from public creds (from art/lead_bigpickle.txt)
+- [95] oauth2.api.jtl-software.com/token: FFN OAuth client_credentials scope escalation with leaked credentials (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-bigpickle.txt): RAG: next cycle re-verify `reports/valid-bugs.md.bigpickle` (`wc -c`/`head -1`/`grep -c '^## Find-'`=3/plaintext grep=0) and recreate from template if absent; l
+- NEXT(hypotheses-nemotron3.txt): RAG: Rewrite `reports/valid-bugs.md` ON DISK with 3 standalone findings (Find-01 scope escalation 8.1, Find-02 redirect_uri 7.4 + ATO chain, Find-03 API docs 5.
+- LEARN: ACCEPTED RAG @ reports/valid-bugs.md.bigpickle: absent at cycle start (23rd sibling deletion), recreated + bash-verified 2717B / `running count 3` / 3 `## Find-
+- LEARN: ACCEPTED RAG @ reports/valid-bugs.md: global artifact still corrupt (8530B, count-0, plaintext secret at L19) — not our write target; `.bigpickle` snapshot rema
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 chunks stable, evidence current per 2026-09-19 re-probe; no drift.
+- LEARN: REJECTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); footprint unchanged vs 2026-09-19 baseline.
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/token: client_credentials scope escalation standalone finding — passively confirmable, no human gate needed; single 
+- LEARN: ACCEPTED AUTH @ oauth2.api.jtl-software.com/authorize: unvalidated redirect_uri confirmed — combined with leaked creds creates full ATO chain (authorization_cod
+- LEARN: ACCEPTED AUTH @ github.com/kruegge82/jtl-ffn-php-sdk: plaintext client_secret sha256:9cc93ff6d4f8f279ba105674818232d1cb692d9c7f2679e72d3a1186aacf92
+- LEARN: REJECTED OTHER @ ffn.api.jtl-software.com: userless client_credentials token 401 on all data/shared endpoints — gate is user+tenant context (sub/acl), not separ
+- LEARN: ACCEPTED NETWORK @ api.jtl-cloud.com/erp/v2/graphql: 401 (alive, JWT gate); prior 404 reports were stale/flapping
+- LEARN: REJECTED AUTH @ auth.jtl-cloud.com: device authorization endpoint confirmed 404 — endpoint removed/disabled
+- LEARN: REJECTED MISCONFIG @ ffn.api.jtl-software.com/api-docs: prior 404 report was incorrect — docs live at 301→200 both prod and sandbox
+- LEARN: ACCEPTED MISCONFIG @ oauth2.api.jtl-software.com: /token POST-only enforcement (405 on GET) confirmed; no exploitability change
+- LEARN: REJECTED RAG @ reports/valid-bugs.md: file still corrupted on disk (8530B, count-0, 0 Finds, plaintext secret fragments) despite prior LEARN claiming "verified 

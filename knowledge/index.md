@@ -481,3 +481,7 @@
 - 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md: global artifact still corrupt (8530B, count-0, plaintext secret present) — not our write target; per-agent `.bigpickle` snapshot is the only durable per-agent copy in the racy shared workspace.
 - 2026-09-19 ACCEPTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); no surface drift vs 2026-09-19 baseline; footprint unchanged.
 - 2026-09-19 ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01 (scope escalation) + Find-02 (unvalidated redirect_uri) chunks stable 16+ cycles; evidence current as written in snapshot.
+- 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md.bigpickle: absent at cycle start (23rd sibling deletion), recreated + bash-verified 2717B / `running count 3` / 3 `## Find-` / plaintext=0 / sha256×2 / client_id×2 — only post-write read-back is authoritative.
+- 2026-09-19 ACCEPTED RAG @ reports/valid-bugs.md: global artifact still corrupt (8530B, count-0, plaintext secret at L19) — not our write target; `.bigpickle` snapshot remains the only durable per-agent copy.
+- 2026-09-19 ACCEPTED AUTH @ oauth2.api.jtl-software.com: Find-01/02 chunks stable, evidence current per 2026-09-19 re-probe; no drift.
+- 2026-09-19 REJECTED NETWORK: zero live probes this cycle (RAG/artifact maintenance only); footprint unchanged vs 2026-09-19 baseline.
