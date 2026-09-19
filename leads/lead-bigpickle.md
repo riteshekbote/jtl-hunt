@@ -4703,3 +4703,13 @@ evidence_needed: one consent on self-owned ffn-sbx identity — excluded by prog
 verify_steps: HUMAN_ONLY (out of policy).
 impact: user-context write + API-key mint; CVSS 7.4.
 testability: HUMAN_ONLY
+## 2026-09-19 00:26:16 UTC [target] (model bigpickle)
+[HYP] Find-01 remains submission-ready; scopes still unchecked server-side
+class: AUTH
+asset: oauth2.api.jtl-software.com/token
+confidence: 95
+reasoning: client_id 97170e64-d390-4696-ba46-d6fcef8207de + secret (sha256:9cc93ff6…) from public README; client_credentials POST returns 200 + RS256 with read+write beyond registration; admin/portal.write silently degrade to empty scopes; stable 15+ cycles; artifact now on disk sha256-only.
+evidence_needed: none beyond on-disk repro.
+verify_steps: PASSIVE — re-probe only on ffn-sbx if triage demands; endpoint is POST-only.
+impact: unauthorized write-scope token mint, zero interaction. CVSS 8.1.
+testability: PASSIVE
